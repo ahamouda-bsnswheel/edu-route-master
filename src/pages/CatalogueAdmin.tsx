@@ -33,11 +33,15 @@ import {
   XCircle,
   AlertCircle,
   Send,
+  Sparkles,
+  Settings,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { CatalogueBulkImport } from '@/components/catalogue/CatalogueBulkImport';
 import { CatalogueReports } from '@/components/catalogue/CatalogueReports';
+import { AITaggingConfig } from '@/components/catalogue/AITaggingConfig';
+import { BulkTaggingJobs } from '@/components/catalogue/BulkTaggingJobs';
 
 type CatalogueStatus = 'draft' | 'pending_approval' | 'active' | 'retired';
 type ViewMode = 'grid' | 'table';
@@ -309,6 +313,14 @@ export default function CatalogueAdmin() {
             <TabsTrigger value="reports" className="gap-2">
               <BarChart3 className="h-4 w-4" />
               Reports
+            </TabsTrigger>
+            <TabsTrigger value="ai-tagging" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              AI Tagging
+            </TabsTrigger>
+            <TabsTrigger value="ai-config" className="gap-2">
+              <Settings className="h-4 w-4" />
+              AI Config
             </TabsTrigger>
           </TabsList>
 
@@ -586,6 +598,14 @@ export default function CatalogueAdmin() {
 
           <TabsContent value="reports">
             <CatalogueReports />
+          </TabsContent>
+
+          <TabsContent value="ai-tagging">
+            <BulkTaggingJobs />
+          </TabsContent>
+
+          <TabsContent value="ai-config">
+            <AITaggingConfig />
           </TabsContent>
         </Tabs>
       </div>
