@@ -78,7 +78,7 @@ export function NotificationCenter() {
   const getNavigationPath = (notification: Notification): string => {
     switch (notification.reference_type) {
       case 'training_request':
-        return '/my-requests';
+        return notification.reference_id ? `/requests/${notification.reference_id}` : '/approvals';
       case 'session':
         return `/sessions/${notification.reference_id}`;
       case 'approval':
