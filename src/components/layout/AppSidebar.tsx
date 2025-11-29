@@ -26,6 +26,7 @@ import {
   Building2,
   GraduationCap,
   Shield,
+  Award,
 } from 'lucide-react';
 
 const mainNavItems = [
@@ -33,17 +34,20 @@ const mainNavItems = [
   { title: 'Course Catalog', url: '/courses', icon: BookOpen, roles: [] },
   { title: 'My Requests', url: '/my-requests', icon: FileText, roles: [] },
   { title: 'Learning History', url: '/learning-history', icon: GraduationCap, roles: [] },
+  { title: 'My Certificates', url: '/my-certificates', icon: Award, roles: [] },
   { title: 'Training Calendar', url: '/calendar', icon: Calendar, roles: [] },
 ];
 
 const managerNavItems = [
   { title: 'Team Requests', url: '/team-requests', icon: Users, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Team Learning', url: '/team-learning', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
+  { title: 'Team Certificates', url: '/team-certificates', icon: Award, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Approvals', url: '/approvals', icon: CheckSquare, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
 ];
 
 const adminNavItems = [
   { title: 'Sessions', url: '/sessions', icon: GraduationCap, roles: ['l_and_d', 'chro', 'admin'] },
+  { title: 'Certificates', url: '/certificate-admin', icon: Award, roles: ['l_and_d', 'admin'] },
   { title: 'Compliance', url: '/compliance', icon: Shield, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
   { title: 'Reports', url: '/reports', icon: BarChart3, roles: ['hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
