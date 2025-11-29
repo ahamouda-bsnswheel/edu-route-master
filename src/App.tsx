@@ -486,6 +486,48 @@ function AppRoutes() {
         }
       />
 
+      {/* TNA Routes */}
+      <Route
+        path="/my-training-needs"
+        element={
+          <ProtectedRoute>
+            <MyTrainingNeeds />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/team-training-needs"
+        element={
+          <ProtectedRoute>
+            <TeamTrainingNeeds />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/tna-overview"
+        element={
+          <ProtectedRoute>
+            <TNAOverview />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/tna-admin"
+        element={
+          <ProtectedRoute>
+            <TNAAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/tna/:id"
+        element={
+          <ProtectedRoute>
+            <TNAForm />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Placeholder routes */}
       <Route
         path="/calendar"
