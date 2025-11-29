@@ -27,6 +27,13 @@ import MyCertificates from "./pages/MyCertificates";
 import TeamCertificates from "./pages/TeamCertificates";
 import CertificateAdmin from "./pages/CertificateAdmin";
 import CertificateTemplateEditor from "./pages/CertificateTemplateEditor";
+import MyScholarshipApplications from "./pages/MyScholarshipApplications";
+import ScholarshipApplication from "./pages/ScholarshipApplication";
+import ScholarshipManagerReview from "./pages/ScholarshipManagerReview";
+import ScholarshipHRBPReview from "./pages/ScholarshipHRBPReview";
+import ScholarshipCommittee from "./pages/ScholarshipCommittee";
+import ScholarshipFinanceReview from "./pages/ScholarshipFinanceReview";
+import ScholarshipFinalApproval from "./pages/ScholarshipFinalApproval";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -211,6 +218,72 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <CertificateTemplateEditor />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Scholarship Routes */}
+      <Route
+        path="/my-scholarships"
+        element={
+          <ProtectedRoute>
+            <MyScholarshipApplications />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholarship/apply"
+        element={
+          <ProtectedRoute>
+            <ScholarshipApplication />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholarship/apply/:id"
+        element={
+          <ProtectedRoute>
+            <ScholarshipApplication />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholarship/manager-review"
+        element={
+          <ProtectedRoute>
+            <ScholarshipManagerReview />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholarship/hrbp-review"
+        element={
+          <ProtectedRoute>
+            <ScholarshipHRBPReview />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholarship/committee"
+        element={
+          <ProtectedRoute>
+            <ScholarshipCommittee />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholarship/finance-review"
+        element={
+          <ProtectedRoute>
+            <ScholarshipFinanceReview />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholarship/final-approval"
+        element={
+          <ProtectedRoute>
+            <ScholarshipFinalApproval />
           </ProtectedRoute>
         }
       />

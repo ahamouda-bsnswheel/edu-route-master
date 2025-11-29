@@ -35,6 +35,7 @@ const mainNavItems = [
   { title: 'My Requests', url: '/my-requests', icon: FileText, roles: [] },
   { title: 'Learning History', url: '/learning-history', icon: GraduationCap, roles: [] },
   { title: 'My Certificates', url: '/my-certificates', icon: Award, roles: [] },
+  { title: 'Scholarships', url: '/my-scholarships', icon: GraduationCap, roles: [] },
   { title: 'Training Calendar', url: '/calendar', icon: Calendar, roles: [] },
 ];
 
@@ -43,11 +44,16 @@ const managerNavItems = [
   { title: 'Team Learning', url: '/team-learning', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Team Certificates', url: '/team-certificates', icon: Award, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Approvals', url: '/approvals', icon: CheckSquare, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
+  { title: 'Scholarship Review', url: '/scholarship/manager-review', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
 ];
 
 const adminNavItems = [
   { title: 'Sessions', url: '/sessions', icon: GraduationCap, roles: ['l_and_d', 'chro', 'admin'] },
   { title: 'Certificates', url: '/certificate-admin', icon: Award, roles: ['l_and_d', 'admin'] },
+  { title: 'HRBP Scholarship', url: '/scholarship/hrbp-review', icon: GraduationCap, roles: ['hrbp', 'l_and_d', 'admin'] },
+  { title: 'Scholarship Committee', url: '/scholarship/committee', icon: GraduationCap, roles: ['committee', 'l_and_d', 'chro', 'admin'] },
+  { title: 'Finance Review', url: '/scholarship/finance-review', icon: GraduationCap, roles: ['finance', 'chro', 'admin'] },
+  { title: 'Final Approval', url: '/scholarship/final-approval', icon: GraduationCap, roles: ['chro', 'admin'] },
   { title: 'Compliance', url: '/compliance', icon: Shield, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
   { title: 'Reports', url: '/reports', icon: BarChart3, roles: ['hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
