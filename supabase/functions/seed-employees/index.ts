@@ -9,7 +9,7 @@ const testEmployees = [
   // CHRO
   {
     email: 'khaled.almaghrabi@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Khaled',
     last_name_en: 'Al-Maghrabi',
     first_name_ar: 'خالد',
@@ -25,7 +25,7 @@ const testEmployees = [
   // L&D Manager
   {
     email: 'fatima.alzawiya@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Fatima',
     last_name_en: 'Al-Zawiya',
     first_name_ar: 'فاطمة',
@@ -41,7 +41,7 @@ const testEmployees = [
   // HRBP
   {
     email: 'omar.benghazi@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Omar',
     last_name_en: 'Benghazi',
     first_name_ar: 'عمر',
@@ -57,7 +57,7 @@ const testEmployees = [
   // Program Manager - Engineering
   {
     email: 'ahmed.alsharif@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Ahmed',
     last_name_en: 'Al-Sharif',
     first_name_ar: 'أحمد',
@@ -73,7 +73,7 @@ const testEmployees = [
   // Project Manager - Operations
   {
     email: 'mariam.tripoli@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Mariam',
     last_name_en: 'Tripoli',
     first_name_ar: 'مريم',
@@ -89,7 +89,7 @@ const testEmployees = [
   // Project Manager - IT
   {
     email: 'youssef.misrata@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Youssef',
     last_name_en: 'Misrata',
     first_name_ar: 'يوسف',
@@ -105,7 +105,7 @@ const testEmployees = [
   // Senior Engineer - AGOCO
   {
     email: 'salim.agoco@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Salim',
     last_name_en: 'Al-Ajdabiya',
     first_name_ar: 'سالم',
@@ -121,7 +121,7 @@ const testEmployees = [
   // Drilling Engineer - Waha
   {
     email: 'nadia.waha@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Nadia',
     last_name_en: 'Al-Jufra',
     first_name_ar: 'نادية',
@@ -137,7 +137,7 @@ const testEmployees = [
   // HSE Officer - Sirte
   {
     email: 'ibrahim.sirte@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Ibrahim',
     last_name_en: 'Al-Sirte',
     first_name_ar: 'إبراهيم',
@@ -153,7 +153,7 @@ const testEmployees = [
   // Finance Analyst
   {
     email: 'layla.finance@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Layla',
     last_name_en: 'Al-Zawawi',
     first_name_ar: 'ليلى',
@@ -169,7 +169,7 @@ const testEmployees = [
   // IT Specialist
   {
     email: 'tariq.it@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Tariq',
     last_name_en: 'Al-Gharyan',
     first_name_ar: 'طارق',
@@ -185,7 +185,7 @@ const testEmployees = [
   // Junior Engineer
   {
     email: 'aisha.junior@noc.ly',
-    password: 'Test123!',
+    password: '123',
     first_name_en: 'Aisha',
     last_name_en: 'Al-Derna',
     first_name_ar: 'عائشة',
