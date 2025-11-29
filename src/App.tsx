@@ -51,6 +51,8 @@ import CatalogueForm from "./pages/CatalogueForm";
 import ProviderAdmin from "./pages/ProviderAdmin";
 import ProviderDetail from "./pages/ProviderDetail";
 import ProviderForm from "./pages/ProviderForm";
+import ProviderPerformance from "./pages/ProviderPerformance";
+import ProviderPerformanceDetail from "./pages/ProviderPerformanceDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -459,6 +461,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ProviderForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/providers/performance"
+        element={
+          <ProtectedRoute>
+            <ProviderPerformance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/providers/:id/performance"
+        element={
+          <ProtectedRoute>
+            <ProviderPerformanceDetail />
           </ProtectedRoute>
         }
       />

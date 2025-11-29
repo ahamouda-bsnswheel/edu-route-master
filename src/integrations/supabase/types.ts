@@ -2264,6 +2264,44 @@ export type Database = {
           },
         ]
       }
+      provider_comments: {
+        Row: {
+          comment: string
+          comment_type: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          provider_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          comment: string
+          comment_type?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          provider_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          comment?: string
+          comment_type?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          provider_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_comments_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "training_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_contacts: {
         Row: {
           contact_name: string
@@ -2363,6 +2401,217 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "provider_contracts_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "training_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_flags: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          expires_at: string | null
+          flag_type: string
+          id: string
+          is_active: boolean | null
+          provider_id: string
+          reason: string | null
+          set_at: string | null
+          set_by: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          expires_at?: string | null
+          flag_type: string
+          id?: string
+          is_active?: boolean | null
+          provider_id: string
+          reason?: string | null
+          set_at?: string | null
+          set_by?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          expires_at?: string | null
+          flag_type?: string
+          id?: string
+          is_active?: boolean | null
+          provider_id?: string
+          reason?: string | null
+          set_at?: string | null
+          set_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_flags_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "training_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_kpi_thresholds: {
+        Row: {
+          comparison_operator: string | null
+          created_at: string | null
+          description: string | null
+          display_name: string
+          good_threshold: number | null
+          id: string
+          is_active: boolean | null
+          kpi_name: string
+          updated_at: string | null
+          updated_by: string | null
+          warning_threshold: number | null
+        }
+        Insert: {
+          comparison_operator?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_name: string
+          good_threshold?: number | null
+          id?: string
+          is_active?: boolean | null
+          kpi_name: string
+          updated_at?: string | null
+          updated_by?: string | null
+          warning_threshold?: number | null
+        }
+        Update: {
+          comparison_operator?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_name?: string
+          good_threshold?: number | null
+          id?: string
+          is_active?: boolean | null
+          kpi_name?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          warning_threshold?: number | null
+        }
+        Relationships: []
+      }
+      provider_performance_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string
+          filter_context: Json | null
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          provider_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type: string
+          filter_context?: Json | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          provider_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          filter_context?: Json | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          provider_id?: string | null
+        }
+        Relationships: []
+      }
+      provider_performance_snapshots: {
+        Row: {
+          avg_nps: number | null
+          avg_rating: number | null
+          cancellation_rate: number | null
+          cancelled_sessions: number | null
+          completed_sessions: number | null
+          completion_rate: number | null
+          cost_per_participant: number | null
+          created_at: string | null
+          hse_avg_rating: number | null
+          hse_completion_rate: number | null
+          hse_sessions: number | null
+          id: string
+          import_source: string | null
+          is_historical_import: boolean | null
+          on_time_rate: number | null
+          period_end: string
+          period_start: string
+          period_type: string
+          provider_id: string
+          total_cost: number | null
+          total_participants: number | null
+          total_sessions: number | null
+        }
+        Insert: {
+          avg_nps?: number | null
+          avg_rating?: number | null
+          cancellation_rate?: number | null
+          cancelled_sessions?: number | null
+          completed_sessions?: number | null
+          completion_rate?: number | null
+          cost_per_participant?: number | null
+          created_at?: string | null
+          hse_avg_rating?: number | null
+          hse_completion_rate?: number | null
+          hse_sessions?: number | null
+          id?: string
+          import_source?: string | null
+          is_historical_import?: boolean | null
+          on_time_rate?: number | null
+          period_end: string
+          period_start: string
+          period_type: string
+          provider_id: string
+          total_cost?: number | null
+          total_participants?: number | null
+          total_sessions?: number | null
+        }
+        Update: {
+          avg_nps?: number | null
+          avg_rating?: number | null
+          cancellation_rate?: number | null
+          cancelled_sessions?: number | null
+          completed_sessions?: number | null
+          completion_rate?: number | null
+          cost_per_participant?: number | null
+          created_at?: string | null
+          hse_avg_rating?: number | null
+          hse_completion_rate?: number | null
+          hse_sessions?: number | null
+          id?: string
+          import_source?: string | null
+          is_historical_import?: boolean | null
+          on_time_rate?: number | null
+          period_end?: string
+          period_start?: string
+          period_type?: string
+          provider_id?: string
+          total_cost?: number | null
+          total_participants?: number | null
+          total_sessions?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_performance_snapshots_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "training_providers"
