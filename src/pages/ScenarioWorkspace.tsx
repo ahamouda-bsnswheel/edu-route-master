@@ -54,13 +54,13 @@ export default function ScenarioWorkspace() {
   useMemo(() => {
     if (scenario && Object.keys(levers).length === 0) {
       setLevers({
-        globalBudgetType: scenario.global_budget_type || 'percentage',
+        globalBudgetType: (scenario.global_budget_type as 'percentage' | 'absolute') || 'percentage',
         globalBudgetValue: scenario.global_budget_value || 100,
         includePriorityBands: scenario.include_priority_bands || ['critical', 'high', 'medium', 'low'],
         cutOrder: scenario.cut_order || ['low', 'medium', 'high', 'critical'],
         protectedCategories: scenario.protected_categories || [],
         cutAbroadFirst: scenario.cut_abroad_first || false,
-        entityCaps: scenario.entity_caps || {},
+        entityCaps: (scenario.entity_caps as Record<string, { type: 'percentage' | 'absolute'; value: number }>) || {},
       });
     }
   }, [scenario]);

@@ -43,6 +43,46 @@ interface LocalAdjustmentRequest {
   reason: string;
 }
 
+interface ScenarioRecord {
+  id: string;
+  baseline_total_cost: number | null;
+  scenario_total_cost: number | null;
+  basis_plan_id: string;
+  scenario_items?: ScenarioItemRecord[];
+}
+
+interface ScenarioItemRecord {
+  id: string;
+  scenario_id: string;
+  course_id: string;
+  priority_band: string | null;
+  baseline_volume: number;
+  baseline_sessions: number;
+  baseline_cost: number;
+  baseline_cost_per_participant: number | null;
+  scenario_volume: number;
+  scenario_sessions: number;
+  scenario_cost: number;
+  is_locally_adjusted: boolean | null;
+  is_protected: boolean | null;
+}
+
+interface PlanItemRecord {
+  id: string;
+  course_id: string;
+  planned_participants: number;
+  planned_sessions: number;
+  estimated_cost: number;
+  cost_per_participant: number;
+  priority: string;
+}
+
+interface PlanRecord {
+  id: string;
+  period_id: string;
+  version: number;
+}
+
 type RequestBody = CreateScenarioRequest | RecalculateScenarioRequest | PromoteScenarioRequest | LocalAdjustmentRequest;
 
 Deno.serve(async (req) => {
@@ -53,7 +93,8 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase: any = createClient(supabaseUrl, supabaseServiceKey);
 
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -100,7 +141,8 @@ Deno.serve(async (req) => {
   }
 });
 
-async function createScenario(supabase: ReturnType<typeof createClient>, userId: string, request: CreateScenarioRequest) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function createScenario(supabase: any, userId: string, request: CreateScenarioRequest) {
   console.log(`[create-scenario] Creating scenario from plan ${request.planId}`);
 
   const { data: scenario, error: scenarioError } = await supabase
@@ -119,11 +161,12 @@ async function createScenario(supabase: ReturnType<typeof createClient>, userId:
     .single();
 
   if (scenarioError) {
+    console.error('[create-scenario] Error:', scenarioError);
     throw new Error(`Failed to create scenario: ${scenarioError.message}`);
   }
 
   // Start background copy (fire and forget)
-  copyPlanItemsToScenario(supabase, scenario.id, request.planId, userId);
+  copyPlanItemsToScenario(supabase, scenario.id, request.planId);
 
   await supabase.from('scenario_audit_log').insert({
     scenario_id: scenario.id,
@@ -141,7 +184,8 @@ async function createScenario(supabase: ReturnType<typeof createClient>, userId:
   });
 }
 
-async function copyPlanItemsToScenario(supabase: ReturnType<typeof createClient>, scenarioId: string, planId: string, _userId: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function copyPlanItemsToScenario(supabase: any, scenarioId: string, planId: string) {
   console.log(`[copy-items] Starting copy for scenario ${scenarioId}`);
   
   try {
@@ -152,14 +196,14 @@ async function copyPlanItemsToScenario(supabase: ReturnType<typeof createClient>
 
     if (itemsError) throw itemsError;
 
-    const items = planItems || [];
+    const items: PlanItemRecord[] = planItems || [];
     let totalCost = 0;
     let totalParticipants = 0;
     const batchSize = 500;
 
     for (let i = 0; i < items.length; i += batchSize) {
       const batch = items.slice(i, i + batchSize);
-      const scenarioItems = batch.map((item: { id: string; course_id: string; planned_participants: number; planned_sessions: number; estimated_cost: number; cost_per_participant: number; priority: string }) => {
+      const scenarioItems = batch.map((item) => {
         const cost = item.estimated_cost || 0;
         const volume = item.planned_participants || 0;
         totalCost += cost;
@@ -202,11 +246,19 @@ async function copyPlanItemsToScenario(supabase: ReturnType<typeof createClient>
   }
 }
 
-async function recalculateScenario(supabase: ReturnType<typeof createClient>, userId: string, request: RecalculateScenarioRequest) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function recalculateScenario(supabase: any, userId: string, request: RecalculateScenarioRequest) {
   const { levers, scenarioId } = request;
+  console.log(`[recalculate] Scenario ${scenarioId} with levers:`, levers);
 
-  const { data: scenario } = await supabase.from('plan_scenarios').select('*').eq('id', scenarioId).single();
-  if (!scenario) throw new Error('Scenario not found');
+  const { data: scenarioData, error: scenarioError } = await supabase
+    .from('plan_scenarios')
+    .select('*')
+    .eq('id', scenarioId)
+    .single();
+    
+  if (scenarioError || !scenarioData) throw new Error('Scenario not found');
+  const scenario: ScenarioRecord = scenarioData;
 
   await supabase.from('plan_scenarios').update({
     global_budget_type: levers.globalBudgetType,
@@ -216,8 +268,13 @@ async function recalculateScenario(supabase: ReturnType<typeof createClient>, us
     cut_abroad_first: levers.cutAbroadFirst,
   }).eq('id', scenarioId);
 
-  const { data: items } = await supabase.from('scenario_items').select('*').eq('scenario_id', scenarioId);
-  if (!items) throw new Error('No items found');
+  const { data: itemsData, error: itemsError } = await supabase
+    .from('scenario_items')
+    .select('*')
+    .eq('scenario_id', scenarioId);
+    
+  if (itemsError) throw new Error('Failed to fetch items');
+  const items: ScenarioItemRecord[] = itemsData || [];
 
   const includedBands = levers.includePriorityBands || ['critical', 'high', 'medium', 'low'];
   let targetBudget: number | null = null;
@@ -256,9 +313,14 @@ async function recalculateScenario(supabase: ReturnType<typeof createClient>, us
     }).eq('id', item.id);
   }
 
-  const { data: updated } = await supabase.from('scenario_items').select('scenario_volume, scenario_cost').eq('scenario_id', scenarioId);
-  const totalCost = (updated || []).reduce((sum: number, i: { scenario_cost: number }) => sum + (i.scenario_cost || 0), 0);
-  const totalParticipants = (updated || []).reduce((sum: number, i: { scenario_volume: number }) => sum + (i.scenario_volume || 0), 0);
+  const { data: updatedData } = await supabase
+    .from('scenario_items')
+    .select('scenario_volume, scenario_cost')
+    .eq('scenario_id', scenarioId);
+    
+  const updated: Array<{ scenario_volume: number; scenario_cost: number }> = updatedData || [];
+  const totalCost = updated.reduce((sum, i) => sum + (i.scenario_cost || 0), 0);
+  const totalParticipants = updated.reduce((sum, i) => sum + (i.scenario_volume || 0), 0);
 
   await supabase.from('plan_scenarios').update({
     scenario_total_cost: totalCost,
@@ -266,34 +328,58 @@ async function recalculateScenario(supabase: ReturnType<typeof createClient>, us
     last_recalculation_at: new Date().toISOString(),
   }).eq('id', scenarioId);
 
+  await supabase.from('scenario_audit_log').insert({
+    scenario_id: scenarioId,
+    action: 'recalculated',
+    actor_id: userId,
+    details: { levers },
+  });
+
+  console.log(`[recalculate] Done. Cost: ${totalCost}, Participants: ${totalParticipants}`);
+
   return new Response(JSON.stringify({ success: true, totalCost, totalParticipants, itemsUpdated: items.length }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 }
 
-async function promoteScenario(supabase: ReturnType<typeof createClient>, userId: string, request: PromoteScenarioRequest) {
-  const { data: scenario } = await supabase.from('plan_scenarios').select('*, scenario_items(*)').eq('id', request.scenarioId).single();
-  if (!scenario) throw new Error('Scenario not found');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function promoteScenario(supabase: any, userId: string, request: PromoteScenarioRequest) {
+  console.log(`[promote] Scenario ${request.scenarioId}`);
 
-  const { data: basisPlan } = await supabase.from('training_plans').select('*').eq('id', scenario.basis_plan_id).single();
-  if (!basisPlan) throw new Error('Basis plan not found');
+  const { data: scenarioData } = await supabase
+    .from('plan_scenarios')
+    .select('*, scenario_items(*)')
+    .eq('id', request.scenarioId)
+    .single();
+    
+  if (!scenarioData) throw new Error('Scenario not found');
+  const scenario: ScenarioRecord = scenarioData;
+
+  const { data: basisPlanData } = await supabase
+    .from('training_plans')
+    .select('*')
+    .eq('id', scenario.basis_plan_id)
+    .single();
+    
+  if (!basisPlanData) throw new Error('Basis plan not found');
+  const basisPlan: PlanRecord = basisPlanData;
 
   const { data: newPlan, error } = await supabase.from('training_plans').insert({
     name: request.newPlanName,
-    description: request.newPlanDescription || `Promoted from: ${scenario.name}`,
+    description: request.newPlanDescription || `Promoted from: ${request.scenarioId}`,
     period_id: basisPlan.period_id,
     status: 'draft',
     version: (basisPlan.version || 1) + 1,
     created_by: userId,
     total_budget: scenario.scenario_total_cost,
-    total_participants: scenario.scenario_total_participants,
+    total_participants: scenario.scenario_items?.reduce((sum, i) => sum + i.scenario_volume, 0) || 0,
   }).select().single();
 
   if (error) throw new Error(error.message);
 
-  const newItems = scenario.scenario_items
-    .filter((item: { scenario_volume: number }) => item.scenario_volume > 0)
-    .map((item: { course_id: string; scenario_volume: number; scenario_sessions: number; scenario_cost: number; baseline_cost_per_participant: number; priority_band: string }) => ({
+  const newItems = (scenario.scenario_items || [])
+    .filter((item) => item.scenario_volume > 0)
+    .map((item) => ({
       plan_id: newPlan.id,
       course_id: item.course_id,
       planned_participants: item.scenario_volume,
@@ -315,14 +401,30 @@ async function promoteScenario(supabase: ReturnType<typeof createClient>, userId
     promoted_by: userId,
   }).eq('id', request.scenarioId);
 
+  await supabase.from('scenario_audit_log').insert({
+    scenario_id: request.scenarioId,
+    action: 'promoted',
+    actor_id: userId,
+    details: { new_plan_id: newPlan.id },
+  });
+
   return new Response(JSON.stringify({ success: true, newPlanId: newPlan.id, newPlanName: request.newPlanName }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 }
 
-async function localAdjustment(supabase: ReturnType<typeof createClient>, userId: string, request: LocalAdjustmentRequest) {
-  const { data: item } = await supabase.from('scenario_items').select('*').eq('id', request.itemId).single();
-  if (!item) throw new Error('Item not found');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function localAdjustment(supabase: any, userId: string, request: LocalAdjustmentRequest) {
+  console.log(`[local-adjust] Item ${request.itemId}`);
+
+  const { data: itemData } = await supabase
+    .from('scenario_items')
+    .select('*')
+    .eq('id', request.itemId)
+    .single();
+    
+  if (!itemData) throw new Error('Item not found');
+  const item: ScenarioItemRecord = itemData;
 
   const newCost = request.newVolume * (item.baseline_cost_per_participant || 0);
 
@@ -335,11 +437,26 @@ async function localAdjustment(supabase: ReturnType<typeof createClient>, userId
     local_adjustment_at: new Date().toISOString(),
   }).eq('id', request.itemId);
 
-  const { data: allItems } = await supabase.from('scenario_items').select('scenario_volume, scenario_cost').eq('scenario_id', request.scenarioId);
-  const totalCost = (allItems || []).reduce((sum: number, i: { scenario_cost: number }) => sum + (i.scenario_cost || 0), 0);
-  const totalParticipants = (allItems || []).reduce((sum: number, i: { scenario_volume: number }) => sum + (i.scenario_volume || 0), 0);
+  const { data: allItemsData } = await supabase
+    .from('scenario_items')
+    .select('scenario_volume, scenario_cost')
+    .eq('scenario_id', request.scenarioId);
+    
+  const allItems: Array<{ scenario_volume: number; scenario_cost: number }> = allItemsData || [];
+  const totalCost = allItems.reduce((sum, i) => sum + (i.scenario_cost || 0), 0);
+  const totalParticipants = allItems.reduce((sum, i) => sum + (i.scenario_volume || 0), 0);
 
-  await supabase.from('plan_scenarios').update({ scenario_total_cost: totalCost, scenario_total_participants: totalParticipants }).eq('id', request.scenarioId);
+  await supabase.from('plan_scenarios').update({ 
+    scenario_total_cost: totalCost, 
+    scenario_total_participants: totalParticipants 
+  }).eq('id', request.scenarioId);
+
+  await supabase.from('scenario_audit_log').insert({
+    scenario_id: request.scenarioId,
+    action: 'local_adjustment',
+    actor_id: userId,
+    details: { item_id: request.itemId, new_volume: request.newVolume, reason: request.reason },
+  });
 
   return new Response(JSON.stringify({ success: true, newVolume: request.newVolume, newCost }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
