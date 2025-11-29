@@ -1448,6 +1448,203 @@ export type Database = {
           },
         ]
       }
+      scholar_risk_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          id: string
+          new_band: string
+          notified_roles: Json | null
+          previous_band: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_score_id: string | null
+          scholar_record_id: string
+          status: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          id?: string
+          new_band: string
+          notified_roles?: Json | null
+          previous_band?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_score_id?: string | null
+          scholar_record_id: string
+          status?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          id?: string
+          new_band?: string
+          notified_roles?: Json | null
+          previous_band?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_score_id?: string | null
+          scholar_record_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholar_risk_alerts_risk_score_id_fkey"
+            columns: ["risk_score_id"]
+            isOneToOne: false
+            referencedRelation: "scholar_risk_scores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scholar_risk_alerts_scholar_record_id_fkey"
+            columns: ["scholar_record_id"]
+            isOneToOne: false
+            referencedRelation: "scholar_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholar_risk_config: {
+        Row: {
+          config_key: string
+          config_value: Json
+          created_at: string | null
+          description: string | null
+          id: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          config_key: string
+          config_value: Json
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          config_key?: string
+          config_value?: Json
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      scholar_risk_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          error_count: number | null
+          errors: Json | null
+          id: string
+          job_type: string
+          model_version: string | null
+          processed_count: number | null
+          started_at: string | null
+          status: string | null
+          success_count: number | null
+          total_count: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          error_count?: number | null
+          errors?: Json | null
+          id?: string
+          job_type: string
+          model_version?: string | null
+          processed_count?: number | null
+          started_at?: string | null
+          status?: string | null
+          success_count?: number | null
+          total_count?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          error_count?: number | null
+          errors?: Json | null
+          id?: string
+          job_type?: string
+          model_version?: string | null
+          processed_count?: number | null
+          started_at?: string | null
+          status?: string | null
+          success_count?: number | null
+          total_count?: number | null
+        }
+        Relationships: []
+      }
+      scholar_risk_scores: {
+        Row: {
+          contributing_factors: Json | null
+          created_at: string | null
+          feature_snapshot: Json | null
+          id: string
+          is_override: boolean | null
+          model_version: string | null
+          override_at: string | null
+          override_by: string | null
+          override_reason: string | null
+          previous_band: string | null
+          risk_band: string
+          risk_score: number
+          scholar_record_id: string
+          scored_at: string | null
+        }
+        Insert: {
+          contributing_factors?: Json | null
+          created_at?: string | null
+          feature_snapshot?: Json | null
+          id?: string
+          is_override?: boolean | null
+          model_version?: string | null
+          override_at?: string | null
+          override_by?: string | null
+          override_reason?: string | null
+          previous_band?: string | null
+          risk_band: string
+          risk_score: number
+          scholar_record_id: string
+          scored_at?: string | null
+        }
+        Update: {
+          contributing_factors?: Json | null
+          created_at?: string | null
+          feature_snapshot?: Json | null
+          id?: string
+          is_override?: boolean | null
+          model_version?: string | null
+          override_at?: string | null
+          override_by?: string | null
+          override_reason?: string | null
+          previous_band?: string | null
+          risk_band?: string
+          risk_score?: number
+          scholar_record_id?: string
+          scored_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholar_risk_scores_scholar_record_id_fkey"
+            columns: ["scholar_record_id"]
+            isOneToOne: false
+            referencedRelation: "scholar_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scholarship_applications: {
         Row: {
           accepted_at: string | null
