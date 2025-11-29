@@ -208,6 +208,38 @@ export default function SessionCompletion() {
   };
 
   // Save completion mutation
+  // Generate certificates for completed participants
+  const generateCertificatesForSession = async () => {
+    const eligibleEnrollments = Object.entries(completionData)
+      .filter(([_, data]) => data.status === 'completed' && data.passed === true)
+      .map(([id]) => id);
+
+    if (eligibleEnrollments.length === 0) return;
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const enrollmentId of eligibleEnrollments) {
+      try {
+        const { error } = await supabase.functions.invoke('generate-certificate', {
+          body: { enrollmentId },
+        });
+        if (error) throw error;
+        successCount++;
+      } catch (err) {
+        console.error('Certificate generation error:', err);
+        errorCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      toast({
+        title: 'Certificates Generated',
+        description: `Generated ${successCount} certificates. ${errorCount > 0 ? `${errorCount} errors.` : ''}`,
+      });
+    }
+  };
+
   const saveCompletionMutation = useMutation({
     mutationFn: async (finalize: boolean) => {
       for (const [enrollmentId, data] of Object.entries(completionData)) {
@@ -259,6 +291,11 @@ export default function SessionCompletion() {
             reference_id: id,
           });
         }
+      }
+
+      // Auto-generate certificates when finalizing
+      if (finalize) {
+        await generateCertificatesForSession();
       }
     },
     onSuccess: (_, finalize) => {
