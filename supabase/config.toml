@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.score-scholar-risk]
 verify_jwt = false
+
+[functions.generate-course-tags]
+verify_jwt = false

@@ -341,6 +341,247 @@ export type Database = {
           },
         ]
       }
+      ai_tag_feedback: {
+        Row: {
+          action: string
+          confidence_score: number | null
+          course_id: string
+          created_at: string | null
+          created_by: string | null
+          edited_to: string | null
+          id: string
+          model_version: string | null
+          suggestion_id: string | null
+          tag_type: Database["public"]["Enums"]["tag_type"]
+          tag_value: string
+          user_role: string | null
+        }
+        Insert: {
+          action: string
+          confidence_score?: number | null
+          course_id: string
+          created_at?: string | null
+          created_by?: string | null
+          edited_to?: string | null
+          id?: string
+          model_version?: string | null
+          suggestion_id?: string | null
+          tag_type: Database["public"]["Enums"]["tag_type"]
+          tag_value: string
+          user_role?: string | null
+        }
+        Update: {
+          action?: string
+          confidence_score?: number | null
+          course_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          edited_to?: string | null
+          id?: string
+          model_version?: string | null
+          suggestion_id?: string | null
+          tag_type?: Database["public"]["Enums"]["tag_type"]
+          tag_value?: string
+          user_role?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_tag_feedback_suggestion_id_fkey"
+            columns: ["suggestion_id"]
+            isOneToOne: false
+            referencedRelation: "ai_tag_suggestions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_tag_suggestions: {
+        Row: {
+          confidence_level: Database["public"]["Enums"]["confidence_level"]
+          confidence_score: number
+          config_version: number | null
+          course_id: string
+          explanation: string | null
+          id: string
+          model_version: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source_snippet: string | null
+          status: Database["public"]["Enums"]["tag_suggestion_status"] | null
+          suggested_at: string | null
+          tag_type: Database["public"]["Enums"]["tag_type"]
+          tag_value: string
+        }
+        Insert: {
+          confidence_level: Database["public"]["Enums"]["confidence_level"]
+          confidence_score: number
+          config_version?: number | null
+          course_id: string
+          explanation?: string | null
+          id?: string
+          model_version?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_snippet?: string | null
+          status?: Database["public"]["Enums"]["tag_suggestion_status"] | null
+          suggested_at?: string | null
+          tag_type: Database["public"]["Enums"]["tag_type"]
+          tag_value: string
+        }
+        Update: {
+          confidence_level?: Database["public"]["Enums"]["confidence_level"]
+          confidence_score?: number
+          config_version?: number | null
+          course_id?: string
+          explanation?: string | null
+          id?: string
+          model_version?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_snippet?: string | null
+          status?: Database["public"]["Enums"]["tag_suggestion_status"] | null
+          suggested_at?: string | null
+          tag_type?: Database["public"]["Enums"]["tag_type"]
+          tag_value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_tag_suggestions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_tagging_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+        }
+        Relationships: []
+      }
+      ai_tagging_config: {
+        Row: {
+          created_at: string | null
+          high_confidence_threshold: number | null
+          id: string
+          is_enabled: boolean | null
+          max_suggestions: number | null
+          medium_confidence_threshold: number | null
+          tag_type: Database["public"]["Enums"]["tag_type"]
+          updated_at: string | null
+          updated_by: string | null
+          use_controlled_vocabulary: boolean | null
+          vocabulary_source: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          high_confidence_threshold?: number | null
+          id?: string
+          is_enabled?: boolean | null
+          max_suggestions?: number | null
+          medium_confidence_threshold?: number | null
+          tag_type: Database["public"]["Enums"]["tag_type"]
+          updated_at?: string | null
+          updated_by?: string | null
+          use_controlled_vocabulary?: boolean | null
+          vocabulary_source?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          high_confidence_threshold?: number | null
+          id?: string
+          is_enabled?: boolean | null
+          max_suggestions?: number | null
+          medium_confidence_threshold?: number | null
+          tag_type?: Database["public"]["Enums"]["tag_type"]
+          updated_at?: string | null
+          updated_by?: string | null
+          use_controlled_vocabulary?: boolean | null
+          vocabulary_source?: string | null
+        }
+        Relationships: []
+      }
+      ai_tagging_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          error_log: Json | null
+          failed_count: number | null
+          id: string
+          job_name: string | null
+          model_version: string | null
+          preserve_existing_tags: boolean | null
+          processed_items: number | null
+          scope_filter: Json | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["tagging_job_status"] | null
+          success_count: number | null
+          total_items: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          error_log?: Json | null
+          failed_count?: number | null
+          id?: string
+          job_name?: string | null
+          model_version?: string | null
+          preserve_existing_tags?: boolean | null
+          processed_items?: number | null
+          scope_filter?: Json | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["tagging_job_status"] | null
+          success_count?: number | null
+          total_items?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          error_log?: Json | null
+          failed_count?: number | null
+          id?: string
+          job_name?: string | null
+          model_version?: string | null
+          preserve_existing_tags?: boolean | null
+          processed_items?: number | null
+          scope_filter?: Json | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["tagging_job_status"] | null
+          success_count?: number | null
+          total_items?: number | null
+        }
+        Relationships: []
+      }
       approvals: {
         Row: {
           approval_level: number
@@ -1391,6 +1632,47 @@ export type Database = {
             columns: ["job_role_id"]
             isOneToOne: false
             referencedRelation: "job_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_tags: {
+        Row: {
+          added_at: string | null
+          added_by: string | null
+          course_id: string
+          id: string
+          is_ai_generated: boolean | null
+          original_confidence: number | null
+          tag_type: Database["public"]["Enums"]["tag_type"]
+          tag_value: string
+        }
+        Insert: {
+          added_at?: string | null
+          added_by?: string | null
+          course_id: string
+          id?: string
+          is_ai_generated?: boolean | null
+          original_confidence?: number | null
+          tag_type: Database["public"]["Enums"]["tag_type"]
+          tag_value: string
+        }
+        Update: {
+          added_at?: string | null
+          added_by?: string | null
+          course_id?: string
+          id?: string
+          is_ai_generated?: boolean | null
+          original_confidence?: number | null
+          tag_type?: Database["public"]["Enums"]["tag_type"]
+          tag_value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_tags_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
             referencedColumns: ["id"]
           },
         ]
@@ -3658,6 +3940,7 @@ export type Database = {
         | "committee"
       approval_status: "pending" | "approved" | "rejected" | "escalated"
       catalogue_status: "draft" | "pending_approval" | "active" | "retired"
+      confidence_level: "high" | "medium" | "low"
       cost_level: "low" | "medium" | "high"
       cost_unit_type: "per_participant" | "per_session"
       delivery_mode: "classroom" | "online" | "blended" | "on_the_job"
@@ -3674,6 +3957,21 @@ export type Database = {
         | "rejected"
         | "cancelled"
         | "completed"
+      tag_suggestion_status: "pending" | "accepted" | "rejected"
+      tag_type:
+        | "topic"
+        | "category"
+        | "competency"
+        | "job_role"
+        | "difficulty"
+        | "language"
+        | "modality"
+      tagging_job_status:
+        | "pending"
+        | "running"
+        | "completed"
+        | "failed"
+        | "cancelled"
       training_location: "local" | "abroad"
     }
     CompositeTypes: {
@@ -3814,6 +4112,7 @@ export const Constants = {
       ],
       approval_status: ["pending", "approved", "rejected", "escalated"],
       catalogue_status: ["draft", "pending_approval", "active", "retired"],
+      confidence_level: ["high", "medium", "low"],
       cost_level: ["low", "medium", "high"],
       cost_unit_type: ["per_participant", "per_session"],
       delivery_mode: ["classroom", "online", "blended", "on_the_job"],
@@ -3831,6 +4130,23 @@ export const Constants = {
         "rejected",
         "cancelled",
         "completed",
+      ],
+      tag_suggestion_status: ["pending", "accepted", "rejected"],
+      tag_type: [
+        "topic",
+        "category",
+        "competency",
+        "job_role",
+        "difficulty",
+        "language",
+        "modality",
+      ],
+      tagging_job_status: [
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "cancelled",
       ],
       training_location: ["local", "abroad"],
     },

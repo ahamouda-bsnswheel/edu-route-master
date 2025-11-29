@@ -34,6 +34,7 @@ import {
 import { format } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { AITaggingPanel } from '@/components/catalogue/AITaggingPanel';
 
 type CatalogueStatus = 'draft' | 'pending_approval' | 'active' | 'retired';
 
@@ -337,11 +338,12 @@ export default function CatalogueDetail() {
 
         {/* Tabs */}
         <Tabs defaultValue="overview">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="logistics">Logistics</TabsTrigger>
             {canViewCost && <TabsTrigger value="cost">Cost & Provider</TabsTrigger>}
             <TabsTrigger value="competencies">Competencies</TabsTrigger>
+            <TabsTrigger value="tags">AI Tags</TabsTrigger>
             {canEdit && <TabsTrigger value="admin">Admin</TabsTrigger>}
           </TabsList>
 
@@ -741,6 +743,11 @@ export default function CatalogueDetail() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Tags Tab */}
+          <TabsContent value="tags">
+            <AITaggingPanel courseId={id!} readOnly={!canEdit} />
           </TabsContent>
 
           {/* Admin Tab */}
