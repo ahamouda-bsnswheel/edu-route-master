@@ -11,7 +11,11 @@ import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 import {
   ArrowLeft,
   ArrowRight,
@@ -21,10 +25,35 @@ import {
   Building,
   Send,
   Loader2,
+  CalendarIcon,
 } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, addMonths, startOfQuarter, endOfQuarter } from 'date-fns';
 
 type Step = 'course' | 'session' | 'details' | 'review';
+type PreferredPeriodType = 'any' | 'specific_session' | 'quarter' | 'date_range';
+
+// Generate quarter options for current and next year
+const generateQuarterOptions = () => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const options = [];
+  
+  for (let year = currentYear; year <= currentYear + 1; year++) {
+    for (let q = 1; q <= 4; q++) {
+      const quarterStart = startOfQuarter(new Date(year, (q - 1) * 3, 1));
+      // Only include future quarters
+      if (quarterStart >= startOfQuarter(currentDate)) {
+        options.push({
+          value: `${year}-Q${q}`,
+          label: `Q${q} ${year}`,
+          startDate: quarterStart,
+          endDate: endOfQuarter(quarterStart),
+        });
+      }
+    }
+  }
+  return options;
+};
 
 export default function TrainingRequest() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -34,13 +63,19 @@ export default function TrainingRequest() {
 
   const [currentStep, setCurrentStep] = useState<Step>('course');
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
+  const [preferredPeriodType, setPreferredPeriodType] = useState<PreferredPeriodType>('any');
+  const [selectedQuarter, setSelectedQuarter] = useState<string>('');
+  const [dateRangeFrom, setDateRangeFrom] = useState<Date | undefined>();
+  const [dateRangeTo, setDateRangeTo] = useState<Date | undefined>();
   const [justification, setJustification] = useState('');
   const [priority, setPriority] = useState('normal');
   const [abroadReason, setAbroadReason] = useState('');
 
+  const quarterOptions = generateQuarterOptions();
+
   const steps: { key: Step; label: string }[] = [
     { key: 'course', label: 'Course Info' },
-    { key: 'session', label: 'Select Session' },
+    { key: 'session', label: 'Preferred Period' },
     { key: 'details', label: 'Request Details' },
     { key: 'review', label: 'Review & Submit' },
   ];
@@ -301,55 +336,181 @@ export default function TrainingRequest() {
               </div>
             )}
 
-            {/* Step 2: Session Selection */}
+            {/* Step 2: Preferred Period Selection */}
             {currentStep === 'session' && (
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold">Select a Session (Optional)</h2>
-                <p className="text-muted-foreground">
-                  Choose a preferred session or leave blank for any available session.
-                </p>
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-semibold">Preferred Period</h2>
+                  <p className="text-muted-foreground mt-1">
+                    Choose when you'd like to attend this training.
+                  </p>
+                </div>
 
-                <RadioGroup value={selectedSession || ''} onValueChange={setSelectedSession}>
+                <RadioGroup 
+                  value={preferredPeriodType} 
+                  onValueChange={(value) => {
+                    setPreferredPeriodType(value as PreferredPeriodType);
+                    if (value !== 'specific_session') {
+                      setSelectedSession(null);
+                    }
+                    if (value !== 'quarter') {
+                      setSelectedQuarter('');
+                    }
+                    if (value !== 'date_range') {
+                      setDateRangeFrom(undefined);
+                      setDateRangeTo(undefined);
+                    }
+                  }}
+                >
                   <div className="space-y-3">
+                    {/* Any Available */}
                     <div className="flex items-center space-x-3 p-4 bg-muted rounded-lg">
-                      <RadioGroupItem value="" id="any" />
+                      <RadioGroupItem value="any" id="any" />
                       <Label htmlFor="any" className="flex-1 cursor-pointer">
                         <span className="font-medium">Any Available Session</span>
                         <p className="text-sm text-muted-foreground">
-                          L&D will assign you to an appropriate session
+                          L&D will assign you to an appropriate session when available
                         </p>
                       </Label>
                     </div>
 
-                    {sessions?.map((session) => (
-                      <div
-                        key={session.id}
-                        className="flex items-center space-x-3 p-4 bg-muted rounded-lg"
-                      >
-                        <RadioGroupItem value={session.id} id={session.id} />
-                        <Label htmlFor={session.id} className="flex-1 cursor-pointer">
-                          <span className="font-medium">
-                            {format(new Date(session.start_date), 'MMMM dd, yyyy')} -{' '}
-                            {format(new Date(session.end_date), 'MMMM dd, yyyy')}
-                          </span>
-                          <p className="text-sm text-muted-foreground">
-                            {session.location_en || 'Location TBD'}
-                            {session.instructor_name && ` • ${session.instructor_name}`}
+                    {/* Quarter Selection */}
+                    <div className="flex items-start space-x-3 p-4 bg-muted rounded-lg">
+                      <RadioGroupItem value="quarter" id="quarter" className="mt-1" />
+                      <Label htmlFor="quarter" className="flex-1 cursor-pointer">
+                        <span className="font-medium">Preferred Quarter</span>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Select the quarter when you'd prefer to attend
+                        </p>
+                        {preferredPeriodType === 'quarter' && (
+                          <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
+                            <SelectTrigger className="w-full max-w-[200px] bg-background">
+                              <SelectValue placeholder="Select quarter" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {quarterOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </Label>
+                    </div>
+
+                    {/* Date Range Selection */}
+                    <div className="flex items-start space-x-3 p-4 bg-muted rounded-lg">
+                      <RadioGroupItem value="date_range" id="date_range" className="mt-1" />
+                      <Label htmlFor="date_range" className="flex-1 cursor-pointer">
+                        <span className="font-medium">Custom Date Range</span>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Specify a custom date range for your availability
+                        </p>
+                        {preferredPeriodType === 'date_range' && (
+                          <div className="flex flex-wrap gap-2">
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-[140px] justify-start text-left font-normal bg-background",
+                                    !dateRangeFrom && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {dateRangeFrom ? format(dateRangeFrom, "MMM dd, yyyy") : "From"}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                  mode="single"
+                                  selected={dateRangeFrom}
+                                  onSelect={setDateRangeFrom}
+                                  disabled={(date) => date < new Date()}
+                                  initialFocus
+                                  className="pointer-events-auto"
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <span className="flex items-center text-muted-foreground">to</span>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-[140px] justify-start text-left font-normal bg-background",
+                                    !dateRangeTo && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {dateRangeTo ? format(dateRangeTo, "MMM dd, yyyy") : "To"}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                  mode="single"
+                                  selected={dateRangeTo}
+                                  onSelect={setDateRangeTo}
+                                  disabled={(date) => date < (dateRangeFrom || new Date())}
+                                  initialFocus
+                                  className="pointer-events-auto"
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                        )}
+                      </Label>
+                    </div>
+
+                    {/* Specific Session */}
+                    {sessions && sessions.length > 0 && (
+                      <div className="flex items-start space-x-3 p-4 bg-muted rounded-lg">
+                        <RadioGroupItem value="specific_session" id="specific_session" className="mt-1" />
+                        <Label htmlFor="specific_session" className="flex-1 cursor-pointer">
+                          <span className="font-medium">Select Specific Session</span>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            Choose from available scheduled sessions
                           </p>
-                          {session.capacity && (
-                            <Badge variant="outline" className="mt-1">
-                              {(session.capacity || 0) - (session.enrolled_count || 0)} seats available
-                            </Badge>
+                          {preferredPeriodType === 'specific_session' && (
+                            <div className="space-y-2 mt-2">
+                              {sessions.map((session) => (
+                                <div
+                                  key={session.id}
+                                  onClick={() => setSelectedSession(session.id)}
+                                  className={cn(
+                                    "p-3 rounded-md border cursor-pointer transition-colors",
+                                    selectedSession === session.id
+                                      ? "border-primary bg-primary/5"
+                                      : "border-border bg-background hover:border-primary/50"
+                                  )}
+                                >
+                                  <span className="font-medium text-sm">
+                                    {format(new Date(session.start_date), 'MMMM dd, yyyy')} -{' '}
+                                    {format(new Date(session.end_date), 'MMMM dd, yyyy')}
+                                  </span>
+                                  <p className="text-xs text-muted-foreground">
+                                    {session.location_en || 'Location TBD'}
+                                    {session.instructor_name && ` • ${session.instructor_name}`}
+                                  </p>
+                                  {session.capacity && (
+                                    <Badge variant="outline" className="mt-1 text-xs">
+                                      {(session.capacity || 0) - (session.enrolled_count || 0)} seats available
+                                    </Badge>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           )}
                         </Label>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </RadioGroup>
 
                 {(!sessions || sessions.length === 0) && (
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    No upcoming sessions scheduled. Your request will be considered for future sessions.
+                  <p className="text-sm text-muted-foreground text-center py-2 border-t pt-4">
+                    Note: No upcoming sessions are currently scheduled. Your request will be considered for future sessions.
                   </p>
                 )}
               </div>
@@ -425,18 +586,22 @@ export default function TrainingRequest() {
                   </div>
                   <Separator />
                   <div>
-                    <span className="text-sm text-muted-foreground">Session</span>
+                    <span className="text-sm text-muted-foreground">Preferred Period</span>
                     <p className="font-medium">
-                      {selectedSession
-                        ? sessions?.find((s) => s.id === selectedSession)
-                          ? format(
-                              new Date(
-                                sessions.find((s) => s.id === selectedSession)!.start_date
-                              ),
-                              'MMMM dd, yyyy'
-                            )
-                          : 'Selected Session'
-                        : 'Any Available Session'}
+                      {preferredPeriodType === 'any' && 'Any Available Session'}
+                      {preferredPeriodType === 'quarter' && selectedQuarter && (
+                        <>Quarter: {quarterOptions.find(q => q.value === selectedQuarter)?.label || selectedQuarter}</>
+                      )}
+                      {preferredPeriodType === 'date_range' && dateRangeFrom && dateRangeTo && (
+                        <>{format(dateRangeFrom, 'MMM dd, yyyy')} - {format(dateRangeTo, 'MMM dd, yyyy')}</>
+                      )}
+                      {preferredPeriodType === 'specific_session' && selectedSession && (
+                        <>
+                          Specific Session: {sessions?.find((s) => s.id === selectedSession)
+                            ? format(new Date(sessions.find((s) => s.id === selectedSession)!.start_date), 'MMMM dd, yyyy')
+                            : 'Selected Session'}
+                        </>
+                      )}
                     </p>
                   </div>
                   <Separator />
