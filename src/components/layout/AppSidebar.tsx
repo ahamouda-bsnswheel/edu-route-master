@@ -60,6 +60,7 @@ const adminNavItems = [
   { title: 'TNA Overview', url: '/tna-overview', icon: ClipboardList, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
   { title: 'TNA Admin', url: '/tna-admin', icon: ClipboardList, roles: ['l_and_d', 'admin'] },
   { title: 'Training Plan Builder', url: '/training-plan', icon: ClipboardList, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance'] },
+  { title: 'AI Prioritisation', url: '/ai-priority', icon: BarChart3, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
   { title: 'Catalogue Admin', url: '/catalogue', icon: Library, roles: ['l_and_d', 'hrbp', 'admin'] },
   { title: 'Provider Registry', url: '/providers', icon: Building2, roles: ['l_and_d', 'hrbp', 'admin'] },
   { title: 'Provider Performance', url: '/providers/performance', icon: BarChart3, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
