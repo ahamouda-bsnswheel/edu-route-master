@@ -36,6 +36,7 @@ const mainNavItems = [
   { title: 'Learning History', url: '/learning-history', icon: GraduationCap, roles: [] },
   { title: 'My Certificates', url: '/my-certificates', icon: Award, roles: [] },
   { title: 'Scholarships', url: '/my-scholarships', icon: GraduationCap, roles: [] },
+  { title: 'My Academic Progress', url: '/my-scholar-progress', icon: GraduationCap, roles: [] },
   { title: 'Training Calendar', url: '/calendar', icon: Calendar, roles: [] },
 ];
 
@@ -43,6 +44,7 @@ const managerNavItems = [
   { title: 'Team Requests', url: '/team-requests', icon: Users, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Team Learning', url: '/team-learning', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Team Certificates', url: '/team-certificates', icon: Award, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
+  { title: 'Team Scholars', url: '/team-scholars', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Approvals', url: '/approvals', icon: CheckSquare, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Scholarship Review', url: '/scholarship/manager-review', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
 ];
@@ -51,6 +53,7 @@ const adminNavItems = [
   { title: 'Sessions', url: '/sessions', icon: GraduationCap, roles: ['l_and_d', 'chro', 'admin'] },
   { title: 'Certificates', url: '/certificate-admin', icon: Award, roles: ['l_and_d', 'admin'] },
   { title: 'Scholars', url: '/scholars', icon: GraduationCap, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
+  { title: 'Scholars Admin', url: '/scholars-admin', icon: Settings, roles: ['l_and_d', 'admin'] },
   { title: 'Scholarship Admin', url: '/scholarship/admin', icon: GraduationCap, roles: ['l_and_d', 'admin'] },
   { title: 'HRBP Scholarship', url: '/scholarship/hrbp-review', icon: GraduationCap, roles: ['hrbp', 'l_and_d', 'admin'] },
   { title: 'Scholarship Committee', url: '/scholarship/committee', icon: GraduationCap, roles: ['committee', 'l_and_d', 'chro', 'admin'] },
