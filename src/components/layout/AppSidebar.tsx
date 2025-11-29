@@ -54,6 +54,7 @@ const managerNavItems = [
 
 const adminNavItems = [
   { title: 'Catalogue Admin', url: '/catalogue', icon: Library, roles: ['l_and_d', 'hrbp', 'admin'] },
+  { title: 'Provider Registry', url: '/providers', icon: Building2, roles: ['l_and_d', 'hrbp', 'admin'] },
   { title: 'Sessions', url: '/sessions', icon: GraduationCap, roles: ['l_and_d', 'chro', 'admin'] },
   { title: 'Certificates', url: '/certificate-admin', icon: Award, roles: ['l_and_d', 'admin'] },
   { title: 'Scholars', url: '/scholars', icon: GraduationCap, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
