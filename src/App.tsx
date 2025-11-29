@@ -63,6 +63,8 @@ import TrainingPlanDetail from "./pages/TrainingPlanDetail";
 import TrainingPlanCostView from "./pages/TrainingPlanCostView";
 import MyTeamTrainingPlan from "./pages/MyTeamTrainingPlan";
 import AIPriorityAdmin from "./pages/AIPriorityAdmin";
+import ScenarioConsole from "./pages/ScenarioConsole";
+import ScenarioWorkspace from "./pages/ScenarioWorkspace";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -529,6 +531,24 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <AIPriorityAdmin />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Scenario Routes */}
+      <Route
+        path="/scenarios"
+        element={
+          <ProtectedRoute>
+            <ScenarioConsole />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scenarios/:scenarioId"
+        element={
+          <ProtectedRoute>
+            <ScenarioWorkspace />
           </ProtectedRoute>
         }
       />
