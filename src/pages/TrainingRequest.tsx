@@ -81,10 +81,29 @@ export default function TrainingRequest() {
     enabled: !!courseId,
   });
 
+  // Fetch fresh manager_id from profile to ensure it's current
+  const { data: freshProfile } = useQuery({
+    queryKey: ['fresh-profile', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('manager_id')
+        .eq('id', user?.id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
   const submitMutation = useMutation({
     mutationFn: async () => {
-      // Find manager for initial approval
-      const managerId = profile?.manager_id;
+      // Get manager_id from fresh profile query or fallback to auth context
+      const managerId = freshProfile?.manager_id || profile?.manager_id;
+
+      if (!managerId) {
+        throw new Error('No manager assigned to your profile. Please contact HR to set up your reporting structure.');
+      }
 
       const { data: request, error: requestError } = await supabase
         .from('training_requests')
@@ -107,26 +126,24 @@ export default function TrainingRequest() {
       if (requestError) throw requestError;
 
       // Create initial approval record for manager
-      if (managerId) {
-        const { error: approvalError } = await supabase
-          .from('approvals')
-          .insert({
-            request_id: request.id,
-            approver_id: managerId,
-            approver_role: 'manager',
-            approval_level: 1,
-            status: 'pending',
-          });
+      const { error: approvalError } = await supabase
+        .from('approvals')
+        .insert({
+          request_id: request.id,
+          approver_id: managerId,
+          approver_role: 'manager',
+          approval_level: 1,
+          status: 'pending',
+        });
 
-        if (approvalError) throw approvalError;
-      }
+      if (approvalError) throw approvalError;
 
       return request;
     },
     onSuccess: () => {
       toast({
         title: 'Request Submitted',
-        description: 'Your training request has been submitted for approval.',
+        description: 'Your training request has been submitted for approval. Your manager will be notified.',
       });
       navigate('/my-requests');
     },
