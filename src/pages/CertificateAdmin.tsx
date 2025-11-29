@@ -47,9 +47,14 @@ import {
   Settings,
   Download,
   Loader2,
+  Upload,
+  BarChart,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { BulkCertificateGenerator } from '@/components/certificates/BulkCertificateGenerator';
+import { HistoricalCertificateImport } from '@/components/certificates/HistoricalCertificateImport';
+import { CertificateReports } from '@/components/certificates/CertificateReports';
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   valid: { label: 'Valid', color: 'bg-success text-success-foreground', icon: CheckCircle },
@@ -206,9 +211,12 @@ export default function CertificateAdmin() {
         </div>
 
         <Tabs defaultValue="certificates">
-          <TabsList>
+          <TabsList className="flex-wrap">
             <TabsTrigger value="certificates">Certificates</TabsTrigger>
             <TabsTrigger value="templates">Templates</TabsTrigger>
+            <TabsTrigger value="bulk">Bulk Generation</TabsTrigger>
+            <TabsTrigger value="import">Import</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
 
           {/* Certificates Tab */}
@@ -419,6 +427,21 @@ export default function CertificateAdmin() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Bulk Generation Tab */}
+          <TabsContent value="bulk">
+            <BulkCertificateGenerator />
+          </TabsContent>
+
+          {/* Import Tab */}
+          <TabsContent value="import">
+            <HistoricalCertificateImport />
+          </TabsContent>
+
+          {/* Reports Tab */}
+          <TabsContent value="reports">
+            <CertificateReports />
           </TabsContent>
         </Tabs>
 
