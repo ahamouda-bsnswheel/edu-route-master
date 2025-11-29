@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Bell, CheckCheck, FileText, Calendar, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -74,6 +75,7 @@ function NotificationItem({
 export function NotificationCenter() {
   const navigate = useNavigate();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const [open, setOpen] = useState(false);
 
   const getNavigationPath = (notification: Notification): string => {
     switch (notification.reference_type) {
@@ -97,7 +99,7 @@ export function NotificationCenter() {
   };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
@@ -138,7 +140,10 @@ export function NotificationCenter() {
                 key={notification.id}
                 notification={notification}
                 onRead={() => markAsRead(notification.id)}
-                onNavigate={() => navigate(getNavigationPath(notification))}
+                onNavigate={() => {
+                  setOpen(false);
+                  navigate(getNavigationPath(notification));
+                }}
               />
             ))
           )}
@@ -149,7 +154,10 @@ export function NotificationCenter() {
               variant="ghost" 
               size="sm" 
               className="w-full text-xs"
-              onClick={() => navigate('/notifications')}
+              onClick={() => {
+                setOpen(false);
+                navigate('/notifications');
+              }}
             >
               View all notifications
             </Button>
