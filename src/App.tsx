@@ -16,8 +16,12 @@ import ApprovalsEnhanced from "./pages/ApprovalsEnhanced";
 import TrainingRequest from "./pages/TrainingRequest";
 import Sessions from "./pages/Sessions";
 import SessionDetails from "./pages/SessionDetails";
+import SessionAttendance from "./pages/SessionAttendance";
+import SessionCompletion from "./pages/SessionCompletion";
 import Reports from "./pages/Reports";
 import TeamNominations from "./pages/TeamNominations";
+import LearningHistory from "./pages/LearningHistory";
+import ComplianceDashboard from "./pages/ComplianceDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -114,10 +118,42 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/sessions/:id/attendance"
+        element={
+          <ProtectedRoute>
+            <SessionAttendance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sessions/:id/completion"
+        element={
+          <ProtectedRoute>
+            <SessionCompletion />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/reports"
         element={
           <ProtectedRoute>
             <Reports />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/learning-history"
+        element={
+          <ProtectedRoute>
+            <LearningHistory />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/compliance"
+        element={
+          <ProtectedRoute>
+            <ComplianceDashboard />
           </ProtectedRoute>
         }
       />

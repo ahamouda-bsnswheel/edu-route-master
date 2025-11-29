@@ -64,6 +64,47 @@ export type Database = {
           },
         ]
       }
+      attendance_audit_log: {
+        Row: {
+          changed_at: string | null
+          changed_by: string
+          enrollment_id: string
+          field_changed: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          reason: string | null
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by: string
+          enrollment_id: string
+          field_changed: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          reason?: string | null
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string
+          enrollment_id?: string
+          field_changed?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_audit_log_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "session_enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -105,6 +146,50 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      compliance_requirements: {
+        Row: {
+          course_id: string
+          created_at: string | null
+          created_by: string | null
+          grace_period_days: number | null
+          id: string
+          is_active: boolean | null
+          recurrence_months: number | null
+          target_type: string
+          target_value: string | null
+        }
+        Insert: {
+          course_id: string
+          created_at?: string | null
+          created_by?: string | null
+          grace_period_days?: number | null
+          id?: string
+          is_active?: boolean | null
+          recurrence_months?: number | null
+          target_type: string
+          target_value?: string | null
+        }
+        Update: {
+          course_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          grace_period_days?: number | null
+          id?: string
+          is_active?: boolean | null
+          recurrence_months?: number | null
+          target_type?: string
+          target_value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compliance_requirements_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_categories: {
         Row: {
@@ -150,6 +235,7 @@ export type Database = {
       courses: {
         Row: {
           category_id: string | null
+          certificate_template: string | null
           code: string | null
           cost_amount: number | null
           cost_currency: string | null
@@ -160,23 +246,29 @@ export type Database = {
           description_en: string | null
           duration_days: number | null
           duration_hours: number | null
+          has_assessment: boolean | null
           id: string
           is_active: boolean | null
           is_mandatory: boolean | null
           max_participants: number | null
+          min_attendance_percent: number | null
           min_participants: number | null
           name_ar: string | null
           name_en: string
+          pass_score: number | null
           prerequisites: string[] | null
           provider_id: string | null
+          require_both_attendance_and_assessment: boolean | null
           target_grades: string[] | null
           training_location:
             | Database["public"]["Enums"]["training_location"]
             | null
           updated_at: string | null
+          validity_months: number | null
         }
         Insert: {
           category_id?: string | null
+          certificate_template?: string | null
           code?: string | null
           cost_amount?: number | null
           cost_currency?: string | null
@@ -187,23 +279,29 @@ export type Database = {
           description_en?: string | null
           duration_days?: number | null
           duration_hours?: number | null
+          has_assessment?: boolean | null
           id?: string
           is_active?: boolean | null
           is_mandatory?: boolean | null
           max_participants?: number | null
+          min_attendance_percent?: number | null
           min_participants?: number | null
           name_ar?: string | null
           name_en: string
+          pass_score?: number | null
           prerequisites?: string[] | null
           provider_id?: string | null
+          require_both_attendance_and_assessment?: boolean | null
           target_grades?: string[] | null
           training_location?:
             | Database["public"]["Enums"]["training_location"]
             | null
           updated_at?: string | null
+          validity_months?: number | null
         }
         Update: {
           category_id?: string | null
+          certificate_template?: string | null
           code?: string | null
           cost_amount?: number | null
           cost_currency?: string | null
@@ -214,20 +312,25 @@ export type Database = {
           description_en?: string | null
           duration_days?: number | null
           duration_hours?: number | null
+          has_assessment?: boolean | null
           id?: string
           is_active?: boolean | null
           is_mandatory?: boolean | null
           max_participants?: number | null
+          min_attendance_percent?: number | null
           min_participants?: number | null
           name_ar?: string | null
           name_en?: string
+          pass_score?: number | null
           prerequisites?: string[] | null
           provider_id?: string | null
+          require_both_attendance_and_assessment?: boolean | null
           target_grades?: string[] | null
           training_location?:
             | Database["public"]["Enums"]["training_location"]
             | null
           updated_at?: string | null
+          validity_months?: number | null
         }
         Relationships: [
           {
@@ -293,6 +396,64 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_compliance: {
+        Row: {
+          course_id: string
+          employee_id: string
+          id: string
+          last_completion_date: string | null
+          last_enrollment_id: string | null
+          next_due_date: string | null
+          requirement_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          course_id: string
+          employee_id: string
+          id?: string
+          last_completion_date?: string | null
+          last_enrollment_id?: string | null
+          next_due_date?: string | null
+          requirement_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          course_id?: string
+          employee_id?: string
+          id?: string
+          last_completion_date?: string | null
+          last_enrollment_id?: string | null
+          next_due_date?: string | null
+          requirement_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_compliance_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employee_compliance_last_enrollment_id_fkey"
+            columns: ["last_enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "session_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employee_compliance_requirement_id_fkey"
+            columns: ["requirement_id"]
+            isOneToOne: false
+            referencedRelation: "compliance_requirements"
             referencedColumns: ["id"]
           },
         ]
@@ -537,15 +698,31 @@ export type Database = {
       }
       session_enrollments: {
         Row: {
+          assessment_score: number | null
+          attendance_comments: string | null
+          attendance_finalized_at: string | null
+          attendance_finalized_by: string | null
+          attendance_minutes: number | null
           attendance_status: string | null
           cancellation_reason: string | null
           cancelled_at: string | null
+          certificate_generated_at: string | null
+          certificate_url: string | null
+          check_in_time: string | null
+          check_out_time: string | null
+          completion_date: string | null
+          completion_finalized_at: string | null
+          completion_finalized_by: string | null
+          completion_status: string | null
           confirmed_at: string | null
           created_at: string | null
           enrolled_at: string | null
           enrolled_by: string | null
           id: string
+          is_attendance_final: boolean | null
+          is_completion_final: boolean | null
           participant_id: string
+          passed: boolean | null
           request_id: string | null
           session_id: string
           status: string | null
@@ -553,15 +730,31 @@ export type Database = {
           waitlist_position: number | null
         }
         Insert: {
+          assessment_score?: number | null
+          attendance_comments?: string | null
+          attendance_finalized_at?: string | null
+          attendance_finalized_by?: string | null
+          attendance_minutes?: number | null
           attendance_status?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
+          certificate_generated_at?: string | null
+          certificate_url?: string | null
+          check_in_time?: string | null
+          check_out_time?: string | null
+          completion_date?: string | null
+          completion_finalized_at?: string | null
+          completion_finalized_by?: string | null
+          completion_status?: string | null
           confirmed_at?: string | null
           created_at?: string | null
           enrolled_at?: string | null
           enrolled_by?: string | null
           id?: string
+          is_attendance_final?: boolean | null
+          is_completion_final?: boolean | null
           participant_id: string
+          passed?: boolean | null
           request_id?: string | null
           session_id: string
           status?: string | null
@@ -569,15 +762,31 @@ export type Database = {
           waitlist_position?: number | null
         }
         Update: {
+          assessment_score?: number | null
+          attendance_comments?: string | null
+          attendance_finalized_at?: string | null
+          attendance_finalized_by?: string | null
+          attendance_minutes?: number | null
           attendance_status?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
+          certificate_generated_at?: string | null
+          certificate_url?: string | null
+          check_in_time?: string | null
+          check_out_time?: string | null
+          completion_date?: string | null
+          completion_finalized_at?: string | null
+          completion_finalized_by?: string | null
+          completion_status?: string | null
           confirmed_at?: string | null
           created_at?: string | null
           enrolled_at?: string | null
           enrolled_by?: string | null
           id?: string
+          is_attendance_final?: boolean | null
+          is_completion_final?: boolean | null
           participant_id?: string
+          passed?: boolean | null
           request_id?: string | null
           session_id?: string
           status?: string | null
@@ -616,6 +825,7 @@ export type Database = {
           session_code: string | null
           start_date: string
           status: string | null
+          trainer_id: string | null
           updated_at: string | null
           venue_details: string | null
           waitlist_count: number | null
@@ -634,6 +844,7 @@ export type Database = {
           session_code?: string | null
           start_date: string
           status?: string | null
+          trainer_id?: string | null
           updated_at?: string | null
           venue_details?: string | null
           waitlist_count?: number | null
@@ -652,6 +863,7 @@ export type Database = {
           session_code?: string | null
           start_date?: string
           status?: string | null
+          trainer_id?: string | null
           updated_at?: string | null
           venue_details?: string | null
           waitlist_count?: number | null

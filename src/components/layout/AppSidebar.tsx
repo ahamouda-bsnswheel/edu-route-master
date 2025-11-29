@@ -25,12 +25,14 @@ import {
   Settings,
   Building2,
   GraduationCap,
+  Shield,
 } from 'lucide-react';
 
 const mainNavItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard, roles: [] },
   { title: 'Course Catalog', url: '/courses', icon: BookOpen, roles: [] },
   { title: 'My Requests', url: '/my-requests', icon: FileText, roles: [] },
+  { title: 'Learning History', url: '/learning-history', icon: GraduationCap, roles: [] },
   { title: 'Training Calendar', url: '/calendar', icon: Calendar, roles: [] },
 ];
 
@@ -41,6 +43,7 @@ const managerNavItems = [
 
 const adminNavItems = [
   { title: 'Sessions', url: '/sessions', icon: GraduationCap, roles: ['l_and_d', 'chro', 'admin'] },
+  { title: 'Compliance', url: '/compliance', icon: Shield, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
   { title: 'Reports', url: '/reports', icon: BarChart3, roles: ['hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
 ];
