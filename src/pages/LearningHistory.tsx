@@ -27,8 +27,6 @@ import {
   GraduationCap,
   Calendar,
   MapPin,
-  Award,
-  Download,
   Filter,
   CheckCircle,
   XCircle,
@@ -37,6 +35,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { format, subYears } from 'date-fns';
+import { CertificateDownload } from '@/components/learning/CertificateDownload';
 
 const completionStatusConfig: Record<string, { label: string; color: string; icon: any }> = {
   completed: { label: 'Completed', color: 'bg-success text-success-foreground', icon: CheckCircle },
@@ -112,11 +111,6 @@ export default function LearningHistory() {
       }
       return acc;
     }, 0) || 0,
-  };
-
-  const handleDownloadCertificate = (enrollment: any) => {
-    // In a real app, this would generate/download the certificate
-    window.alert(`Certificate download for ${enrollment.session?.course?.name_en}`);
   };
 
   return (
@@ -308,14 +302,11 @@ export default function LearningHistory() {
                         </TableCell>
                         <TableCell>
                           {item.completion_status === 'completed' && item.passed ? (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleDownloadCertificate(item)}
-                            >
-                              <Download className="h-4 w-4 mr-1" />
-                              Certificate
-                            </Button>
+                            <CertificateDownload
+                              enrollmentId={item.id}
+                              courseName={item.session?.course?.name_en || 'Training'}
+                              certificateUrl={item.certificate_url}
+                            />
                           ) : (
                             <span className="text-muted-foreground text-sm">-</span>
                           )}
