@@ -37,6 +37,9 @@ import ScholarshipFinalApproval from "./pages/ScholarshipFinalApproval";
 import ScholarshipAdmin from "./pages/ScholarshipAdmin";
 import Scholars from "./pages/Scholars";
 import ScholarRecord from "./pages/ScholarRecord";
+import MyScholarProgress from "./pages/MyScholarProgress";
+import TeamScholars from "./pages/TeamScholars";
+import ScholarsAdmin from "./pages/ScholarsAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -311,6 +314,30 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ScholarRecord />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-scholar-progress"
+        element={
+          <ProtectedRoute>
+            <MyScholarProgress />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/team-scholars"
+        element={
+          <ProtectedRoute>
+            <TeamScholars />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholars-admin"
+        element={
+          <ProtectedRoute>
+            <ScholarsAdmin />
           </ProtectedRoute>
         }
       />

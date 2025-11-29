@@ -584,6 +584,15 @@ export function useRespondToOffer() {
       accept: boolean;
       declineReason?: string;
     }) => {
+      // Fetch application details for scholar record creation
+      const { data: application } = await supabase
+        .from('scholarship_applications')
+        .select('*')
+        .eq('id', applicationId)
+        .single();
+      
+      if (!application) throw new Error('Application not found');
+      
       const updateData: Partial<ScholarshipApplication> = accept
         ? {
             status: 'accepted',
@@ -602,6 +611,30 @@ export function useRespondToOffer() {
       
       if (error) throw error;
       
+      // Auto-create scholar record when candidate accepts
+      if (accept) {
+        const { error: scholarError } = await supabase
+          .from('scholar_records')
+          .insert({
+            application_id: applicationId,
+            employee_id: application.applicant_id,
+            program_name: application.program_name_custom || 'Unknown Program',
+            institution: application.institution_custom || 'Unknown Institution',
+            country: application.country,
+            degree_level: application.program_type || 'masters',
+            actual_start_date: application.start_date || null,
+            expected_end_date: application.end_date || null,
+            status: 'not_enrolled',
+            risk_level: 'on_track',
+            term_structure: 'semester',
+          });
+        
+        if (scholarError) {
+          console.error('Failed to create scholar record:', scholarError);
+          // Don't throw - the acceptance was successful, scholar record creation is secondary
+        }
+      }
+      
       // Create audit log
       await supabase.from('scholarship_audit_log').insert({
         application_id: applicationId,
@@ -615,6 +648,8 @@ export function useRespondToOffer() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-scholarship-applications'] });
       queryClient.invalidateQueries({ queryKey: ['scholarship-application'] });
+      queryClient.invalidateQueries({ queryKey: ['scholar-records'] });
+      queryClient.invalidateQueries({ queryKey: ['my-scholar-record'] });
       toast.success('Response recorded successfully');
     },
     onError: (error) => {
