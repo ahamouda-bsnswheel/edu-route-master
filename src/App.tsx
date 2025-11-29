@@ -14,6 +14,7 @@ import CourseDetails from "./pages/CourseDetails";
 import MyRequests from "./pages/MyRequests";
 import ApprovalsEnhanced from "./pages/ApprovalsEnhanced";
 import TrainingRequest from "./pages/TrainingRequest";
+import RequestDetail from "./pages/RequestDetail";
 import Sessions from "./pages/Sessions";
 import SessionDetails from "./pages/SessionDetails";
 import SessionAttendance from "./pages/SessionAttendance";
@@ -112,6 +113,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <MyRequests />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/requests/:id"
+        element={
+          <ProtectedRoute>
+            <RequestDetail />
           </ProtectedRoute>
         }
       />
