@@ -123,7 +123,7 @@ export default function Reports() {
         monthlyData.push({
           month: format(monthStart, 'MMM yyyy'),
           requests: requestsData?.length || 0,
-          approved: requestsData?.filter(r => r.status === 'approved' || r.status === 'scheduled' || r.status === 'completed').length || 0,
+          approved: requestsData?.filter(r => r.status === 'approved' || r.status === 'completed').length || 0,
           sessions: sessionsData?.length || 0,
         });
       }
