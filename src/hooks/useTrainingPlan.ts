@@ -753,3 +753,117 @@ export function usePlanSummary(planId: string | null) {
     enabled: !!planId,
   });
 }
+
+// Create new plan version (for scenarios like reduced budget)
+export function useCreatePlanVersion() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  
+  return useMutation({
+    mutationFn: async ({
+      sourcePlanId,
+      versionName,
+    }: {
+      sourcePlanId: string;
+      versionName: string;
+    }) => {
+      // Fetch source plan
+      const { data: sourcePlan, error: sourceError } = await supabase
+        .from('training_plans')
+        .select('*')
+        .eq('id', sourcePlanId)
+        .single();
+      
+      if (sourceError) throw sourceError;
+      
+      // Get max version for this fiscal year
+      const { data: existingPlans } = await supabase
+        .from('training_plans')
+        .select('version')
+        .eq('fiscal_year', (sourcePlan as any).fiscal_year)
+        .order('version', { ascending: false })
+        .limit(1);
+      
+      const nextVersion = ((existingPlans as any)?.[0]?.version || 1) + 1;
+      
+      // Create new plan
+      const { data: newPlan, error: createError } = await supabase
+        .from('training_plans')
+        .insert({
+          name: versionName,
+          description: `Version ${nextVersion} - based on ${(sourcePlan as any).name}`,
+          fiscal_year: (sourcePlan as any).fiscal_year,
+          tna_period_id: (sourcePlan as any).tna_period_id,
+          version: nextVersion,
+          status: 'draft',
+          cost_currency: (sourcePlan as any).cost_currency,
+          created_by: user?.id,
+        } as any)
+        .select()
+        .single();
+      
+      if (createError) throw createError;
+      
+      // Copy plan items
+      const { data: sourceItems, error: itemsError } = await supabase
+        .from('training_plan_items')
+        .select('*')
+        .eq('plan_id', sourcePlanId)
+        .eq('item_status', 'active');
+      
+      if (itemsError) throw itemsError;
+      
+      if (sourceItems && sourceItems.length > 0) {
+        const newItems = (sourceItems as any[]).map(item => ({
+          ...item,
+          id: undefined, // Let DB generate new ID
+          plan_id: (newPlan as any).id,
+          created_at: undefined,
+          updated_at: undefined,
+        }));
+        
+        const { error: copyError } = await supabase
+          .from('training_plan_items')
+          .insert(newItems as any);
+        
+        if (copyError) throw copyError;
+      }
+      
+      // Log audit
+      await supabase.from('training_plan_audit_log').insert({
+        plan_id: (newPlan as any).id,
+        action: 'create_version',
+        details: { source_plan_id: sourcePlanId, version: nextVersion },
+      } as any);
+      
+      return newPlan;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['training-plans'] });
+      toast.success('Plan version created');
+    },
+    onError: (error) => {
+      toast.error('Failed to create version: ' + error.message);
+    },
+  });
+}
+
+// Get plan versions
+export function usePlanVersions(fiscalYear: string | null) {
+  return useQuery({
+    queryKey: ['training-plan-versions', fiscalYear],
+    queryFn: async () => {
+      if (!fiscalYear) return [];
+      
+      const { data, error } = await supabase
+        .from('training_plans')
+        .select('id, name, version, status, created_at')
+        .eq('fiscal_year', fiscalYear)
+        .order('version', { ascending: false });
+      
+      if (error) throw error;
+      return data as { id: string; name: string; version: number; status: string; created_at: string }[];
+    },
+    enabled: !!fiscalYear,
+  });
+}
