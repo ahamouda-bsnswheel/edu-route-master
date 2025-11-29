@@ -43,6 +43,22 @@ interface LocalAdjustmentRequest {
   reason: string;
 }
 
+interface ImportScenarioRequest {
+  action: 'import';
+  planId: string;
+  planVersion: number;
+  name: string;
+  description?: string;
+  importData: Array<{
+    courseCode?: string;
+    courseName?: string;
+    entity?: string;
+    category?: string;
+    adjustedVolume?: number;
+    adjustedCost?: number;
+  }>;
+}
+
 interface ScenarioRecord {
   id: string;
   baseline_total_cost: number | null;
@@ -83,7 +99,7 @@ interface PlanRecord {
   version: number;
 }
 
-type RequestBody = CreateScenarioRequest | RecalculateScenarioRequest | PromoteScenarioRequest | LocalAdjustmentRequest;
+type RequestBody = CreateScenarioRequest | RecalculateScenarioRequest | PromoteScenarioRequest | LocalAdjustmentRequest | ImportScenarioRequest;
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -125,6 +141,8 @@ Deno.serve(async (req) => {
         return await promoteScenario(supabase, user.id, body);
       case 'local_adjust':
         return await localAdjustment(supabase, user.id, body);
+      case 'import':
+        return await importScenario(supabase, user.id, body);
       default:
         return new Response(JSON.stringify({ error: 'Invalid action' }), {
           status: 400,
@@ -459,6 +477,169 @@ async function localAdjustment(supabase: any, userId: string, request: LocalAdju
   });
 
   return new Response(JSON.stringify({ success: true, newVolume: request.newVolume, newCost }), {
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function importScenario(supabase: any, userId: string, request: ImportScenarioRequest) {
+  console.log(`[import-scenario] Importing ${request.importData.length} rows for plan ${request.planId}`);
+
+  // Create the scenario first
+  const { data: scenario, error: scenarioError } = await supabase
+    .from('plan_scenarios')
+    .insert({
+      name: request.name,
+      description: request.description,
+      basis_plan_id: request.planId,
+      basis_plan_version: request.planVersion,
+      owner_id: userId,
+      status: 'draft',
+      visibility_scope: 'global',
+      creation_progress: 0,
+    })
+    .select()
+    .single();
+
+  if (scenarioError) {
+    console.error('[import-scenario] Error creating scenario:', scenarioError);
+    throw new Error(`Failed to create scenario: ${scenarioError.message}`);
+  }
+
+  // Get all plan items to match against
+  const { data: planItems, error: planError } = await supabase
+    .from('training_plan_items')
+    .select(`
+      id, course_id, planned_participants, planned_sessions, estimated_cost, cost_per_participant, priority,
+      courses (code, title_en)
+    `)
+    .eq('plan_id', request.planId);
+
+  if (planError) throw new Error('Failed to fetch plan items');
+
+  const items: any[] = planItems || [];
+  let importedCount = 0;
+  let skippedCount = 0;
+  let totalCost = 0;
+  let totalParticipants = 0;
+
+  const scenarioItems: any[] = [];
+
+  for (const importRow of request.importData) {
+    // Try to match by course code or name
+    const matchedItem = items.find(item => {
+      const course = item.courses;
+      if (importRow.courseCode && course?.code === importRow.courseCode) return true;
+      if (importRow.courseName && course?.title_en?.toLowerCase().includes(importRow.courseName.toLowerCase())) return true;
+      return false;
+    });
+
+    if (!matchedItem) {
+      skippedCount++;
+      continue;
+    }
+
+    const baselineVolume = matchedItem.planned_participants || 0;
+    const baselineCost = matchedItem.estimated_cost || 0;
+    const costPerParticipant = matchedItem.cost_per_participant || 0;
+
+    // Use imported values or fall back to baseline
+    const scenarioVolume = importRow.adjustedVolume ?? baselineVolume;
+    const scenarioCost = importRow.adjustedCost ?? (scenarioVolume * costPerParticipant);
+
+    totalCost += scenarioCost;
+    totalParticipants += scenarioVolume;
+
+    scenarioItems.push({
+      scenario_id: scenario.id,
+      source_plan_item_id: matchedItem.id,
+      course_id: matchedItem.course_id,
+      priority_band: matchedItem.priority || 'medium',
+      baseline_volume: baselineVolume,
+      baseline_sessions: matchedItem.planned_sessions || 0,
+      baseline_cost: baselineCost,
+      baseline_cost_per_participant: costPerParticipant,
+      scenario_volume: scenarioVolume,
+      scenario_sessions: matchedItem.planned_sessions || 0,
+      scenario_cost: scenarioCost,
+      is_locally_adjusted: true,
+      local_adjustment_reason: 'Imported from external file',
+    });
+
+    importedCount++;
+  }
+
+  // Insert scenario items in batches
+  const batchSize = 500;
+  for (let i = 0; i < scenarioItems.length; i += batchSize) {
+    const batch = scenarioItems.slice(i, i + batchSize);
+    await supabase.from('scenario_items').insert(batch);
+
+    const progress = Math.round(((i + batch.length) / scenarioItems.length) * 100);
+    await supabase.from('plan_scenarios').update({ creation_progress: progress }).eq('id', scenario.id);
+  }
+
+  // Also copy unmatched plan items as baseline
+  const matchedItemIds = scenarioItems.map(si => si.source_plan_item_id);
+  const unmatchedItems = items.filter(item => !matchedItemIds.includes(item.id));
+
+  const unmatchedScenarioItems = unmatchedItems.map(item => {
+    const cost = item.estimated_cost || 0;
+    const volume = item.planned_participants || 0;
+    totalCost += cost;
+    totalParticipants += volume;
+
+    return {
+      scenario_id: scenario.id,
+      source_plan_item_id: item.id,
+      course_id: item.course_id,
+      priority_band: item.priority || 'medium',
+      baseline_volume: volume,
+      baseline_sessions: item.planned_sessions || 0,
+      baseline_cost: cost,
+      baseline_cost_per_participant: item.cost_per_participant,
+      scenario_volume: volume,
+      scenario_sessions: item.planned_sessions || 0,
+      scenario_cost: cost,
+    };
+  });
+
+  for (let i = 0; i < unmatchedScenarioItems.length; i += batchSize) {
+    const batch = unmatchedScenarioItems.slice(i, i + batchSize);
+    await supabase.from('scenario_items').insert(batch);
+  }
+
+  // Update scenario totals
+  await supabase.from('plan_scenarios').update({
+    status: 'draft',
+    creation_progress: 100,
+    baseline_total_cost: totalCost,
+    scenario_total_cost: totalCost - (items.reduce((sum, i) => sum + (i.estimated_cost || 0), 0) - scenarioItems.reduce((sum, i) => sum + i.baseline_cost, 0)),
+    baseline_total_participants: totalParticipants,
+    scenario_total_participants: totalParticipants,
+  }).eq('id', scenario.id);
+
+  // Audit log
+  await supabase.from('scenario_audit_log').insert({
+    scenario_id: scenario.id,
+    action: 'imported',
+    actor_id: userId,
+    details: { 
+      plan_id: request.planId, 
+      imported_count: importedCount, 
+      skipped_count: skippedCount,
+      total_rows: request.importData.length,
+    },
+  });
+
+  console.log(`[import-scenario] Completed. Imported: ${importedCount}, Skipped: ${skippedCount}`);
+
+  return new Response(JSON.stringify({ 
+    success: true, 
+    scenarioId: scenario.id,
+    importedCount, 
+    skippedCount,
+  }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 }

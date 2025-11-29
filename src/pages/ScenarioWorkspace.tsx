@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   ArrowLeft, 
   RefreshCw, 
-  Upload, 
+  Download, 
   GitMerge,
   TrendingDown,
   TrendingUp,
@@ -26,6 +26,7 @@ import { ScenarioItemsGrid } from '@/components/scenarios/ScenarioItemsGrid';
 import { ScenarioSummaryBar } from '@/components/scenarios/ScenarioSummaryBar';
 import { PromoteScenarioDialog } from '@/components/scenarios/PromoteScenarioDialog';
 import { ScenarioComparisonView } from '@/components/scenarios/ScenarioComparisonView';
+import { ScenarioExportDialog } from '@/components/scenarios/ScenarioExportDialog';
 
 export default function ScenarioWorkspace() {
   const { scenarioId } = useParams<{ scenarioId: string }>();
@@ -33,6 +34,7 @@ export default function ScenarioWorkspace() {
   
   const [activeTab, setActiveTab] = useState('workspace');
   const [promoteDialogOpen, setPromoteDialogOpen] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [levers, setLevers] = useState<ScenarioLevers>({});
   const [page, setPage] = useState(0);
   const [filters, setFilters] = useState<{
@@ -146,6 +148,10 @@ export default function ScenarioWorkspace() {
                 <span>Creating... {scenario.creation_progress}%</span>
               </div>
             )}
+            <Button variant="outline" onClick={() => setExportDialogOpen(true)}>
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
             {isEditable && (
               <>
                 <Button variant="outline" onClick={handleResetLevers}>
@@ -225,6 +231,12 @@ export default function ScenarioWorkspace() {
       <PromoteScenarioDialog
         open={promoteDialogOpen}
         onOpenChange={setPromoteDialogOpen}
+        scenarioId={scenarioId!}
+        scenarioName={scenario.name}
+      />
+      <ScenarioExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
         scenarioId={scenarioId!}
         scenarioName={scenario.name}
       />
