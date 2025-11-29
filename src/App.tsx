@@ -23,6 +23,10 @@ import TeamNominations from "./pages/TeamNominations";
 import LearningHistory from "./pages/LearningHistory";
 import TeamLearningHistory from "./pages/TeamLearningHistory";
 import ComplianceDashboard from "./pages/ComplianceDashboard";
+import MyCertificates from "./pages/MyCertificates";
+import TeamCertificates from "./pages/TeamCertificates";
+import CertificateAdmin from "./pages/CertificateAdmin";
+import CertificateTemplateEditor from "./pages/CertificateTemplateEditor";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -173,6 +177,40 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <TeamLearningHistory />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Certificates */}
+      <Route
+        path="/my-certificates"
+        element={
+          <ProtectedRoute>
+            <MyCertificates />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/team-certificates"
+        element={
+          <ProtectedRoute>
+            <TeamCertificates />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/certificate-admin"
+        element={
+          <ProtectedRoute>
+            <CertificateAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/certificate-templates/:id"
+        element={
+          <ProtectedRoute>
+            <CertificateTemplateEditor />
           </ProtectedRoute>
         }
       />

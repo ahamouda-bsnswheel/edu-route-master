@@ -147,6 +147,328 @@ export type Database = {
         }
         Relationships: []
       }
+      certificate_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          certificate_id: string | null
+          created_at: string | null
+          details: Json | null
+          id: string
+          template_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          certificate_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          template_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          certificate_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          template_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificate_audit_log_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificate_audit_log_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      certificate_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          error_count: number | null
+          errors: Json | null
+          id: string
+          job_type: string
+          processed_count: number | null
+          session_id: string | null
+          started_at: string | null
+          status: string | null
+          success_count: number | null
+          total_count: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          error_count?: number | null
+          errors?: Json | null
+          id?: string
+          job_type: string
+          processed_count?: number | null
+          session_id?: string | null
+          started_at?: string | null
+          status?: string | null
+          success_count?: number | null
+          total_count?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          error_count?: number | null
+          errors?: Json | null
+          id?: string
+          job_type?: string
+          processed_count?: number | null
+          session_id?: string | null
+          started_at?: string | null
+          status?: string | null
+          success_count?: number | null
+          total_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificate_jobs_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      certificate_templates: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          background_url: string | null
+          created_at: string | null
+          created_by: string | null
+          custom_css: string | null
+          description: string | null
+          font_family: string | null
+          footer_logo_url: string | null
+          header_logo_url: string | null
+          id: string
+          is_approved: boolean | null
+          is_default: boolean | null
+          language: string | null
+          name: string
+          orientation: string | null
+          page_size: string | null
+          placeholders: Json | null
+          primary_color: string | null
+          secondary_color: string | null
+          signature_image_url: string | null
+          status: string | null
+          updated_at: string | null
+          version: number | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          background_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          custom_css?: string | null
+          description?: string | null
+          font_family?: string | null
+          footer_logo_url?: string | null
+          header_logo_url?: string | null
+          id?: string
+          is_approved?: boolean | null
+          is_default?: boolean | null
+          language?: string | null
+          name: string
+          orientation?: string | null
+          page_size?: string | null
+          placeholders?: Json | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          signature_image_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+          version?: number | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          background_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          custom_css?: string | null
+          description?: string | null
+          font_family?: string | null
+          footer_logo_url?: string | null
+          header_logo_url?: string | null
+          id?: string
+          is_approved?: boolean | null
+          is_default?: boolean | null
+          language?: string | null
+          name?: string
+          orientation?: string | null
+          page_size?: string | null
+          placeholders?: Json | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          signature_image_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+          version?: number | null
+        }
+        Relationships: []
+      }
+      certificates: {
+        Row: {
+          assessment_score: number | null
+          certificate_number: string
+          completion_date: string | null
+          course_id: string
+          course_name_ar: string | null
+          course_name_en: string | null
+          cpd_hours: number | null
+          created_at: string | null
+          duration_hours: number | null
+          employee_id: string
+          enrollment_id: string | null
+          expires_at: string | null
+          id: string
+          import_source: string | null
+          is_historical_import: boolean | null
+          issued_at: string | null
+          metadata: Json | null
+          participant_employee_id: string | null
+          participant_name_ar: string | null
+          participant_name_en: string | null
+          pdf_url: string | null
+          provider_name: string | null
+          revocation_reason: string | null
+          revoked_at: string | null
+          revoked_by: string | null
+          session_end_date: string | null
+          session_id: string | null
+          session_start_date: string | null
+          status: string | null
+          template_id: string | null
+          template_version: number | null
+          trainer_name: string | null
+          updated_at: string | null
+          verification_token: string | null
+        }
+        Insert: {
+          assessment_score?: number | null
+          certificate_number: string
+          completion_date?: string | null
+          course_id: string
+          course_name_ar?: string | null
+          course_name_en?: string | null
+          cpd_hours?: number | null
+          created_at?: string | null
+          duration_hours?: number | null
+          employee_id: string
+          enrollment_id?: string | null
+          expires_at?: string | null
+          id?: string
+          import_source?: string | null
+          is_historical_import?: boolean | null
+          issued_at?: string | null
+          metadata?: Json | null
+          participant_employee_id?: string | null
+          participant_name_ar?: string | null
+          participant_name_en?: string | null
+          pdf_url?: string | null
+          provider_name?: string | null
+          revocation_reason?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          session_end_date?: string | null
+          session_id?: string | null
+          session_start_date?: string | null
+          status?: string | null
+          template_id?: string | null
+          template_version?: number | null
+          trainer_name?: string | null
+          updated_at?: string | null
+          verification_token?: string | null
+        }
+        Update: {
+          assessment_score?: number | null
+          certificate_number?: string
+          completion_date?: string | null
+          course_id?: string
+          course_name_ar?: string | null
+          course_name_en?: string | null
+          cpd_hours?: number | null
+          created_at?: string | null
+          duration_hours?: number | null
+          employee_id?: string
+          enrollment_id?: string | null
+          expires_at?: string | null
+          id?: string
+          import_source?: string | null
+          is_historical_import?: boolean | null
+          issued_at?: string | null
+          metadata?: Json | null
+          participant_employee_id?: string | null
+          participant_name_ar?: string | null
+          participant_name_en?: string | null
+          pdf_url?: string | null
+          provider_name?: string | null
+          revocation_reason?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          session_end_date?: string | null
+          session_id?: string | null
+          session_start_date?: string | null
+          status?: string | null
+          template_id?: string | null
+          template_version?: number | null
+          trainer_name?: string | null
+          updated_at?: string | null
+          verification_token?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "session_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       compliance_requirements: {
         Row: {
           course_id: string
@@ -228,6 +550,55 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "course_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_certificate_templates: {
+        Row: {
+          category_id: string | null
+          course_id: string | null
+          created_at: string | null
+          id: string
+          priority: number | null
+          template_id: string
+        }
+        Insert: {
+          category_id?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          id?: string
+          priority?: number | null
+          template_id: string
+        }
+        Update: {
+          category_id?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          id?: string
+          priority?: number | null
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_certificate_templates_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "course_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_certificate_templates_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_certificate_templates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
             referencedColumns: ["id"]
           },
         ]
