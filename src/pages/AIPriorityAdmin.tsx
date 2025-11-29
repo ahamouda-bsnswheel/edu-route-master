@@ -18,9 +18,17 @@ import {
   Settings,
   BarChart3,
   AlertCircle,
+  Users,
+  Grid3X3,
+  FlaskConical,
+  History,
 } from 'lucide-react';
 import { AIPriorityConfigPanel } from '@/components/priority/AIPriorityConfigPanel';
 import { AIPriorityDashboard } from '@/components/priority/AIPriorityDashboard';
+import { PriorityLeadershipDashboard } from '@/components/priority/PriorityLeadershipDashboard';
+import { PriorityHeatmap } from '@/components/priority/PriorityHeatmap';
+import { WhatIfSimulator } from '@/components/priority/WhatIfSimulator';
+import { HistoricalScoring } from '@/components/priority/HistoricalScoring';
 import { useStartBatchScoring, useAIScoringJobs } from '@/hooks/useAIPriority';
 import { useTNAPeriods } from '@/hooks/useTNA';
 import { useTrainingPlans } from '@/hooks/useTrainingPlan';
@@ -71,23 +79,51 @@ export default function AIPriorityAdmin() {
         )}
         
         <Tabs defaultValue="dashboard">
-          <TabsList>
+          <TabsList className="flex-wrap h-auto gap-1">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="leadership" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Leadership
+            </TabsTrigger>
+            <TabsTrigger value="heatmap" className="flex items-center gap-2">
+              <Grid3X3 className="h-4 w-4" />
+              Heatmap
+            </TabsTrigger>
+            <TabsTrigger value="whatif" className="flex items-center gap-2">
+              <FlaskConical className="h-4 w-4" />
+              What-If
             </TabsTrigger>
             <TabsTrigger value="scoring" className="flex items-center gap-2">
               <Play className="h-4 w-4" />
               Run Scoring
             </TabsTrigger>
+            <TabsTrigger value="historical" className="flex items-center gap-2">
+              <History className="h-4 w-4" />
+              Historical
+            </TabsTrigger>
             <TabsTrigger value="config" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
-              Configuration
+              Config
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="mt-6">
             <AIPriorityDashboard />
+          </TabsContent>
+
+          <TabsContent value="leadership" className="mt-6">
+            <PriorityLeadershipDashboard />
+          </TabsContent>
+
+          <TabsContent value="heatmap" className="mt-6">
+            <PriorityHeatmap />
+          </TabsContent>
+
+          <TabsContent value="whatif" className="mt-6">
+            <WhatIfSimulator />
           </TabsContent>
 
           <TabsContent value="scoring" className="mt-6">
@@ -185,6 +221,10 @@ export default function AIPriorityAdmin() {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="historical" className="mt-6">
+            <HistoricalScoring />
           </TabsContent>
 
           <TabsContent value="config" className="mt-6">
