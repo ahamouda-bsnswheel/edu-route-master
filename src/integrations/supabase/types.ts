@@ -338,6 +338,45 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          read_at: string | null
+          reference_id: string | null
+          reference_type: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          read_at?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          read_at?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -451,6 +490,113 @@ export type Database = {
             columns: ["request_id"]
             isOneToOne: false
             referencedRelation: "training_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_changes: {
+        Row: {
+          change_type: string
+          changed_by: string
+          created_at: string | null
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          reason: string | null
+          session_id: string
+        }
+        Insert: {
+          change_type: string
+          changed_by: string
+          created_at?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          reason?: string | null
+          session_id: string
+        }
+        Update: {
+          change_type?: string
+          changed_by?: string
+          created_at?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          reason?: string | null
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_changes_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_enrollments: {
+        Row: {
+          attendance_status: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          confirmed_at: string | null
+          created_at: string | null
+          enrolled_at: string | null
+          enrolled_by: string | null
+          id: string
+          participant_id: string
+          request_id: string | null
+          session_id: string
+          status: string | null
+          updated_at: string | null
+          waitlist_position: number | null
+        }
+        Insert: {
+          attendance_status?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string | null
+          enrolled_at?: string | null
+          enrolled_by?: string | null
+          id?: string
+          participant_id: string
+          request_id?: string | null
+          session_id: string
+          status?: string | null
+          updated_at?: string | null
+          waitlist_position?: number | null
+        }
+        Update: {
+          attendance_status?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string | null
+          enrolled_at?: string | null
+          enrolled_by?: string | null
+          id?: string
+          participant_id?: string
+          request_id?: string | null
+          session_id?: string
+          status?: string | null
+          updated_at?: string | null
+          waitlist_position?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_enrollments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "training_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_enrollments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -583,6 +729,7 @@ export type Database = {
           status: Database["public"]["Enums"]["request_status"] | null
           submitted_at: string | null
           updated_at: string | null
+          workflow_template_id: string | null
         }
         Insert: {
           abroad_reason?: string | null
@@ -604,6 +751,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["request_status"] | null
           submitted_at?: string | null
           updated_at?: string | null
+          workflow_template_id?: string | null
         }
         Update: {
           abroad_reason?: string | null
@@ -625,6 +773,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["request_status"] | null
           submitted_at?: string | null
           updated_at?: string | null
+          workflow_template_id?: string | null
         }
         Relationships: [
           {
@@ -639,6 +788,13 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_requests_workflow_template_id_fkey"
+            columns: ["workflow_template_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_templates"
             referencedColumns: ["id"]
           },
         ]
@@ -661,6 +817,124 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      workflow_rules: {
+        Row: {
+          condition_operator: string
+          condition_type: string
+          condition_value: Json
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          priority: number | null
+          template_id: string
+        }
+        Insert: {
+          condition_operator: string
+          condition_type: string
+          condition_value: Json
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: number | null
+          template_id: string
+        }
+        Update: {
+          condition_operator?: string
+          condition_type?: string
+          condition_value?: Json
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: number | null
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_rules_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_steps: {
+        Row: {
+          approver_role: Database["public"]["Enums"]["app_role"]
+          auto_approve_condition: Json | null
+          can_delegate: boolean | null
+          created_at: string | null
+          id: string
+          is_auto_approve: boolean | null
+          step_order: number
+          template_id: string
+          timeout_days: number | null
+        }
+        Insert: {
+          approver_role: Database["public"]["Enums"]["app_role"]
+          auto_approve_condition?: Json | null
+          can_delegate?: boolean | null
+          created_at?: string | null
+          id?: string
+          is_auto_approve?: boolean | null
+          step_order: number
+          template_id: string
+          timeout_days?: number | null
+        }
+        Update: {
+          approver_role?: Database["public"]["Enums"]["app_role"]
+          auto_approve_condition?: Json | null
+          can_delegate?: boolean | null
+          created_at?: string | null
+          id?: string
+          is_auto_approve?: boolean | null
+          step_order?: number
+          template_id?: string
+          timeout_days?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_steps_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_templates: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_default: boolean | null
+          name_ar: string | null
+          name_en: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          name_ar?: string | null
+          name_en: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          name_ar?: string | null
+          name_en?: string
+          updated_at?: string | null
         }
         Relationships: []
       }

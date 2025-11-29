@@ -12,8 +12,11 @@ import Dashboard from "./pages/Dashboard";
 import Courses from "./pages/Courses";
 import CourseDetails from "./pages/CourseDetails";
 import MyRequests from "./pages/MyRequests";
-import Approvals from "./pages/Approvals";
+import ApprovalsEnhanced from "./pages/ApprovalsEnhanced";
 import TrainingRequest from "./pages/TrainingRequest";
+import Sessions from "./pages/Sessions";
+import SessionDetails from "./pages/SessionDetails";
+import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -89,7 +92,31 @@ function AppRoutes() {
         path="/approvals"
         element={
           <ProtectedRoute>
-            <Approvals />
+            <ApprovalsEnhanced />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sessions"
+        element={
+          <ProtectedRoute>
+            <Sessions />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sessions/:id"
+        element={
+          <ProtectedRoute>
+            <SessionDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute>
+            <Reports />
           </ProtectedRoute>
         }
       />
@@ -105,22 +132,6 @@ function AppRoutes() {
       />
       <Route
         path="/team-requests"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/sessions"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/reports"
         element={
           <ProtectedRoute>
             <Dashboard />
