@@ -474,6 +474,248 @@ export type Database = {
         }
         Relationships: []
       }
+      bond_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          bond_id: string | null
+          created_at: string | null
+          event_id: string | null
+          field_changed: string | null
+          id: string
+          new_value: string | null
+          old_value: string | null
+          reason: string | null
+          repayment_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          bond_id?: string | null
+          created_at?: string | null
+          event_id?: string | null
+          field_changed?: string | null
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          reason?: string | null
+          repayment_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          bond_id?: string | null
+          created_at?: string | null
+          event_id?: string | null
+          field_changed?: string | null
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          reason?: string | null
+          repayment_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bond_audit_log_bond_id_fkey"
+            columns: ["bond_id"]
+            isOneToOne: false
+            referencedRelation: "service_bonds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bond_audit_log_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "bond_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bond_audit_log_repayment_id_fkey"
+            columns: ["repayment_id"]
+            isOneToOne: false
+            referencedRelation: "bond_repayments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bond_events: {
+        Row: {
+          approval_chain: Json | null
+          approval_status: string | null
+          approved_at: string | null
+          approved_by: string | null
+          bond_id: string
+          created_at: string | null
+          created_by: string | null
+          days_affected: number | null
+          description: string | null
+          document_url: string | null
+          end_date: string | null
+          event_date: string
+          event_type: string
+          id: string
+          reason: string | null
+          waiver_amount: number | null
+          waiver_time_months: number | null
+          waiver_type: string | null
+        }
+        Insert: {
+          approval_chain?: Json | null
+          approval_status?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          bond_id: string
+          created_at?: string | null
+          created_by?: string | null
+          days_affected?: number | null
+          description?: string | null
+          document_url?: string | null
+          end_date?: string | null
+          event_date: string
+          event_type: string
+          id?: string
+          reason?: string | null
+          waiver_amount?: number | null
+          waiver_time_months?: number | null
+          waiver_type?: string | null
+        }
+        Update: {
+          approval_chain?: Json | null
+          approval_status?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          bond_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          days_affected?: number | null
+          description?: string | null
+          document_url?: string | null
+          end_date?: string | null
+          event_date?: string
+          event_type?: string
+          id?: string
+          reason?: string | null
+          waiver_amount?: number | null
+          waiver_time_months?: number | null
+          waiver_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bond_events_bond_id_fkey"
+            columns: ["bond_id"]
+            isOneToOne: false
+            referencedRelation: "service_bonds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bond_policies: {
+        Row: {
+          bond_duration_months: number
+          bond_type: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          max_funding_amount: number | null
+          min_funding_amount: number | null
+          policy_name: string
+          program_type: string
+          repayment_formula: string | null
+          repayment_percentage: number | null
+          training_location: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bond_duration_months?: number
+          bond_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_funding_amount?: number | null
+          min_funding_amount?: number | null
+          policy_name: string
+          program_type: string
+          repayment_formula?: string | null
+          repayment_percentage?: number | null
+          training_location?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bond_duration_months?: number
+          bond_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_funding_amount?: number | null
+          min_funding_amount?: number | null
+          policy_name?: string
+          program_type?: string
+          repayment_formula?: string | null
+          repayment_percentage?: number | null
+          training_location?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      bond_repayments: {
+        Row: {
+          amount: number
+          bond_id: string
+          confirmed_at: string | null
+          confirmed_by: string | null
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          id: string
+          notes: string | null
+          payment_date: string | null
+          payment_method: string | null
+          reference_number: string | null
+          status: string | null
+        }
+        Insert: {
+          amount: number
+          bond_id: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          payment_date?: string | null
+          payment_method?: string | null
+          reference_number?: string | null
+          status?: string | null
+        }
+        Update: {
+          amount?: number
+          bond_id?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          payment_date?: string | null
+          payment_method?: string | null
+          reference_number?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bond_repayments_bond_id_fkey"
+            columns: ["bond_id"]
+            isOneToOne: false
+            referencedRelation: "service_bonds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       certificate_audit_log: {
         Row: {
           action: string
@@ -2113,6 +2355,150 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      service_bonds: {
+        Row: {
+          actual_return_date: string | null
+          application_id: string | null
+          bond_duration_months: number
+          bond_end_date: string | null
+          bond_start_date: string | null
+          bond_type: string
+          calculated_repayment_amount: number | null
+          closed_at: string | null
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          expected_return_date: string | null
+          final_repayment_amount: number | null
+          fulfilled_at: string | null
+          funded_amount: number | null
+          id: string
+          import_source: string | null
+          is_historical_import: boolean | null
+          legal_agreement_reference: string | null
+          legal_agreement_url: string | null
+          notes: string | null
+          policy_id: string | null
+          repayment_required: boolean | null
+          repayment_status: string | null
+          return_department_id: string | null
+          return_entity_id: string | null
+          return_manager_id: string | null
+          return_position: string | null
+          scholar_record_id: string
+          status: string
+          time_served_months: number | null
+          time_suspended_months: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          actual_return_date?: string | null
+          application_id?: string | null
+          bond_duration_months?: number
+          bond_end_date?: string | null
+          bond_start_date?: string | null
+          bond_type?: string
+          calculated_repayment_amount?: number | null
+          closed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          expected_return_date?: string | null
+          final_repayment_amount?: number | null
+          fulfilled_at?: string | null
+          funded_amount?: number | null
+          id?: string
+          import_source?: string | null
+          is_historical_import?: boolean | null
+          legal_agreement_reference?: string | null
+          legal_agreement_url?: string | null
+          notes?: string | null
+          policy_id?: string | null
+          repayment_required?: boolean | null
+          repayment_status?: string | null
+          return_department_id?: string | null
+          return_entity_id?: string | null
+          return_manager_id?: string | null
+          return_position?: string | null
+          scholar_record_id: string
+          status?: string
+          time_served_months?: number | null
+          time_suspended_months?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          actual_return_date?: string | null
+          application_id?: string | null
+          bond_duration_months?: number
+          bond_end_date?: string | null
+          bond_start_date?: string | null
+          bond_type?: string
+          calculated_repayment_amount?: number | null
+          closed_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          expected_return_date?: string | null
+          final_repayment_amount?: number | null
+          fulfilled_at?: string | null
+          funded_amount?: number | null
+          id?: string
+          import_source?: string | null
+          is_historical_import?: boolean | null
+          legal_agreement_reference?: string | null
+          legal_agreement_url?: string | null
+          notes?: string | null
+          policy_id?: string | null
+          repayment_required?: boolean | null
+          repayment_status?: string | null
+          return_department_id?: string | null
+          return_entity_id?: string | null
+          return_manager_id?: string | null
+          return_position?: string | null
+          scholar_record_id?: string
+          status?: string
+          time_served_months?: number | null
+          time_suspended_months?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_bonds_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_bonds_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "bond_policies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_bonds_return_department_id_fkey"
+            columns: ["return_department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_bonds_return_entity_id_fkey"
+            columns: ["return_entity_id"]
+            isOneToOne: false
+            referencedRelation: "entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_bonds_scholar_record_id_fkey"
+            columns: ["scholar_record_id"]
+            isOneToOne: false
+            referencedRelation: "scholar_records"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       session_changes: {
         Row: {
