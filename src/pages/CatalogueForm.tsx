@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { CompetencySelector } from '@/components/catalogue/CompetencySelector';
 import { JobRoleSelector } from '@/components/catalogue/JobRoleSelector';
+import { ProviderSelector } from '@/components/providers/ProviderSelector';
 
 interface CourseFormData {
   code: string;
@@ -782,22 +783,13 @@ export default function CatalogueForm() {
               <CardContent>
                 <div className="space-y-2">
                   <Label>Provider</Label>
-                  <Select
-                    value={formData.provider_id}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, provider_id: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select provider" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="tbd">Provider TBD</SelectItem>
-                      {providers?.map((provider) => (
-                        <SelectItem key={provider.id} value={provider.id}>
-                          {provider.name_en}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <ProviderSelector
+                    value={formData.provider_id || null}
+                    onChange={(providerId) => setFormData(prev => ({ ...prev, provider_id: providerId || '' }))}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Select from active providers in the registry. Only approved providers are shown.
+                  </p>
                 </div>
               </CardContent>
             </Card>
