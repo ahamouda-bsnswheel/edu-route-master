@@ -48,6 +48,7 @@ const mainNavItems = [
 const managerNavItems = [
   { title: 'Team Requests', url: '/team-requests', icon: Users, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Team Training Needs', url: '/team-training-needs', icon: ClipboardList, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
+  { title: 'Team Training Plan', url: '/team-training-plan', icon: Calendar, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Team Learning', url: '/team-learning', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Team Certificates', url: '/team-certificates', icon: Award, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Team Scholars', url: '/team-scholars', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },

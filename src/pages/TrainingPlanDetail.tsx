@@ -58,6 +58,8 @@ import {
   DollarSign,
   Calendar,
   BarChart3,
+  Copy,
+  History,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -69,9 +71,12 @@ import {
   useExcludePlanItem,
   useMergePlanItems,
   usePlanSummary,
+  useCreatePlanVersion,
+  usePlanVersions,
   type TrainingPlanItem,
 } from '@/hooks/useTrainingPlan';
 import { useTNAPeriods } from '@/hooks/useTNA';
+import { LegacyPlanImport } from '@/components/training-plan/LegacyPlanImport';
 import { toast } from 'sonner';
 
 const statusLabels: Record<string, string> = {
@@ -114,6 +119,8 @@ export default function TrainingPlanDetail() {
   const [selectedPeriodId, setSelectedPeriodId] = useState('');
   const [excludeReason, setExcludeReason] = useState('');
   const [excludingItemId, setExcludingItemId] = useState<string | null>(null);
+  const [isVersionOpen, setIsVersionOpen] = useState(false);
+  const [newVersionName, setNewVersionName] = useState('');
   
   const { data: plan, isLoading: planLoading } = useTrainingPlan(planId || null);
   const { data: items = [], isLoading: itemsLoading } = useTrainingPlanItems(planId || null, {
@@ -128,6 +135,8 @@ export default function TrainingPlanDetail() {
   const generateFromTNA = useGeneratePlanFromTNA();
   const excludeItem = useExcludePlanItem();
   const mergeItems = useMergePlanItems();
+  const createVersion = useCreatePlanVersion();
+  const { data: planVersions = [] } = usePlanVersions(plan?.fiscal_year || null);
   
   const isLAndD = hasRole('l_and_d') || hasRole('admin');
   const isHRBP = hasRole('hrbp');
@@ -385,6 +394,73 @@ export default function TrainingPlanDetail() {
                       <Merge className="h-4 w-4 mr-2" />
                       Merge Selected ({selectedItems.size})
                     </Button>
+                  )}
+                  
+                  {canEdit && (
+                    <LegacyPlanImport planId={planId!} planName={plan.name} />
+                  )}
+                  
+                  {/* Create Version */}
+                  {canEdit && plan.status !== 'draft' && (
+                    <Dialog open={isVersionOpen} onOpenChange={setIsVersionOpen}>
+                      <Button variant="outline" onClick={() => setIsVersionOpen(true)}>
+                        <Copy className="h-4 w-4 mr-2" />
+                        Create Version
+                      </Button>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Create Plan Version</DialogTitle>
+                          <DialogDescription>
+                            Create a new version of this plan (e.g., for reduced budget scenario)
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label>Version Name</Label>
+                            <Input
+                              placeholder="e.g., Reduced Budget Plan 2026"
+                              value={newVersionName}
+                              onChange={(e) => setNewVersionName(e.target.value)}
+                            />
+                          </div>
+                          {planVersions.length > 1 && (
+                            <div className="space-y-2">
+                              <Label className="flex items-center gap-2">
+                                <History className="h-4 w-4" />
+                                Existing Versions
+                              </Label>
+                              <div className="text-sm space-y-1">
+                                {planVersions.map((v) => (
+                                  <div key={v.id} className="flex items-center justify-between text-muted-foreground">
+                                    <span>v{v.version}: {v.name}</span>
+                                    <Badge variant="outline" className="text-xs">{v.status}</Badge>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <DialogFooter>
+                          <Button variant="outline" onClick={() => setIsVersionOpen(false)}>
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={async () => {
+                              if (!newVersionName) return;
+                              await createVersion.mutateAsync({
+                                sourcePlanId: planId!,
+                                versionName: newVersionName,
+                              });
+                              setIsVersionOpen(false);
+                              setNewVersionName('');
+                            }}
+                            disabled={!newVersionName || createVersion.isPending}
+                          >
+                            {createVersion.isPending ? 'Creating...' : 'Create Version'}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   )}
                   
                   <Button variant="outline" onClick={handleExport}>
