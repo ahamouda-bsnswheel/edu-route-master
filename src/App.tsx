@@ -40,6 +40,7 @@ import ScholarRecord from "./pages/ScholarRecord";
 import MyScholarProgress from "./pages/MyScholarProgress";
 import TeamScholars from "./pages/TeamScholars";
 import ScholarsAdmin from "./pages/ScholarsAdmin";
+import RiskDashboard from "./pages/RiskDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -338,6 +339,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ScholarsAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/risk-dashboard"
+        element={
+          <ProtectedRoute>
+            <RiskDashboard />
           </ProtectedRoute>
         }
       />
