@@ -383,12 +383,23 @@ export function useCreateBond() {
 
   return useMutation({
     mutationFn: async (bondData: Partial<ServiceBond>) => {
+      const insertData = {
+        scholar_record_id: bondData.scholar_record_id,
+        application_id: bondData.application_id,
+        policy_id: bondData.policy_id,
+        bond_type: bondData.bond_type || 'time_based',
+        bond_duration_months: bondData.bond_duration_months || 36,
+        funded_amount: bondData.funded_amount,
+        currency: bondData.currency,
+        expected_return_date: bondData.expected_return_date,
+        status: bondData.status || 'pending',
+        notes: bondData.notes,
+        created_by: user?.id,
+      };
+      
       const { data, error } = await supabase
         .from('service_bonds')
-        .insert({
-          ...bondData,
-          created_by: user?.id,
-        })
+        .insert(insertData)
         .select()
         .single();
 
@@ -529,12 +540,25 @@ export function useCreateBondEvent() {
 
   return useMutation({
     mutationFn: async (eventData: Partial<BondEvent>) => {
+      const insertData = {
+        bond_id: eventData.bond_id!,
+        event_type: eventData.event_type!,
+        event_date: eventData.event_date!,
+        end_date: eventData.end_date,
+        reason: eventData.reason,
+        description: eventData.description,
+        waiver_type: eventData.waiver_type,
+        waiver_amount: eventData.waiver_amount,
+        waiver_time_months: eventData.waiver_time_months,
+        approval_status: eventData.approval_status,
+        document_url: eventData.document_url,
+        days_affected: eventData.days_affected,
+        created_by: user?.id,
+      };
+      
       const { data, error } = await supabase
         .from('bond_events')
-        .insert({
-          ...eventData,
-          created_by: user?.id,
-        })
+        .insert(insertData)
         .select()
         .single();
 
@@ -637,12 +661,21 @@ export function useRecordRepayment() {
 
   return useMutation({
     mutationFn: async (repaymentData: Partial<BondRepayment>) => {
+      const insertData = {
+        bond_id: repaymentData.bond_id!,
+        amount: repaymentData.amount!,
+        currency: repaymentData.currency,
+        payment_date: repaymentData.payment_date,
+        payment_method: repaymentData.payment_method,
+        reference_number: repaymentData.reference_number,
+        status: repaymentData.status || 'pending',
+        notes: repaymentData.notes,
+        created_by: user?.id,
+      };
+      
       const { data, error } = await supabase
         .from('bond_repayments')
-        .insert({
-          ...repaymentData,
-          created_by: user?.id,
-        })
+        .insert(insertData)
         .select()
         .single();
 

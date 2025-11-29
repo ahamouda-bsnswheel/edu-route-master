@@ -613,7 +613,7 @@ export function useRespondToOffer() {
       
       // Auto-create scholar record when candidate accepts
       if (accept) {
-        const { error: scholarError } = await supabase
+        const { data: scholarRecord, error: scholarError } = await supabase
           .from('scholar_records')
           .insert({
             application_id: applicationId,
@@ -627,11 +627,40 @@ export function useRespondToOffer() {
             status: 'not_enrolled',
             risk_level: 'on_track',
             term_structure: 'semester',
-          });
+          })
+          .select()
+          .single();
         
         if (scholarError) {
           console.error('Failed to create scholar record:', scholarError);
           // Don't throw - the acceptance was successful, scholar record creation is secondary
+        }
+        
+        // Auto-create bond record
+        if (scholarRecord) {
+          // Calculate bond duration based on program type and location
+          const isAbroad = application.country?.toLowerCase() !== 'libya';
+          const isPHD = application.program_type?.toLowerCase() === 'phd';
+          const bondDurationMonths = isPHD ? (isAbroad ? 60 : 48) : (isAbroad ? 48 : 36);
+          
+          const { error: bondError } = await supabase
+            .from('service_bonds')
+            .insert({
+              scholar_record_id: scholarRecord.id,
+              application_id: applicationId,
+              bond_type: isAbroad ? 'mixed' : 'time_based',
+              bond_duration_months: bondDurationMonths,
+              funded_amount: application.approved_amount || application.total_estimated_cost,
+              currency: application.currency || 'LYD',
+              expected_return_date: application.end_date,
+              status: 'pending',
+              created_by: user?.id,
+            });
+          
+          if (bondError) {
+            console.error('Failed to create bond record:', bondError);
+            // Don't throw - still secondary to acceptance
+          }
         }
       }
       
@@ -650,6 +679,8 @@ export function useRespondToOffer() {
       queryClient.invalidateQueries({ queryKey: ['scholarship-application'] });
       queryClient.invalidateQueries({ queryKey: ['scholar-records'] });
       queryClient.invalidateQueries({ queryKey: ['my-scholar-record'] });
+      queryClient.invalidateQueries({ queryKey: ['bonds'] });
+      queryClient.invalidateQueries({ queryKey: ['my-bond'] });
       toast.success('Response recorded successfully');
     },
     onError: (error) => {
