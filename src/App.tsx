@@ -21,6 +21,7 @@ import SessionCompletion from "./pages/SessionCompletion";
 import Reports from "./pages/Reports";
 import TeamNominations from "./pages/TeamNominations";
 import LearningHistory from "./pages/LearningHistory";
+import TeamLearningHistory from "./pages/TeamLearningHistory";
 import ComplianceDashboard from "./pages/ComplianceDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -164,6 +165,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <TeamNominations />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/team-learning"
+        element={
+          <ProtectedRoute>
+            <TeamLearningHistory />
           </ProtectedRoute>
         }
       />

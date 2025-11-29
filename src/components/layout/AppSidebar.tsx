@@ -38,6 +38,7 @@ const mainNavItems = [
 
 const managerNavItems = [
   { title: 'Team Requests', url: '/team-requests', icon: Users, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
+  { title: 'Team Learning', url: '/team-learning', icon: GraduationCap, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Approvals', url: '/approvals', icon: CheckSquare, roles: ['manager', 'hrbp', 'l_and_d', 'chro', 'admin'] },
 ];
 

@@ -50,6 +50,7 @@ import {
   Upload,
   Check,
 } from 'lucide-react';
+import { CSVImportDialog } from '@/components/attendance/CSVImportDialog';
 import { format } from 'date-fns';
 
 const attendanceOptions = [
@@ -67,6 +68,7 @@ export default function SessionAttendance() {
 
   const [attendanceData, setAttendanceData] = useState<Record<string, { status: string; comments: string }>>({});
   const [showFinalizeDialog, setShowFinalizeDialog] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
   const canEdit = hasRole('l_and_d') || hasRole('admin');
@@ -340,6 +342,10 @@ export default function SessionAttendance() {
                   <Download className="h-4 w-4 mr-2" />
                   Export Template
                 </Button>
+                <Button variant="outline" onClick={() => setShowImportDialog(true)}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Import CSV
+                </Button>
                 <div className="flex-1" />
                 <Button
                   variant="outline"
@@ -482,6 +488,14 @@ export default function SessionAttendance() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* CSV Import Dialog */}
+        <CSVImportDialog
+          open={showImportDialog}
+          onOpenChange={setShowImportDialog}
+          sessionId={id || ''}
+          enrollments={enrollments || []}
+        />
       </div>
     </DashboardLayout>
   );
