@@ -48,6 +48,9 @@ import MyBond from "./pages/MyBond";
 import CatalogueAdmin from "./pages/CatalogueAdmin";
 import CatalogueDetail from "./pages/CatalogueDetail";
 import CatalogueForm from "./pages/CatalogueForm";
+import ProviderAdmin from "./pages/ProviderAdmin";
+import ProviderDetail from "./pages/ProviderDetail";
+import ProviderForm from "./pages/ProviderForm";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -422,6 +425,40 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <CatalogueForm />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Provider Routes */}
+      <Route
+        path="/providers"
+        element={
+          <ProtectedRoute>
+            <ProviderAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/providers/new"
+        element={
+          <ProtectedRoute>
+            <ProviderForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/providers/:id"
+        element={
+          <ProtectedRoute>
+            <ProviderDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/providers/:id/edit"
+        element={
+          <ProtectedRoute>
+            <ProviderForm />
           </ProtectedRoute>
         }
       />

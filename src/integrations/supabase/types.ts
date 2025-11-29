@@ -1879,6 +1879,215 @@ export type Database = {
           },
         ]
       }
+      provider_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          comment: string | null
+          created_at: string | null
+          field_changed: string | null
+          id: string
+          new_status: Database["public"]["Enums"]["provider_status"] | null
+          new_value: string | null
+          old_status: Database["public"]["Enums"]["provider_status"] | null
+          old_value: string | null
+          provider_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          comment?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          new_status?: Database["public"]["Enums"]["provider_status"] | null
+          new_value?: string | null
+          old_status?: Database["public"]["Enums"]["provider_status"] | null
+          old_value?: string | null
+          provider_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          comment?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          new_status?: Database["public"]["Enums"]["provider_status"] | null
+          new_value?: string | null
+          old_status?: Database["public"]["Enums"]["provider_status"] | null
+          old_value?: string | null
+          provider_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_audit_log_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "training_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_banking: {
+        Row: {
+          account_number: string | null
+          bank_branch: string | null
+          bank_country: string | null
+          bank_name: string | null
+          created_at: string | null
+          created_by: string | null
+          iban: string | null
+          id: string
+          provider_id: string
+          swift_bic: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          account_number?: string | null
+          bank_branch?: string | null
+          bank_country?: string | null
+          bank_name?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          iban?: string | null
+          id?: string
+          provider_id: string
+          swift_bic?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          account_number?: string | null
+          bank_branch?: string | null
+          bank_country?: string | null
+          bank_name?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          iban?: string | null
+          id?: string
+          provider_id?: string
+          swift_bic?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_banking_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
+            referencedRelation: "training_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_contacts: {
+        Row: {
+          contact_name: string
+          contact_role: string | null
+          created_at: string | null
+          email: string
+          id: string
+          is_primary: boolean | null
+          notes: string | null
+          phone: string | null
+          provider_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          contact_name: string
+          contact_role?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          is_primary?: boolean | null
+          notes?: string | null
+          phone?: string | null
+          provider_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          contact_name?: string
+          contact_role?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          is_primary?: boolean | null
+          notes?: string | null
+          phone?: string | null
+          provider_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_contacts_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "training_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_contracts: {
+        Row: {
+          billing_currency: string | null
+          contract_end_date: string | null
+          contract_reference: string
+          contract_start_date: string | null
+          contract_value: number | null
+          created_at: string | null
+          created_by: string | null
+          document_url: string | null
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          payment_terms: string | null
+          provider_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          billing_currency?: string | null
+          contract_end_date?: string | null
+          contract_reference: string
+          contract_start_date?: string | null
+          contract_value?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          document_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          payment_terms?: string | null
+          provider_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          billing_currency?: string | null
+          contract_end_date?: string | null
+          contract_reference?: string
+          contract_start_date?: string | null
+          contract_value?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          document_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          payment_terms?: string | null
+          provider_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_contracts_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "training_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       request_participants: {
         Row: {
           created_at: string | null
@@ -3041,42 +3250,97 @@ export type Database = {
       }
       training_providers: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
+          categories: string[] | null
           city: string | null
           contact_email: string | null
           contact_phone: string | null
           country: string | null
           created_at: string | null
+          created_by: string | null
+          delivery_modes: string[] | null
+          description: string | null
+          expertise_areas: string[] | null
           id: string
+          internal_rating: number | null
           is_active: boolean | null
+          is_local: boolean | null
+          languages: string[] | null
+          legal_name: string | null
+          migration_locked: boolean | null
+          migration_source: string | null
           name_ar: string | null
           name_en: string
+          provider_status: Database["public"]["Enums"]["provider_status"] | null
+          submitted_at: string | null
+          submitted_by: string | null
           updated_at: string | null
+          vendor_code: string | null
           website: string | null
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          categories?: string[] | null
           city?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           country?: string | null
           created_at?: string | null
+          created_by?: string | null
+          delivery_modes?: string[] | null
+          description?: string | null
+          expertise_areas?: string[] | null
           id?: string
+          internal_rating?: number | null
           is_active?: boolean | null
+          is_local?: boolean | null
+          languages?: string[] | null
+          legal_name?: string | null
+          migration_locked?: boolean | null
+          migration_source?: string | null
           name_ar?: string | null
           name_en: string
+          provider_status?:
+            | Database["public"]["Enums"]["provider_status"]
+            | null
+          submitted_at?: string | null
+          submitted_by?: string | null
           updated_at?: string | null
+          vendor_code?: string | null
           website?: string | null
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          categories?: string[] | null
           city?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           country?: string | null
           created_at?: string | null
+          created_by?: string | null
+          delivery_modes?: string[] | null
+          description?: string | null
+          expertise_areas?: string[] | null
           id?: string
+          internal_rating?: number | null
           is_active?: boolean | null
+          is_local?: boolean | null
+          languages?: string[] | null
+          legal_name?: string | null
+          migration_locked?: boolean | null
+          migration_source?: string | null
           name_ar?: string | null
           name_en?: string
+          provider_status?:
+            | Database["public"]["Enums"]["provider_status"]
+            | null
+          submitted_at?: string | null
+          submitted_by?: string | null
           updated_at?: string | null
+          vendor_code?: string | null
           website?: string | null
         }
         Relationships: []
@@ -3397,6 +3661,12 @@ export type Database = {
       cost_level: "low" | "medium" | "high"
       cost_unit_type: "per_participant" | "per_session"
       delivery_mode: "classroom" | "online" | "blended" | "on_the_job"
+      provider_status:
+        | "draft"
+        | "pending_approval"
+        | "active"
+        | "inactive"
+        | "blocked"
       request_status:
         | "draft"
         | "pending"
@@ -3547,6 +3817,13 @@ export const Constants = {
       cost_level: ["low", "medium", "high"],
       cost_unit_type: ["per_participant", "per_session"],
       delivery_mode: ["classroom", "online", "blended", "on_the_job"],
+      provider_status: [
+        "draft",
+        "pending_approval",
+        "active",
+        "inactive",
+        "blocked",
+      ],
       request_status: [
         "draft",
         "pending",
