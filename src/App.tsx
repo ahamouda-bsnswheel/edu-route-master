@@ -41,6 +41,9 @@ import MyScholarProgress from "./pages/MyScholarProgress";
 import TeamScholars from "./pages/TeamScholars";
 import ScholarsAdmin from "./pages/ScholarsAdmin";
 import RiskDashboard from "./pages/RiskDashboard";
+import BondDashboard from "./pages/BondDashboard";
+import BondRecord from "./pages/BondRecord";
+import MyBond from "./pages/MyBond";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -347,6 +350,32 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <RiskDashboard />
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* Bond Routes */}
+      <Route
+        path="/bonds"
+        element={
+          <ProtectedRoute>
+            <BondDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/bonds/:id"
+        element={
+          <ProtectedRoute>
+            <BondRecord />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-bond"
+        element={
+          <ProtectedRoute>
+            <MyBond />
           </ProtectedRoute>
         }
       />

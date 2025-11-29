@@ -18,9 +18,11 @@ import { NotificationCenter } from '@/components/notifications/NotificationCente
 
 interface DashboardLayoutProps {
   children: ReactNode;
+  title?: string;
+  description?: string;
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({ children, title, description }: DashboardLayoutProps) {
   const { profile, signOut, roles } = useAuth();
   const navigate = useNavigate();
 
@@ -100,6 +102,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
           {/* Main Content */}
           <main className="flex-1 p-6 overflow-auto bg-background">
+            {(title || description) && (
+              <div className="mb-6">
+                {title && <h1 className="text-2xl font-bold tracking-tight">{title}</h1>}
+                {description && <p className="text-muted-foreground">{description}</p>}
+              </div>
+            )}
             {children}
           </main>
         </div>

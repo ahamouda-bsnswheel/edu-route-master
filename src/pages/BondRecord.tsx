@@ -53,7 +53,7 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
 export default function BondRecord() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { isLAndD, isHRBP, isAdmin, isCHRO } = useAuth();
+  const { isLandD, isHRBP, isAdmin, isCHRO } = useAuth();
   
   const [returnDialogOpen, setReturnDialogOpen] = useState(false);
   const [eventDialogOpen, setEventDialogOpen] = useState(false);
@@ -64,7 +64,7 @@ export default function BondRecord() {
   const { data: events } = useBondEvents(id || null);
   const { data: repayments } = useBondRepayments(id || null);
 
-  const canManage = isLAndD || isAdmin;
+  const canManage = isLandD || isAdmin;
   const canUpdate = canManage || isHRBP;
 
   if (isLoading) {

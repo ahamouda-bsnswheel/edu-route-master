@@ -27,6 +27,7 @@ import {
   GraduationCap,
   Shield,
   Award,
+  Briefcase,
 } from 'lucide-react';
 
 const mainNavItems = [
@@ -37,6 +38,7 @@ const mainNavItems = [
   { title: 'My Certificates', url: '/my-certificates', icon: Award, roles: [] },
   { title: 'Scholarships', url: '/my-scholarships', icon: GraduationCap, roles: [] },
   { title: 'My Academic Progress', url: '/my-scholar-progress', icon: GraduationCap, roles: [] },
+  { title: 'My Service Bond', url: '/my-bond', icon: Briefcase, roles: [] },
   { title: 'Training Calendar', url: '/calendar', icon: Calendar, roles: [] },
 ];
 
@@ -54,6 +56,7 @@ const adminNavItems = [
   { title: 'Certificates', url: '/certificate-admin', icon: Award, roles: ['l_and_d', 'admin'] },
   { title: 'Scholars', url: '/scholars', icon: GraduationCap, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
   { title: 'AI Risk Dashboard', url: '/risk-dashboard', icon: Shield, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
+  { title: 'Bond Tracking', url: '/bonds', icon: Briefcase, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
   { title: 'Scholars Admin', url: '/scholars-admin', icon: Settings, roles: ['l_and_d', 'admin'] },
   { title: 'Scholarship Admin', url: '/scholarship/admin', icon: GraduationCap, roles: ['l_and_d', 'admin'] },
   { title: 'HRBP Scholarship', url: '/scholarship/hrbp-review', icon: GraduationCap, roles: ['hrbp', 'l_and_d', 'admin'] },
