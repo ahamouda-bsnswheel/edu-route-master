@@ -716,6 +716,97 @@ export type Database = {
           },
         ]
       }
+      catalogue_approvals: {
+        Row: {
+          approver_id: string
+          comments: string | null
+          course_id: string
+          created_at: string | null
+          decision: string | null
+          decision_at: string | null
+          id: string
+          status: string | null
+        }
+        Insert: {
+          approver_id: string
+          comments?: string | null
+          course_id: string
+          created_at?: string | null
+          decision?: string | null
+          decision_at?: string | null
+          id?: string
+          status?: string | null
+        }
+        Update: {
+          approver_id?: string
+          comments?: string | null
+          course_id?: string
+          created_at?: string | null
+          decision?: string | null
+          decision_at?: string | null
+          id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalogue_approvals_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalogue_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          comment: string | null
+          course_id: string | null
+          created_at: string | null
+          field_changed: string | null
+          id: string
+          new_status: Database["public"]["Enums"]["catalogue_status"] | null
+          new_value: string | null
+          old_status: Database["public"]["Enums"]["catalogue_status"] | null
+          old_value: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          comment?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          new_status?: Database["public"]["Enums"]["catalogue_status"] | null
+          new_value?: string | null
+          old_status?: Database["public"]["Enums"]["catalogue_status"] | null
+          old_value?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          comment?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          new_status?: Database["public"]["Enums"]["catalogue_status"] | null
+          new_value?: string | null
+          old_status?: Database["public"]["Enums"]["catalogue_status"] | null
+          old_value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalogue_audit_log_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       certificate_audit_log: {
         Row: {
           action: string
@@ -1038,6 +1129,51 @@ export type Database = {
           },
         ]
       }
+      competencies: {
+        Row: {
+          category: string | null
+          code: string
+          created_at: string | null
+          created_by: string | null
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          is_active: boolean | null
+          max_level: number | null
+          name_ar: string | null
+          name_en: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          code: string
+          created_at?: string | null
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_level?: number | null
+          name_ar?: string | null
+          name_en: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          created_at?: string | null
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_level?: number | null
+          name_ar?: string | null
+          name_en?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       compliance_requirements: {
         Row: {
           course_id: string
@@ -1172,15 +1308,112 @@ export type Database = {
           },
         ]
       }
+      course_competencies: {
+        Row: {
+          competency_id: string
+          course_id: string
+          created_at: string | null
+          id: string
+          is_primary: boolean | null
+          level_from: number | null
+          level_to: number | null
+        }
+        Insert: {
+          competency_id: string
+          course_id: string
+          created_at?: string | null
+          id?: string
+          is_primary?: boolean | null
+          level_from?: number | null
+          level_to?: number | null
+        }
+        Update: {
+          competency_id?: string
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          is_primary?: boolean | null
+          level_from?: number | null
+          level_to?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_competencies_competency_id_fkey"
+            columns: ["competency_id"]
+            isOneToOne: false
+            referencedRelation: "competencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_competencies_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_job_roles: {
+        Row: {
+          course_id: string
+          created_at: string | null
+          id: string
+          is_mandatory: boolean | null
+          job_role_id: string
+          mandatory_for_location: string | null
+        }
+        Insert: {
+          course_id: string
+          created_at?: string | null
+          id?: string
+          is_mandatory?: boolean | null
+          job_role_id: string
+          mandatory_for_location?: string | null
+        }
+        Update: {
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          is_mandatory?: boolean | null
+          job_role_id?: string
+          mandatory_for_location?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_job_roles_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_job_roles_job_role_id_fkey"
+            columns: ["job_role_id"]
+            isOneToOne: false
+            referencedRelation: "job_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
+          abroad_city: string | null
+          abroad_country: string | null
+          approved_at: string | null
+          approved_by: string | null
+          catalogue_status:
+            | Database["public"]["Enums"]["catalogue_status"]
+            | null
           category_id: string | null
           certificate_template: string | null
           code: string | null
+          contracted_rate: number | null
           cost_amount: number | null
           cost_currency: string | null
           cost_level: Database["public"]["Enums"]["cost_level"] | null
+          cost_unit_type: Database["public"]["Enums"]["cost_unit_type"] | null
           created_at: string | null
+          delivery_languages: string[] | null
           delivery_mode: Database["public"]["Enums"]["delivery_mode"]
           description_ar: string | null
           description_en: string | null
@@ -1190,30 +1423,49 @@ export type Database = {
           id: string
           is_active: boolean | null
           is_mandatory: boolean | null
+          local_site: string | null
           max_participants: number | null
+          migration_locked: boolean | null
+          migration_source: string | null
           min_attendance_percent: number | null
           min_participants: number | null
           name_ar: string | null
           name_en: string
+          objectives: string | null
           pass_score: number | null
           prerequisites: string[] | null
           provider_id: string | null
           require_both_attendance_and_assessment: boolean | null
+          submitted_at: string | null
+          submitted_by: string | null
+          target_audience: string | null
           target_grades: string[] | null
           training_location:
             | Database["public"]["Enums"]["training_location"]
             | null
+          typical_frequency: string | null
           updated_at: string | null
           validity_months: number | null
+          version: number | null
         }
         Insert: {
+          abroad_city?: string | null
+          abroad_country?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          catalogue_status?:
+            | Database["public"]["Enums"]["catalogue_status"]
+            | null
           category_id?: string | null
           certificate_template?: string | null
           code?: string | null
+          contracted_rate?: number | null
           cost_amount?: number | null
           cost_currency?: string | null
           cost_level?: Database["public"]["Enums"]["cost_level"] | null
+          cost_unit_type?: Database["public"]["Enums"]["cost_unit_type"] | null
           created_at?: string | null
+          delivery_languages?: string[] | null
           delivery_mode?: Database["public"]["Enums"]["delivery_mode"]
           description_ar?: string | null
           description_en?: string | null
@@ -1223,30 +1475,49 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           is_mandatory?: boolean | null
+          local_site?: string | null
           max_participants?: number | null
+          migration_locked?: boolean | null
+          migration_source?: string | null
           min_attendance_percent?: number | null
           min_participants?: number | null
           name_ar?: string | null
           name_en: string
+          objectives?: string | null
           pass_score?: number | null
           prerequisites?: string[] | null
           provider_id?: string | null
           require_both_attendance_and_assessment?: boolean | null
+          submitted_at?: string | null
+          submitted_by?: string | null
+          target_audience?: string | null
           target_grades?: string[] | null
           training_location?:
             | Database["public"]["Enums"]["training_location"]
             | null
+          typical_frequency?: string | null
           updated_at?: string | null
           validity_months?: number | null
+          version?: number | null
         }
         Update: {
+          abroad_city?: string | null
+          abroad_country?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          catalogue_status?:
+            | Database["public"]["Enums"]["catalogue_status"]
+            | null
           category_id?: string | null
           certificate_template?: string | null
           code?: string | null
+          contracted_rate?: number | null
           cost_amount?: number | null
           cost_currency?: string | null
           cost_level?: Database["public"]["Enums"]["cost_level"] | null
+          cost_unit_type?: Database["public"]["Enums"]["cost_unit_type"] | null
           created_at?: string | null
+          delivery_languages?: string[] | null
           delivery_mode?: Database["public"]["Enums"]["delivery_mode"]
           description_ar?: string | null
           description_en?: string | null
@@ -1256,21 +1527,30 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           is_mandatory?: boolean | null
+          local_site?: string | null
           max_participants?: number | null
+          migration_locked?: boolean | null
+          migration_source?: string | null
           min_attendance_percent?: number | null
           min_participants?: number | null
           name_ar?: string | null
           name_en?: string
+          objectives?: string | null
           pass_score?: number | null
           prerequisites?: string[] | null
           provider_id?: string | null
           require_both_attendance_and_assessment?: boolean | null
+          submitted_at?: string | null
+          submitted_by?: string | null
+          target_audience?: string | null
           target_grades?: string[] | null
           training_location?:
             | Database["public"]["Enums"]["training_location"]
             | null
+          typical_frequency?: string | null
           updated_at?: string | null
           validity_months?: number | null
+          version?: number | null
         }
         Relationships: [
           {
@@ -1438,6 +1718,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      job_roles: {
+        Row: {
+          code: string
+          created_at: string | null
+          description_en: string | null
+          id: string
+          is_active: boolean | null
+          job_family: string | null
+          name_ar: string | null
+          name_en: string
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          description_en?: string | null
+          id?: string
+          is_active?: boolean | null
+          job_family?: string | null
+          name_ar?: string | null
+          name_en: string
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          description_en?: string | null
+          id?: string
+          is_active?: boolean | null
+          job_family?: string | null
+          name_ar?: string | null
+          name_en?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -2856,6 +3172,45 @@ export type Database = {
           },
         ]
       }
+      training_sites: {
+        Row: {
+          address: string | null
+          capacity: number | null
+          city: string | null
+          code: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          name_ar: string | null
+          name_en: string
+          site_type: string | null
+        }
+        Insert: {
+          address?: string | null
+          capacity?: number | null
+          city?: string | null
+          code: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name_ar?: string | null
+          name_en: string
+          site_type?: string | null
+        }
+        Update: {
+          address?: string | null
+          capacity?: number | null
+          city?: string | null
+          code?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          name_ar?: string | null
+          name_en?: string
+          site_type?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -3038,7 +3393,9 @@ export type Database = {
         | "finance"
         | "committee"
       approval_status: "pending" | "approved" | "rejected" | "escalated"
+      catalogue_status: "draft" | "pending_approval" | "active" | "retired"
       cost_level: "low" | "medium" | "high"
+      cost_unit_type: "per_participant" | "per_session"
       delivery_mode: "classroom" | "online" | "blended" | "on_the_job"
       request_status:
         | "draft"
@@ -3186,7 +3543,9 @@ export const Constants = {
         "committee",
       ],
       approval_status: ["pending", "approved", "rejected", "escalated"],
+      catalogue_status: ["draft", "pending_approval", "active", "retired"],
       cost_level: ["low", "medium", "high"],
+      cost_unit_type: ["per_participant", "per_session"],
       delivery_mode: ["classroom", "online", "blended", "on_the_job"],
       request_status: [
         "draft",
