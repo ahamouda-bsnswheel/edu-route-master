@@ -258,6 +258,10 @@ export default function CatalogueForm() {
       const courseData = {
         ...formData,
         catalogue_status: (submitForApproval ? 'pending_approval' : 'draft') as 'draft' | 'pending_approval' | 'active' | 'retired',
+        delivery_mode: formData.delivery_mode as 'classroom' | 'online' | 'blended' | 'on_the_job',
+        training_location: formData.training_location as 'local' | 'abroad' | null,
+        cost_unit_type: (formData.cost_unit_type || null) as 'per_participant' | 'per_session' | null,
+        cost_level: (formData.cost_level || null) as 'low' | 'medium' | 'high' | null,
         submitted_by: submitForApproval ? user?.id : null,
         submitted_at: submitForApproval ? new Date().toISOString() : null,
         updated_at: new Date().toISOString(),
