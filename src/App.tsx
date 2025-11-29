@@ -34,6 +34,7 @@ import ScholarshipHRBPReview from "./pages/ScholarshipHRBPReview";
 import ScholarshipCommittee from "./pages/ScholarshipCommittee";
 import ScholarshipFinanceReview from "./pages/ScholarshipFinanceReview";
 import ScholarshipFinalApproval from "./pages/ScholarshipFinalApproval";
+import ScholarshipAdmin from "./pages/ScholarshipAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -284,6 +285,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ScholarshipFinalApproval />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scholarship/admin"
+        element={
+          <ProtectedRoute>
+            <ScholarshipAdmin />
           </ProtectedRoute>
         }
       />

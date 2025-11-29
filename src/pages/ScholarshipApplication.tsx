@@ -203,7 +203,7 @@ export default function ScholarshipApplication() {
       
       // Then submit
       await submitMutation.mutateAsync(appId);
-      navigate('/scholarship/my-applications');
+      navigate('/my-scholarships');
     } catch (error) {
       // Error handled by mutations
     }
