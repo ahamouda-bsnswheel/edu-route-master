@@ -40,6 +40,7 @@ import {
 } from '@/hooks/useTNA';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
+import { HistoricalTNAImport } from '@/components/tna/HistoricalTNAImport';
 
 const statusColors: Record<string, string> = {
   draft: 'bg-muted text-muted-foreground',
@@ -142,13 +143,15 @@ export default function TNAAdmin() {
                 Create and manage training needs analysis periods
               </CardDescription>
             </div>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={handleOpenCreate}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Period
-                </Button>
-              </DialogTrigger>
+            <div className="flex items-center gap-2">
+              <HistoricalTNAImport />
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={handleOpenCreate}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Period
+                  </Button>
+                </DialogTrigger>
               <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                   <DialogTitle>
@@ -282,7 +285,8 @@ export default function TNAAdmin() {
                   </DialogFooter>
                 </form>
               </DialogContent>
-            </Dialog>
+              </Dialog>
+            </div>
           </CardHeader>
         </Card>
 

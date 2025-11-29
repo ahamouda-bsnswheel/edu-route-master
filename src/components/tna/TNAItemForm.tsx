@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -20,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Cloud, CloudOff } from 'lucide-react';
 import type { TNAItem } from '@/hooks/useTNA';
 
 interface TNAItemFormProps {
@@ -39,6 +41,7 @@ const quarterOptions = [
 ];
 
 export function TNAItemForm({ open, onOpenChange, item, submissionId, onSave, isSaving }: TNAItemFormProps) {
+  const storageKey = `tna-item-draft-${submissionId}`;
   const [formData, setFormData] = useState({
     competency_id: '',
     competency_text: '',
@@ -52,6 +55,46 @@ export function TNAItemForm({ open, onOpenChange, item, submissionId, onSave, is
     estimated_cost: '',
     cost_currency: 'LYD',
   });
+  const [isDraftSaved, setIsDraftSaved] = useState(false);
+
+  // Auto-save draft to localStorage
+  const saveDraftToStorage = useCallback(() => {
+    if (!open || item) return; // Only save for new items
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(formData));
+      setIsDraftSaved(true);
+      setTimeout(() => setIsDraftSaved(false), 2000);
+    } catch (e) {
+      // Ignore storage errors
+    }
+  }, [formData, open, item, storageKey]);
+
+  // Debounced auto-save (save after 3 seconds of no changes)
+  useEffect(() => {
+    if (!open || item) return;
+    const timeout = setTimeout(saveDraftToStorage, 3000);
+    return () => clearTimeout(timeout);
+  }, [formData, open, item, saveDraftToStorage]);
+
+  // Restore draft from localStorage on open
+  const restoreDraft = useCallback(() => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setFormData(parsed);
+        return true;
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+    return false;
+  }, [storageKey]);
+
+  // Clear draft from localStorage
+  const clearDraft = useCallback(() => {
+    localStorage.removeItem(storageKey);
+  }, [storageKey]);
 
   // Fetch competencies
   const { data: competencies = [] } = useQuery({
@@ -97,22 +140,26 @@ export function TNAItemForm({ open, onOpenChange, item, submissionId, onSave, is
         estimated_cost: item.estimated_cost?.toString() || '',
         cost_currency: item.cost_currency || 'LYD',
       });
-    } else {
-      setFormData({
-        competency_id: '',
-        competency_text: '',
-        training_type: 'short_term',
-        training_location: 'local',
-        course_id: '',
-        course_text: '',
-        justification: '',
-        priority: 'medium',
-        target_quarter: '',
-        estimated_cost: '',
-        cost_currency: 'LYD',
-      });
+    } else if (open) {
+      // Try to restore draft for new items
+      const restored = restoreDraft();
+      if (!restored) {
+        setFormData({
+          competency_id: '',
+          competency_text: '',
+          training_type: 'short_term',
+          training_location: 'local',
+          course_id: '',
+          course_text: '',
+          justification: '',
+          priority: 'medium',
+          target_quarter: '',
+          estimated_cost: '',
+          cost_currency: 'LYD',
+        });
+      }
     }
-  }, [item, open]);
+  }, [item, open, restoreDraft]);
 
   // Auto-populate cost when course is selected
   useEffect(() => {
@@ -129,6 +176,9 @@ export function TNAItemForm({ open, onOpenChange, item, submissionId, onSave, is
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Clear draft on submit
+    clearDraft();
     
     onSave({
       ...(item?.id && { id: item.id }),
@@ -148,10 +198,24 @@ export function TNAItemForm({ open, onOpenChange, item, submissionId, onSave, is
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      if (!isOpen && !item) {
+        // Save draft when closing without saving
+        saveDraftToStorage();
+      }
+      onOpenChange(isOpen);
+    }}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{item ? 'Edit Training Need' : 'Add Training Need'}</DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle>{item ? 'Edit Training Need' : 'Add Training Need'}</DialogTitle>
+            {!item && isDraftSaved && (
+              <Badge variant="outline" className="flex items-center gap-1 text-xs">
+                <Cloud className="h-3 w-3" />
+                Draft saved
+              </Badge>
+            )}
+          </div>
           <DialogDescription>
             Fill in the details of the training need
           </DialogDescription>
