@@ -262,3 +262,128 @@ export function useScenarioComparison(scenarioIds: string[]) {
     enabled: scenarioIds.length > 0,
   });
 }
+
+export function useImportScenario() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (params: {
+      planId: string;
+      planVersion: number;
+      name: string;
+      description?: string;
+      importData: Array<{
+        courseCode?: string;
+        courseName?: string;
+        entity?: string;
+        category?: string;
+        adjustedVolume?: number;
+        adjustedCost?: number;
+      }>;
+    }) => {
+      const response = await supabase.functions.invoke('manage-scenario', {
+        body: { action: 'import', ...params },
+      });
+      if (response.error) throw response.error;
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['scenarios'] });
+      toast({
+        title: 'Scenario Imported',
+        description: `Imported ${data.importedCount} items. ${data.skippedCount} rows skipped.`,
+      });
+    },
+    onError: (error: Error) => toast({ title: 'Import Failed', description: error.message, variant: 'destructive' }),
+  });
+}
+
+export function useExportScenario() {
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (params: {
+      scenarioId: string;
+      format: 'csv' | 'xlsx';
+      options: {
+        includeBaseline: boolean;
+        includeDeltas: boolean;
+        includeCosts: boolean;
+        onlyCutItems: boolean;
+      };
+    }) => {
+      // Fetch scenario items
+      let query = supabase
+        .from('scenario_items')
+        .select('*')
+        .eq('scenario_id', params.scenarioId);
+
+      if (params.options.onlyCutItems) {
+        query = query.eq('is_cut', true);
+      }
+
+      const { data: items, error } = await query;
+      if (error) throw error;
+
+      // Build CSV content
+      const headers = ['Course ID', 'Course Name', 'Entity', 'Category', 'Priority Band'];
+      if (params.options.includeBaseline) {
+        headers.push('Baseline Volume', 'Baseline Cost');
+      }
+      headers.push('Scenario Volume', 'Scenario Cost');
+      if (params.options.includeDeltas) {
+        headers.push('Volume Delta', 'Cost Delta', 'Volume Delta %', 'Cost Delta %');
+      }
+
+      const rows = items?.map(item => {
+        const row: (string | number)[] = [
+          item.course_id || '',
+          item.course_name || '',
+          item.entity_name || '',
+          item.category_name || '',
+          item.priority_band || '',
+        ];
+        if (params.options.includeBaseline) {
+          row.push(item.baseline_volume, params.options.includeCosts ? item.baseline_cost : '');
+        }
+        row.push(item.scenario_volume, params.options.includeCosts ? item.scenario_cost : '');
+        if (params.options.includeDeltas) {
+          const volumeDelta = item.scenario_volume - item.baseline_volume;
+          const costDelta = item.scenario_cost - item.baseline_cost;
+          const volumeDeltaPct = item.baseline_volume ? ((volumeDelta / item.baseline_volume) * 100).toFixed(1) : '0';
+          const costDeltaPct = item.baseline_cost ? ((costDelta / item.baseline_cost) * 100).toFixed(1) : '0';
+          row.push(volumeDelta, params.options.includeCosts ? costDelta : '', volumeDeltaPct + '%', costDeltaPct + '%');
+        }
+        return row;
+      }) || [];
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+
+      // Log export action
+      await supabase.from('scenario_audit_log').insert({
+        scenario_id: params.scenarioId,
+        action: 'exported',
+        actor_id: (await supabase.auth.getUser()).data.user?.id,
+        details: { format: params.format, options: params.options, rowCount: rows.length },
+      });
+
+      // Download file
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `scenario-export-${params.scenarioId.slice(0, 8)}.${params.format}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      return { exportedCount: rows.length };
+    },
+    onSuccess: (data) => {
+      toast({ title: 'Export Complete', description: `Exported ${data.exportedCount} items.` });
+    },
+    onError: (error: Error) => toast({ title: 'Export Failed', description: error.message, variant: 'destructive' }),
+  });
+}

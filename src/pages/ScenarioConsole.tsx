@@ -21,6 +21,7 @@ import {
   Trash2,
   CheckCircle,
   Archive,
+  Upload,
 } from 'lucide-react';
 import { 
   DropdownMenu, 
@@ -30,9 +31,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useScenarios, useDeleteScenario, useUpdateScenarioStatus, type PlanScenario } from '@/hooks/useScenarios';
 import { CreateScenarioDialog } from '@/components/scenarios/CreateScenarioDialog';
+import { ScenarioImportDialog } from '@/components/scenarios/ScenarioImportDialog';
 import { formatDistanceToNow } from 'date-fns';
 
-const statusConfig: Record<PlanScenario['status'], { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
   creating: { label: 'Creating', variant: 'outline' },
   draft: { label: 'Draft', variant: 'secondary' },
   under_review: { label: 'Under Review', variant: 'default' },
@@ -46,6 +48,7 @@ export default function ScenarioConsole() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const { data: scenarios, isLoading } = useScenarios();
   const deleteMutation = useDeleteScenario();
@@ -82,10 +85,16 @@ export default function ScenarioConsole() {
               Create and compare what-if scenarios for training plan budgets
             </p>
           </div>
-          <Button onClick={() => setCreateDialogOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create Scenario
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
+              <Upload className="h-4 w-4 mr-2" />
+              Import
+            </Button>
+            <Button onClick={() => setCreateDialogOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Create Scenario
+            </Button>
+          </div>
         </div>
 
         {/* Summary Cards */}
@@ -320,6 +329,7 @@ export default function ScenarioConsole() {
       </div>
 
       <CreateScenarioDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
+      <ScenarioImportDialog open={importDialogOpen} onOpenChange={setImportDialogOpen} />
     </DashboardLayout>
   );
 }
