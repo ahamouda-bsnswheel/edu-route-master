@@ -4116,6 +4116,301 @@ export type Database = {
           },
         ]
       }
+      training_plan_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          details: Json | null
+          field_changed: string | null
+          id: string
+          item_id: string | null
+          new_value: string | null
+          old_value: string | null
+          plan_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          field_changed?: string | null
+          id?: string
+          item_id?: string | null
+          new_value?: string | null
+          old_value?: string | null
+          plan_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          field_changed?: string | null
+          id?: string
+          item_id?: string | null
+          new_value?: string | null
+          old_value?: string | null
+          plan_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_plan_audit_log_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "training_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_plan_items: {
+        Row: {
+          category_id: string | null
+          cost_centre: string | null
+          cost_currency: string | null
+          course_id: string | null
+          created_at: string | null
+          created_by: string | null
+          delivery_mode: string | null
+          department_id: string | null
+          entity_id: string | null
+          excluded_at: string | null
+          excluded_by: string | null
+          exclusion_reason: string | null
+          finance_comments: string | null
+          hrbp_comments: string | null
+          id: string
+          is_catalogue_linked: boolean | null
+          is_tna_backed: boolean | null
+          item_name: string
+          item_name_ar: string | null
+          item_status: string | null
+          l_and_d_comments: string | null
+          max_participants_per_session: number | null
+          merged_into_id: string | null
+          plan_id: string
+          planned_participants: number
+          planned_sessions: number
+          priority: string | null
+          provider_id: string | null
+          provider_name: string | null
+          site: string | null
+          source_tna_ids: string[] | null
+          split_from_id: string | null
+          target_month: number | null
+          target_quarter: string | null
+          tna_item_count: number | null
+          training_location: string
+          training_type: string
+          unit_cost: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          cost_centre?: string | null
+          cost_currency?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          delivery_mode?: string | null
+          department_id?: string | null
+          entity_id?: string | null
+          excluded_at?: string | null
+          excluded_by?: string | null
+          exclusion_reason?: string | null
+          finance_comments?: string | null
+          hrbp_comments?: string | null
+          id?: string
+          is_catalogue_linked?: boolean | null
+          is_tna_backed?: boolean | null
+          item_name: string
+          item_name_ar?: string | null
+          item_status?: string | null
+          l_and_d_comments?: string | null
+          max_participants_per_session?: number | null
+          merged_into_id?: string | null
+          plan_id: string
+          planned_participants?: number
+          planned_sessions?: number
+          priority?: string | null
+          provider_id?: string | null
+          provider_name?: string | null
+          site?: string | null
+          source_tna_ids?: string[] | null
+          split_from_id?: string | null
+          target_month?: number | null
+          target_quarter?: string | null
+          tna_item_count?: number | null
+          training_location?: string
+          training_type?: string
+          unit_cost?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          cost_centre?: string | null
+          cost_currency?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          delivery_mode?: string | null
+          department_id?: string | null
+          entity_id?: string | null
+          excluded_at?: string | null
+          excluded_by?: string | null
+          exclusion_reason?: string | null
+          finance_comments?: string | null
+          hrbp_comments?: string | null
+          id?: string
+          is_catalogue_linked?: boolean | null
+          is_tna_backed?: boolean | null
+          item_name?: string
+          item_name_ar?: string | null
+          item_status?: string | null
+          l_and_d_comments?: string | null
+          max_participants_per_session?: number | null
+          merged_into_id?: string | null
+          plan_id?: string
+          planned_participants?: number
+          planned_sessions?: number
+          priority?: string | null
+          provider_id?: string | null
+          provider_name?: string | null
+          site?: string | null
+          source_tna_ids?: string[] | null
+          split_from_id?: string | null
+          target_month?: number | null
+          target_quarter?: string | null
+          tna_item_count?: number | null
+          training_location?: string
+          training_type?: string
+          unit_cost?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_plan_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "course_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_plan_items_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_plan_items_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_plan_items_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "training_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_plan_items_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "training_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_plans: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          area_reviewed_at: string | null
+          area_reviewed_by: string | null
+          corporate_reviewed_at: string | null
+          corporate_reviewed_by: string | null
+          cost_currency: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          fiscal_year: string
+          id: string
+          is_historical_import: boolean | null
+          locked_at: string | null
+          locked_by: string | null
+          name: string
+          status: Database["public"]["Enums"]["training_plan_status"]
+          tna_period_id: string | null
+          total_estimated_cost: number | null
+          total_participants: number | null
+          total_sessions: number | null
+          updated_at: string | null
+          version: number
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          area_reviewed_at?: string | null
+          area_reviewed_by?: string | null
+          corporate_reviewed_at?: string | null
+          corporate_reviewed_by?: string | null
+          cost_currency?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          fiscal_year: string
+          id?: string
+          is_historical_import?: boolean | null
+          locked_at?: string | null
+          locked_by?: string | null
+          name: string
+          status?: Database["public"]["Enums"]["training_plan_status"]
+          tna_period_id?: string | null
+          total_estimated_cost?: number | null
+          total_participants?: number | null
+          total_sessions?: number | null
+          updated_at?: string | null
+          version?: number
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          area_reviewed_at?: string | null
+          area_reviewed_by?: string | null
+          corporate_reviewed_at?: string | null
+          corporate_reviewed_by?: string | null
+          cost_currency?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          fiscal_year?: string
+          id?: string
+          is_historical_import?: boolean | null
+          locked_at?: string | null
+          locked_by?: string | null
+          name?: string
+          status?: Database["public"]["Enums"]["training_plan_status"]
+          tna_period_id?: string | null
+          total_estimated_cost?: number | null
+          total_participants?: number | null
+          total_sessions?: number | null
+          updated_at?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_plans_tna_period_id_fkey"
+            columns: ["tna_period_id"]
+            isOneToOne: false
+            referencedRelation: "tna_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       training_providers: {
         Row: {
           approved_at: string | null
@@ -4559,6 +4854,12 @@ export type Database = {
         | "failed"
         | "cancelled"
       training_location: "local" | "abroad"
+      training_plan_status:
+        | "draft"
+        | "under_area_review"
+        | "under_corporate_review"
+        | "approved"
+        | "locked"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4735,6 +5036,13 @@ export const Constants = {
         "cancelled",
       ],
       training_location: ["local", "abroad"],
+      training_plan_status: [
+        "draft",
+        "under_area_review",
+        "under_corporate_review",
+        "approved",
+        "locked",
+      ],
     },
   },
 } as const

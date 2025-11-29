@@ -58,6 +58,9 @@ import TeamTrainingNeeds from "./pages/TeamTrainingNeeds";
 import TNAOverview from "./pages/TNAOverview";
 import TNAAdmin from "./pages/TNAAdmin";
 import TNAForm from "./pages/TNAForm";
+import TrainingPlanBuilder from "./pages/TrainingPlanBuilder";
+import TrainingPlanDetail from "./pages/TrainingPlanDetail";
+import TrainingPlanCostView from "./pages/TrainingPlanCostView";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -482,6 +485,32 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ProviderPerformanceDetail />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Training Plan Routes */}
+      <Route
+        path="/training-plan"
+        element={
+          <ProtectedRoute>
+            <TrainingPlanBuilder />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/training-plan/:id"
+        element={
+          <ProtectedRoute>
+            <TrainingPlanDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/training-plan/:id/cost"
+        element={
+          <ProtectedRoute>
+            <TrainingPlanCostView />
           </ProtectedRoute>
         }
       />
