@@ -50,6 +50,7 @@ const managerNavItems = [
 const adminNavItems = [
   { title: 'Sessions', url: '/sessions', icon: GraduationCap, roles: ['l_and_d', 'chro', 'admin'] },
   { title: 'Certificates', url: '/certificate-admin', icon: Award, roles: ['l_and_d', 'admin'] },
+  { title: 'Scholarship Admin', url: '/scholarship/admin', icon: GraduationCap, roles: ['l_and_d', 'admin'] },
   { title: 'HRBP Scholarship', url: '/scholarship/hrbp-review', icon: GraduationCap, roles: ['hrbp', 'l_and_d', 'admin'] },
   { title: 'Scholarship Committee', url: '/scholarship/committee', icon: GraduationCap, roles: ['committee', 'l_and_d', 'chro', 'admin'] },
   { title: 'Finance Review', url: '/scholarship/finance-review', icon: GraduationCap, roles: ['finance', 'chro', 'admin'] },
