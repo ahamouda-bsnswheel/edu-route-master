@@ -61,6 +61,27 @@ export default function Approvals() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      
+      // Fetch requester profiles separately
+      if (data && data.length > 0) {
+        const requesterIds = [...new Set(data.map(a => a.request?.requester_id).filter(Boolean))];
+        if (requesterIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, first_name_en, last_name_en, employee_id, job_title_en')
+            .in('id', requesterIds);
+          
+          const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+          return data.map(approval => ({
+            ...approval,
+            request: approval.request ? {
+              ...approval.request,
+              requester: profileMap.get(approval.request.requester_id) || null
+            } : null
+          }));
+        }
+      }
+      
       return data;
     },
     enabled: !!user?.id,
@@ -202,10 +223,10 @@ export default function Approvals() {
                           <User className="h-4 w-4 text-muted-foreground" />
                           <div>
                             <p className="font-medium">
-                              Requester
+                              {(approval.request as any)?.requester?.first_name_en} {(approval.request as any)?.requester?.last_name_en}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              Request #{approval.request?.request_number}
+                              {(approval.request as any)?.requester?.job_title_en || (approval.request as any)?.requester?.employee_id}
                             </p>
                           </div>
                         </div>
