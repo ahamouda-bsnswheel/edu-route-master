@@ -14,6 +14,333 @@ export type Database = {
   }
   public: {
     Tables: {
+      academic_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          field_changed: string | null
+          id: string
+          module_id: string | null
+          new_value: string | null
+          old_value: string | null
+          scholar_record_id: string | null
+          term_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          module_id?: string | null
+          new_value?: string | null
+          old_value?: string | null
+          scholar_record_id?: string | null
+          term_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          module_id?: string | null
+          new_value?: string | null
+          old_value?: string | null
+          scholar_record_id?: string | null
+          term_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_audit_log_scholar_record_id_fkey"
+            columns: ["scholar_record_id"]
+            isOneToOne: false
+            referencedRelation: "scholar_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academic_audit_log_term_id_fkey"
+            columns: ["term_id"]
+            isOneToOne: false
+            referencedRelation: "academic_terms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academic_documents: {
+        Row: {
+          academic_year: string | null
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          notes: string | null
+          scholar_record_id: string
+          term_id: string | null
+          uploaded_at: string | null
+          uploaded_by: string | null
+          verification_status: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          academic_year?: string | null
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          scholar_record_id: string
+          term_id?: string | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          academic_year?: string | null
+          document_type?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          scholar_record_id?: string
+          term_id?: string | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_documents_scholar_record_id_fkey"
+            columns: ["scholar_record_id"]
+            isOneToOne: false
+            referencedRelation: "scholar_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academic_documents_term_id_fkey"
+            columns: ["term_id"]
+            isOneToOne: false
+            referencedRelation: "academic_terms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academic_events: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          document_url: string | null
+          end_date: string | null
+          event_date: string
+          event_type: string
+          id: string
+          impact_on_completion: boolean | null
+          new_expected_end_date: string | null
+          reason: string | null
+          scholar_record_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          document_url?: string | null
+          end_date?: string | null
+          event_date: string
+          event_type: string
+          id?: string
+          impact_on_completion?: boolean | null
+          new_expected_end_date?: string | null
+          reason?: string | null
+          scholar_record_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          document_url?: string | null
+          end_date?: string | null
+          event_date?: string
+          event_type?: string
+          id?: string
+          impact_on_completion?: boolean | null
+          new_expected_end_date?: string | null
+          reason?: string | null
+          scholar_record_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_events_scholar_record_id_fkey"
+            columns: ["scholar_record_id"]
+            isOneToOne: false
+            referencedRelation: "scholar_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academic_modules: {
+        Row: {
+          created_at: string | null
+          credits: number
+          exam_attempts: number | null
+          grade: string | null
+          grade_points: number | null
+          id: string
+          is_retake: boolean | null
+          module_code: string | null
+          module_name: string
+          module_type: string | null
+          notes: string | null
+          passed: boolean | null
+          term_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credits: number
+          exam_attempts?: number | null
+          grade?: string | null
+          grade_points?: number | null
+          id?: string
+          is_retake?: boolean | null
+          module_code?: string | null
+          module_name: string
+          module_type?: string | null
+          notes?: string | null
+          passed?: boolean | null
+          term_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credits?: number
+          exam_attempts?: number | null
+          grade?: string | null
+          grade_points?: number | null
+          id?: string
+          is_retake?: boolean | null
+          module_code?: string | null
+          module_name?: string
+          module_type?: string | null
+          notes?: string | null
+          passed?: boolean | null
+          term_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_modules_term_id_fkey"
+            columns: ["term_id"]
+            isOneToOne: false
+            referencedRelation: "academic_terms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academic_risk_rules: {
+        Row: {
+          condition_type: string
+          condition_value: Json
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          risk_level: string
+          rule_name: string
+        }
+        Insert: {
+          condition_type: string
+          condition_value: Json
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          risk_level: string
+          rule_name: string
+        }
+        Update: {
+          condition_type?: string
+          condition_value?: Json
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          risk_level?: string
+          rule_name?: string
+        }
+        Relationships: []
+      }
+      academic_terms: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          credits_attempted: number | null
+          credits_earned: number | null
+          end_date: string | null
+          id: string
+          notes: string | null
+          scholar_record_id: string
+          start_date: string | null
+          status: string | null
+          term_gpa: number | null
+          term_name: string
+          term_number: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          credits_attempted?: number | null
+          credits_earned?: number | null
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          scholar_record_id: string
+          start_date?: string | null
+          status?: string | null
+          term_gpa?: number | null
+          term_name: string
+          term_number: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          credits_attempted?: number | null
+          credits_earned?: number | null
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          scholar_record_id?: string
+          start_date?: string | null
+          status?: string | null
+          term_gpa?: number | null
+          term_name?: string
+          term_number?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_terms_scholar_record_id_fkey"
+            columns: ["scholar_record_id"]
+            isOneToOne: false
+            referencedRelation: "scholar_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       approvals: {
         Row: {
           approval_level: number
@@ -1022,6 +1349,101 @@ export type Database = {
             columns: ["request_id"]
             isOneToOne: false
             referencedRelation: "training_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholar_records: {
+        Row: {
+          actual_end_date: string | null
+          actual_start_date: string | null
+          application_id: string
+          country: string
+          created_at: string | null
+          credits_completed: number | null
+          cumulative_gpa: number | null
+          current_term_number: number | null
+          degree_level: string
+          employee_id: string
+          expected_end_date: string | null
+          gpa_scale: number | null
+          id: string
+          institution: string
+          notes_internal: string | null
+          program_name: string
+          risk_level: string | null
+          risk_override: boolean | null
+          risk_override_at: string | null
+          risk_override_by: string | null
+          risk_override_reason: string | null
+          status: string | null
+          term_structure: string | null
+          total_credits_required: number | null
+          total_terms: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          actual_end_date?: string | null
+          actual_start_date?: string | null
+          application_id: string
+          country: string
+          created_at?: string | null
+          credits_completed?: number | null
+          cumulative_gpa?: number | null
+          current_term_number?: number | null
+          degree_level: string
+          employee_id: string
+          expected_end_date?: string | null
+          gpa_scale?: number | null
+          id?: string
+          institution: string
+          notes_internal?: string | null
+          program_name: string
+          risk_level?: string | null
+          risk_override?: boolean | null
+          risk_override_at?: string | null
+          risk_override_by?: string | null
+          risk_override_reason?: string | null
+          status?: string | null
+          term_structure?: string | null
+          total_credits_required?: number | null
+          total_terms?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          actual_end_date?: string | null
+          actual_start_date?: string | null
+          application_id?: string
+          country?: string
+          created_at?: string | null
+          credits_completed?: number | null
+          cumulative_gpa?: number | null
+          current_term_number?: number | null
+          degree_level?: string
+          employee_id?: string
+          expected_end_date?: string | null
+          gpa_scale?: number | null
+          id?: string
+          institution?: string
+          notes_internal?: string | null
+          program_name?: string
+          risk_level?: string | null
+          risk_override?: boolean | null
+          risk_override_at?: string | null
+          risk_override_by?: string | null
+          risk_override_reason?: string | null
+          status?: string | null
+          term_structure?: string | null
+          total_credits_required?: number | null
+          total_terms?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholar_records_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "scholarship_applications"
             referencedColumns: ["id"]
           },
         ]
