@@ -17,8 +17,10 @@ const typeIcons: Record<string, React.ReactNode> = {
   request_rejected: <XCircle className="h-4 w-4 text-destructive" />,
   session_scheduled: <Calendar className="h-4 w-4 text-info" />,
   enrollment_confirmed: <CheckCircle className="h-4 w-4 text-success" />,
+  enrollment_waitlisted: <Clock className="h-4 w-4 text-warning" />,
   session_cancelled: <XCircle className="h-4 w-4 text-destructive" />,
   reminder: <Bell className="h-4 w-4 text-warning" />,
+  certificate_issued: <FileText className="h-4 w-4 text-success" />,
 };
 
 function NotificationItem({ 
@@ -81,6 +83,14 @@ export function NotificationCenter() {
         return `/sessions/${notification.reference_id}`;
       case 'approval':
         return '/approvals';
+      case 'scholarship_application':
+        return '/my-scholarship-applications';
+      case 'service_bond':
+        return '/my-bond';
+      case 'scholar_record':
+        return '/my-scholar-progress';
+      case 'certificate':
+        return '/my-certificates';
       default:
         return '/dashboard';
     }
