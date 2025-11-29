@@ -62,6 +62,7 @@ import TrainingPlanBuilder from "./pages/TrainingPlanBuilder";
 import TrainingPlanDetail from "./pages/TrainingPlanDetail";
 import TrainingPlanCostView from "./pages/TrainingPlanCostView";
 import MyTeamTrainingPlan from "./pages/MyTeamTrainingPlan";
+import AIPriorityAdmin from "./pages/AIPriorityAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -520,6 +521,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <MyTeamTrainingPlan />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ai-priority"
+        element={
+          <ProtectedRoute>
+            <AIPriorityAdmin />
           </ProtectedRoute>
         }
       />

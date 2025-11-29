@@ -341,6 +341,276 @@ export type Database = {
           },
         ]
       }
+      ai_priority_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+        }
+        Relationships: []
+      }
+      ai_priority_config: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          competency_gap_weight: number | null
+          compliance_status_weight: number | null
+          config_name: string
+          cost_efficiency_weight: number | null
+          created_at: string | null
+          created_by: string | null
+          critical_threshold: number | null
+          high_threshold: number | null
+          hse_criticality_weight: number | null
+          id: string
+          is_active: boolean | null
+          manager_priority_weight: number | null
+          medium_threshold: number | null
+          role_criticality_weight: number | null
+          strategic_alignment_weight: number | null
+          updated_at: string | null
+          version: number | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          competency_gap_weight?: number | null
+          compliance_status_weight?: number | null
+          config_name?: string
+          cost_efficiency_weight?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          critical_threshold?: number | null
+          high_threshold?: number | null
+          hse_criticality_weight?: number | null
+          id?: string
+          is_active?: boolean | null
+          manager_priority_weight?: number | null
+          medium_threshold?: number | null
+          role_criticality_weight?: number | null
+          strategic_alignment_weight?: number | null
+          updated_at?: string | null
+          version?: number | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          competency_gap_weight?: number | null
+          compliance_status_weight?: number | null
+          config_name?: string
+          cost_efficiency_weight?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          critical_threshold?: number | null
+          high_threshold?: number | null
+          hse_criticality_weight?: number | null
+          id?: string
+          is_active?: boolean | null
+          manager_priority_weight?: number | null
+          medium_threshold?: number | null
+          role_criticality_weight?: number | null
+          strategic_alignment_weight?: number | null
+          updated_at?: string | null
+          version?: number | null
+        }
+        Relationships: []
+      }
+      ai_priority_scores: {
+        Row: {
+          competency_gap_contribution: number | null
+          compliance_contribution: number | null
+          config_version: number | null
+          cost_contribution: number | null
+          created_at: string | null
+          explanation_summary: string | null
+          factor_details: Json | null
+          hse_contribution: number | null
+          id: string
+          is_overridden: boolean | null
+          manager_priority_contribution: number | null
+          model_version: string | null
+          original_band: string | null
+          original_score: number | null
+          overridden_at: string | null
+          overridden_by: string | null
+          override_reason: string | null
+          plan_item_id: string | null
+          priority_band: string
+          priority_score: number
+          role_criticality_contribution: number | null
+          scored_at: string | null
+          scoring_job_id: string | null
+          strategic_contribution: number | null
+          tna_item_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          competency_gap_contribution?: number | null
+          compliance_contribution?: number | null
+          config_version?: number | null
+          cost_contribution?: number | null
+          created_at?: string | null
+          explanation_summary?: string | null
+          factor_details?: Json | null
+          hse_contribution?: number | null
+          id?: string
+          is_overridden?: boolean | null
+          manager_priority_contribution?: number | null
+          model_version?: string | null
+          original_band?: string | null
+          original_score?: number | null
+          overridden_at?: string | null
+          overridden_by?: string | null
+          override_reason?: string | null
+          plan_item_id?: string | null
+          priority_band: string
+          priority_score: number
+          role_criticality_contribution?: number | null
+          scored_at?: string | null
+          scoring_job_id?: string | null
+          strategic_contribution?: number | null
+          tna_item_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          competency_gap_contribution?: number | null
+          compliance_contribution?: number | null
+          config_version?: number | null
+          cost_contribution?: number | null
+          created_at?: string | null
+          explanation_summary?: string | null
+          factor_details?: Json | null
+          hse_contribution?: number | null
+          id?: string
+          is_overridden?: boolean | null
+          manager_priority_contribution?: number | null
+          model_version?: string | null
+          original_band?: string | null
+          original_score?: number | null
+          overridden_at?: string | null
+          overridden_by?: string | null
+          override_reason?: string | null
+          plan_item_id?: string | null
+          priority_band?: string
+          priority_score?: number
+          role_criticality_contribution?: number | null
+          scored_at?: string | null
+          scoring_job_id?: string | null
+          strategic_contribution?: number | null
+          tna_item_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_priority_scores_plan_item_id_fkey"
+            columns: ["plan_item_id"]
+            isOneToOne: false
+            referencedRelation: "training_plan_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_priority_scores_tna_item_id_fkey"
+            columns: ["tna_item_id"]
+            isOneToOne: false
+            referencedRelation: "tna_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_scoring_jobs: {
+        Row: {
+          completed_at: string | null
+          config_snapshot: Json | null
+          created_at: string | null
+          created_by: string | null
+          error_count: number | null
+          error_log: Json | null
+          estimated_completion: string | null
+          id: string
+          job_name: string | null
+          job_type: string
+          model_version: string | null
+          plan_id: string | null
+          processed_items: number | null
+          scope_filter: Json | null
+          started_at: string | null
+          status: string | null
+          success_count: number | null
+          tna_period_id: string | null
+          total_items: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          config_snapshot?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          error_count?: number | null
+          error_log?: Json | null
+          estimated_completion?: string | null
+          id?: string
+          job_name?: string | null
+          job_type?: string
+          model_version?: string | null
+          plan_id?: string | null
+          processed_items?: number | null
+          scope_filter?: Json | null
+          started_at?: string | null
+          status?: string | null
+          success_count?: number | null
+          tna_period_id?: string | null
+          total_items?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          config_snapshot?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          error_count?: number | null
+          error_log?: Json | null
+          estimated_completion?: string | null
+          id?: string
+          job_name?: string | null
+          job_type?: string
+          model_version?: string | null
+          plan_id?: string | null
+          processed_items?: number | null
+          scope_filter?: Json | null
+          started_at?: string | null
+          status?: string | null
+          success_count?: number | null
+          tna_period_id?: string | null
+          total_items?: number | null
+        }
+        Relationships: []
+      }
       ai_tag_feedback: {
         Row: {
           action: string
