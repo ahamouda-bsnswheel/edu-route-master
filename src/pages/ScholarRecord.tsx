@@ -16,7 +16,7 @@ import { Progress } from '@/components/ui/progress';
 import { 
   GraduationCap, ArrowLeft, User, Building, Calendar, AlertTriangle,
   BookOpen, FileText, Bell, Plus, Edit, Trash2, Upload, CheckCircle,
-  XCircle, Clock, TrendingUp, TrendingDown, Flag, Save
+  XCircle, Clock, TrendingUp, TrendingDown, Flag, Save, RefreshCw, Brain
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuth } from '@/contexts/AuthContext';
@@ -26,6 +26,9 @@ import {
   useDeleteModule, useCreateEvent, useOverrideRiskLevel,
   AcademicTerm, AcademicModule, AcademicEvent
 } from '@/hooks/useAcademicProgress';
+import { useScholarRiskScore, useTriggerRiskScoring, useOverrideRiskBand } from '@/hooks/useScholarRisk';
+import { RiskExplanationPanel } from '@/components/risk/RiskExplanationPanel';
+import { RiskOverrideDialog } from '@/components/risk/RiskOverrideDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -75,6 +78,7 @@ export default function ScholarRecord() {
   const { data: terms } = useAcademicTerms(id || null);
   const { data: events } = useAcademicEvents(id || null);
   const { data: documents } = useAcademicDocuments(id || null);
+  const { data: aiRiskScore } = useScholarRiskScore(id || null);
   
   const updateRecord = useUpdateScholarRecord();
   const termMutation = useTermMutation();
@@ -82,12 +86,15 @@ export default function ScholarRecord() {
   const deleteModule = useDeleteModule();
   const createEvent = useCreateEvent();
   const overrideRisk = useOverrideRiskLevel();
+  const triggerRiskScoring = useTriggerRiskScoring();
+  const overrideRiskBand = useOverrideRiskBand();
   
   const [selectedTerm, setSelectedTerm] = useState<AcademicTerm | null>(null);
   const [termDialog, setTermDialog] = useState(false);
   const [moduleDialog, setModuleDialog] = useState(false);
   const [eventDialog, setEventDialog] = useState(false);
   const [riskDialog, setRiskDialog] = useState(false);
+  const [aiRiskOverrideDialog, setAiRiskOverrideDialog] = useState(false);
   
   const [termForm, setTermForm] = useState<Partial<AcademicTerm>>({});
   const [moduleForm, setModuleForm] = useState<Partial<AcademicModule>>({});
@@ -287,13 +294,31 @@ export default function ScholarRecord() {
                     <div className={`flex items-center gap-1 ${riskInfo.color}`}>
                       <RiskIcon className="h-4 w-4" />
                       <span className="font-medium">{riskInfo.label}</span>
+                      {record.risk_override && (
+                        <Badge variant="secondary" className="ml-1 text-xs">Override</Badge>
+                      )}
                     </div>
                   </div>
                   {isLnD && (
-                    <Button variant="outline" size="sm" onClick={() => setRiskDialog(true)}>
-                      <Flag className="h-3 w-3 mr-1" />
-                      Override Risk
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => id && triggerRiskScoring.mutate(id)}
+                        disabled={triggerRiskScoring.isPending}
+                      >
+                        {triggerRiskScoring.isPending ? (
+                          <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
+                        ) : (
+                          <Brain className="h-3 w-3 mr-1" />
+                        )}
+                        Recalculate
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setAiRiskOverrideDialog(true)}>
+                        <Flag className="h-3 w-3 mr-1" />
+                        Override
+                      </Button>
+                    </div>
                   )}
                   {record.cumulative_gpa && (
                     <div>
@@ -319,6 +344,11 @@ export default function ScholarRecord() {
                 </CardContent>
               </Card>
             </div>
+            
+            {/* AI Risk Explanation */}
+            {isLnD && (
+              <RiskExplanationPanel riskScore={aiRiskScore} showDetails={true} />
+            )}
             
             {/* Timeline */}
             <Card>
@@ -943,6 +973,20 @@ export default function ScholarRecord() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* AI Risk Override Dialog */}
+        <RiskOverrideDialog
+          currentBand={record?.risk_level || 'on_track'}
+          open={aiRiskOverrideDialog}
+          onClose={() => setAiRiskOverrideDialog(false)}
+          onOverride={(newBand, reason) => {
+            if (id) {
+              overrideRiskBand.mutate({ scholarRecordId: id, newBand, reason });
+              setAiRiskOverrideDialog(false);
+            }
+          }}
+          isLoading={overrideRiskBand.isPending}
+        />
       </div>
     </DashboardLayout>
   );
