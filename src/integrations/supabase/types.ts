@@ -1026,6 +1026,475 @@ export type Database = {
           },
         ]
       }
+      scholarship_applications: {
+        Row: {
+          accepted_at: string | null
+          alignment_check: boolean | null
+          alignment_notes: string | null
+          applicant_id: string
+          application_number: string | null
+          approved_amount: number | null
+          bond_amount: number | null
+          budget_status: string | null
+          career_path_notes: string | null
+          city: string | null
+          committee_decision: string | null
+          committee_remarks: string | null
+          committee_score_total: number | null
+          company_percentage: number | null
+          competency_gaps: string | null
+          cost_centre: string | null
+          country: string
+          created_at: string | null
+          currency: string | null
+          current_approval_level: number | null
+          current_approver_id: string | null
+          decline_reason: string | null
+          declined_at: string | null
+          duration_months: number | null
+          eligibility_check: boolean | null
+          eligibility_notes: string | null
+          end_date: string | null
+          final_approved_at: string | null
+          final_approved_by: string | null
+          final_comments: string | null
+          final_decision: string | null
+          finance_comments: string | null
+          funding_source: string | null
+          hrbp_comments: string | null
+          hrbp_recommendation: string | null
+          id: string
+          impact_description: string | null
+          institution_custom: string | null
+          internal_notes: string | null
+          is_historical_import: boolean | null
+          justification: string | null
+          ld_comments: string | null
+          ld_recommendation: string | null
+          living_allowance: number | null
+          manager_comments: string | null
+          operational_impact: string | null
+          policy_compliance: boolean | null
+          policy_notes: string | null
+          program_id: string | null
+          program_name_custom: string | null
+          program_type: string
+          replacement_plan: string | null
+          risk_assessment: string | null
+          risk_comments: string | null
+          service_commitment_months: number | null
+          start_date: string | null
+          status: string | null
+          study_mode: string | null
+          submitted_at: string | null
+          target_role: string | null
+          total_estimated_cost: number | null
+          travel_cost: number | null
+          tuition_per_year: number | null
+          tuition_total: number | null
+          updated_at: string | null
+          visa_insurance_cost: number | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          alignment_check?: boolean | null
+          alignment_notes?: string | null
+          applicant_id: string
+          application_number?: string | null
+          approved_amount?: number | null
+          bond_amount?: number | null
+          budget_status?: string | null
+          career_path_notes?: string | null
+          city?: string | null
+          committee_decision?: string | null
+          committee_remarks?: string | null
+          committee_score_total?: number | null
+          company_percentage?: number | null
+          competency_gaps?: string | null
+          cost_centre?: string | null
+          country: string
+          created_at?: string | null
+          currency?: string | null
+          current_approval_level?: number | null
+          current_approver_id?: string | null
+          decline_reason?: string | null
+          declined_at?: string | null
+          duration_months?: number | null
+          eligibility_check?: boolean | null
+          eligibility_notes?: string | null
+          end_date?: string | null
+          final_approved_at?: string | null
+          final_approved_by?: string | null
+          final_comments?: string | null
+          final_decision?: string | null
+          finance_comments?: string | null
+          funding_source?: string | null
+          hrbp_comments?: string | null
+          hrbp_recommendation?: string | null
+          id?: string
+          impact_description?: string | null
+          institution_custom?: string | null
+          internal_notes?: string | null
+          is_historical_import?: boolean | null
+          justification?: string | null
+          ld_comments?: string | null
+          ld_recommendation?: string | null
+          living_allowance?: number | null
+          manager_comments?: string | null
+          operational_impact?: string | null
+          policy_compliance?: boolean | null
+          policy_notes?: string | null
+          program_id?: string | null
+          program_name_custom?: string | null
+          program_type: string
+          replacement_plan?: string | null
+          risk_assessment?: string | null
+          risk_comments?: string | null
+          service_commitment_months?: number | null
+          start_date?: string | null
+          status?: string | null
+          study_mode?: string | null
+          submitted_at?: string | null
+          target_role?: string | null
+          total_estimated_cost?: number | null
+          travel_cost?: number | null
+          tuition_per_year?: number | null
+          tuition_total?: number | null
+          updated_at?: string | null
+          visa_insurance_cost?: number | null
+        }
+        Update: {
+          accepted_at?: string | null
+          alignment_check?: boolean | null
+          alignment_notes?: string | null
+          applicant_id?: string
+          application_number?: string | null
+          approved_amount?: number | null
+          bond_amount?: number | null
+          budget_status?: string | null
+          career_path_notes?: string | null
+          city?: string | null
+          committee_decision?: string | null
+          committee_remarks?: string | null
+          committee_score_total?: number | null
+          company_percentage?: number | null
+          competency_gaps?: string | null
+          cost_centre?: string | null
+          country?: string
+          created_at?: string | null
+          currency?: string | null
+          current_approval_level?: number | null
+          current_approver_id?: string | null
+          decline_reason?: string | null
+          declined_at?: string | null
+          duration_months?: number | null
+          eligibility_check?: boolean | null
+          eligibility_notes?: string | null
+          end_date?: string | null
+          final_approved_at?: string | null
+          final_approved_by?: string | null
+          final_comments?: string | null
+          final_decision?: string | null
+          finance_comments?: string | null
+          funding_source?: string | null
+          hrbp_comments?: string | null
+          hrbp_recommendation?: string | null
+          id?: string
+          impact_description?: string | null
+          institution_custom?: string | null
+          internal_notes?: string | null
+          is_historical_import?: boolean | null
+          justification?: string | null
+          ld_comments?: string | null
+          ld_recommendation?: string | null
+          living_allowance?: number | null
+          manager_comments?: string | null
+          operational_impact?: string | null
+          policy_compliance?: boolean | null
+          policy_notes?: string | null
+          program_id?: string | null
+          program_name_custom?: string | null
+          program_type?: string
+          replacement_plan?: string | null
+          risk_assessment?: string | null
+          risk_comments?: string | null
+          service_commitment_months?: number | null
+          start_date?: string | null
+          status?: string | null
+          study_mode?: string | null
+          submitted_at?: string | null
+          target_role?: string | null
+          total_estimated_cost?: number | null
+          travel_cost?: number | null
+          tuition_per_year?: number | null
+          tuition_total?: number | null
+          updated_at?: string | null
+          visa_insurance_cost?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholarship_applications_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholarship_approvals: {
+        Row: {
+          application_id: string
+          approval_level: number
+          approver_id: string
+          approver_role: Database["public"]["Enums"]["app_role"]
+          comments: string | null
+          created_at: string | null
+          decision: string | null
+          decision_date: string | null
+          delegated_from: string | null
+          id: string
+          status: Database["public"]["Enums"]["approval_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          application_id: string
+          approval_level: number
+          approver_id: string
+          approver_role: Database["public"]["Enums"]["app_role"]
+          comments?: string | null
+          created_at?: string | null
+          decision?: string | null
+          decision_date?: string | null
+          delegated_from?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["approval_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          application_id?: string
+          approval_level?: number
+          approver_id?: string
+          approver_role?: Database["public"]["Enums"]["app_role"]
+          comments?: string | null
+          created_at?: string | null
+          decision?: string | null
+          decision_date?: string | null
+          delegated_from?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["approval_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholarship_approvals_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholarship_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          application_id: string
+          comments: string | null
+          created_at: string | null
+          id: string
+          new_status: string | null
+          new_values: Json | null
+          old_status: string | null
+          old_values: Json | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          application_id: string
+          comments?: string | null
+          created_at?: string | null
+          id?: string
+          new_status?: string | null
+          new_values?: Json | null
+          old_status?: string | null
+          old_values?: Json | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          application_id?: string
+          comments?: string | null
+          created_at?: string | null
+          id?: string
+          new_status?: string | null
+          new_values?: Json | null
+          old_status?: string | null
+          old_values?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholarship_audit_log_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholarship_committee_scores: {
+        Row: {
+          abstained: boolean | null
+          application_id: string
+          business_relevance_score: number | null
+          candidate_quality_score: number | null
+          comments: string | null
+          committee_member_id: string
+          cost_benefit_score: number | null
+          has_conflict_of_interest: boolean | null
+          id: string
+          scored_at: string | null
+          total_score: number | null
+          urgency_score: number | null
+        }
+        Insert: {
+          abstained?: boolean | null
+          application_id: string
+          business_relevance_score?: number | null
+          candidate_quality_score?: number | null
+          comments?: string | null
+          committee_member_id: string
+          cost_benefit_score?: number | null
+          has_conflict_of_interest?: boolean | null
+          id?: string
+          scored_at?: string | null
+          total_score?: number | null
+          urgency_score?: number | null
+        }
+        Update: {
+          abstained?: boolean | null
+          application_id?: string
+          business_relevance_score?: number | null
+          candidate_quality_score?: number | null
+          comments?: string | null
+          committee_member_id?: string
+          cost_benefit_score?: number | null
+          has_conflict_of_interest?: boolean | null
+          id?: string
+          scored_at?: string | null
+          total_score?: number | null
+          urgency_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholarship_committee_scores_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholarship_documents: {
+        Row: {
+          application_id: string
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          is_required: boolean | null
+          mime_type: string | null
+          uploaded_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          application_id: string
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          is_required?: boolean | null
+          mime_type?: string | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          document_type?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          is_required?: boolean | null
+          mime_type?: string | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scholarship_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "scholarship_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scholarship_programs: {
+        Row: {
+          city: string | null
+          country: string
+          created_at: string | null
+          description_ar: string | null
+          description_en: string | null
+          duration_months: number | null
+          id: string
+          institution_ar: string | null
+          institution_en: string
+          is_active: boolean | null
+          name_ar: string | null
+          name_en: string
+          program_type: string
+          study_mode: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          city?: string | null
+          country: string
+          created_at?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          duration_months?: number | null
+          id?: string
+          institution_ar?: string | null
+          institution_en: string
+          is_active?: boolean | null
+          name_ar?: string | null
+          name_en: string
+          program_type: string
+          study_mode?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string
+          created_at?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          duration_months?: number | null
+          id?: string
+          institution_ar?: string | null
+          institution_en?: string
+          is_active?: boolean | null
+          name_ar?: string | null
+          name_en?: string
+          program_type?: string
+          study_mode?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       session_changes: {
         Row: {
           change_type: string
@@ -1535,7 +2004,15 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "employee" | "manager" | "hrbp" | "l_and_d" | "chro" | "admin"
+      app_role:
+        | "employee"
+        | "manager"
+        | "hrbp"
+        | "l_and_d"
+        | "chro"
+        | "admin"
+        | "finance"
+        | "committee"
       approval_status: "pending" | "approved" | "rejected" | "escalated"
       cost_level: "low" | "medium" | "high"
       delivery_mode: "classroom" | "online" | "blended" | "on_the_job"
@@ -1674,7 +2151,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["employee", "manager", "hrbp", "l_and_d", "chro", "admin"],
+      app_role: [
+        "employee",
+        "manager",
+        "hrbp",
+        "l_and_d",
+        "chro",
+        "admin",
+        "finance",
+        "committee",
+      ],
       approval_status: ["pending", "approved", "rejected", "escalated"],
       cost_level: ["low", "medium", "high"],
       delivery_mode: ["classroom", "online", "blended", "on_the_job"],
