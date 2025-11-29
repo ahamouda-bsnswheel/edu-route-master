@@ -3,29 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Building2, ArrowRight, BookOpen, Users, CheckSquare } from 'lucide-react';
-
 const Index = () => {
-  const { user, loading } = useAuth();
+  const {
+    user,
+    loading
+  } = useAuth();
   const navigate = useNavigate();
-
   useEffect(() => {
     if (!loading && user) {
       navigate('/dashboard');
     }
   }, [user, loading, navigate]);
-
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+    return <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-pulse">
           <Building2 className="h-12 w-12 text-primary" />
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 gradient-primary opacity-95" />
@@ -46,21 +42,11 @@ const Index = () => {
               Empower your career with world-class training programs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                onClick={() => navigate('/auth')}
-                className="bg-secondary text-secondary-foreground hover:bg-secondary/90 gap-2"
-              >
+              <Button size="lg" onClick={() => navigate('/auth')} className="bg-secondary text-secondary-foreground hover:bg-secondary/90 gap-2">
                 Sign In
                 <ArrowRight className="h-5 w-5" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
-              >
-                Learn More
-              </Button>
+              
             </div>
           </div>
         </div>
@@ -150,8 +136,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
