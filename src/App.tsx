@@ -53,6 +53,11 @@ import ProviderDetail from "./pages/ProviderDetail";
 import ProviderForm from "./pages/ProviderForm";
 import ProviderPerformance from "./pages/ProviderPerformance";
 import ProviderPerformanceDetail from "./pages/ProviderPerformanceDetail";
+import MyTrainingNeeds from "./pages/MyTrainingNeeds";
+import TeamTrainingNeeds from "./pages/TeamTrainingNeeds";
+import TNAOverview from "./pages/TNAOverview";
+import TNAAdmin from "./pages/TNAAdmin";
+import TNAForm from "./pages/TNAForm";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

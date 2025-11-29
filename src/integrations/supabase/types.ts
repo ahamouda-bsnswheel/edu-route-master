@@ -3779,6 +3779,343 @@ export type Database = {
           },
         ]
       }
+      tna_approvals: {
+        Row: {
+          approval_level: number
+          approver_id: string
+          approver_role: Database["public"]["Enums"]["app_role"]
+          comments: string | null
+          created_at: string | null
+          decision_date: string | null
+          id: string
+          status: string | null
+          submission_id: string
+        }
+        Insert: {
+          approval_level: number
+          approver_id: string
+          approver_role: Database["public"]["Enums"]["app_role"]
+          comments?: string | null
+          created_at?: string | null
+          decision_date?: string | null
+          id?: string
+          status?: string | null
+          submission_id: string
+        }
+        Update: {
+          approval_level?: number
+          approver_id?: string
+          approver_role?: Database["public"]["Enums"]["app_role"]
+          comments?: string | null
+          created_at?: string | null
+          decision_date?: string | null
+          id?: string
+          status?: string | null
+          submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tna_approvals_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "tna_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tna_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          details: string | null
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          period_id: string | null
+          submission_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          period_id?: string | null
+          submission_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          period_id?: string | null
+          submission_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tna_audit_log_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "tna_periods"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tna_audit_log_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "tna_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tna_items: {
+        Row: {
+          competency_id: string | null
+          competency_text: string | null
+          course_id: string | null
+          course_text: string | null
+          created_at: string | null
+          custom_fields: Json | null
+          estimated_cost: number | null
+          id: string
+          item_order: number | null
+          justification: string | null
+          location_type: string | null
+          priority: string | null
+          submission_id: string
+          target_date_from: string | null
+          target_date_to: string | null
+          target_quarter: string | null
+          training_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          competency_id?: string | null
+          competency_text?: string | null
+          course_id?: string | null
+          course_text?: string | null
+          created_at?: string | null
+          custom_fields?: Json | null
+          estimated_cost?: number | null
+          id?: string
+          item_order?: number | null
+          justification?: string | null
+          location_type?: string | null
+          priority?: string | null
+          submission_id: string
+          target_date_from?: string | null
+          target_date_to?: string | null
+          target_quarter?: string | null
+          training_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          competency_id?: string | null
+          competency_text?: string | null
+          course_id?: string | null
+          course_text?: string | null
+          created_at?: string | null
+          custom_fields?: Json | null
+          estimated_cost?: number | null
+          id?: string
+          item_order?: number | null
+          justification?: string | null
+          location_type?: string | null
+          priority?: string | null
+          submission_id?: string
+          target_date_from?: string | null
+          target_date_to?: string | null
+          target_quarter?: string | null
+          training_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tna_items_competency_id_fkey"
+            columns: ["competency_id"]
+            isOneToOne: false
+            referencedRelation: "competencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tna_items_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tna_items_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "tna_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tna_periods: {
+        Row: {
+          allow_employee_submission: boolean | null
+          allow_manager_submission: boolean | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+          status: string | null
+          submission_end_date: string
+          submission_start_date: string
+          updated_at: string | null
+        }
+        Insert: {
+          allow_employee_submission?: boolean | null
+          allow_manager_submission?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date: string
+          id?: string
+          name: string
+          start_date: string
+          status?: string | null
+          submission_end_date: string
+          submission_start_date: string
+          updated_at?: string | null
+        }
+        Update: {
+          allow_employee_submission?: boolean | null
+          allow_manager_submission?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+          status?: string | null
+          submission_end_date?: string
+          submission_start_date?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tna_submissions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string | null
+          employee_id: string
+          id: string
+          period_id: string
+          return_comments: string | null
+          status: string | null
+          submitted_at: string | null
+          submitted_by: string | null
+          total_estimated_cost: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          employee_id: string
+          id?: string
+          period_id: string
+          return_comments?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          submitted_by?: string | null
+          total_estimated_cost?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          employee_id?: string
+          id?: string
+          period_id?: string
+          return_comments?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          submitted_by?: string | null
+          total_estimated_cost?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tna_submissions_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "tna_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tna_template_fields: {
+        Row: {
+          applicable_entities: string[] | null
+          applicable_job_families: string[] | null
+          created_at: string | null
+          field_label_ar: string | null
+          field_label_en: string
+          field_name: string
+          field_order: number | null
+          field_type: string
+          id: string
+          is_required: boolean | null
+          is_visible: boolean | null
+          options: Json | null
+          period_id: string
+        }
+        Insert: {
+          applicable_entities?: string[] | null
+          applicable_job_families?: string[] | null
+          created_at?: string | null
+          field_label_ar?: string | null
+          field_label_en: string
+          field_name: string
+          field_order?: number | null
+          field_type: string
+          id?: string
+          is_required?: boolean | null
+          is_visible?: boolean | null
+          options?: Json | null
+          period_id: string
+        }
+        Update: {
+          applicable_entities?: string[] | null
+          applicable_job_families?: string[] | null
+          created_at?: string | null
+          field_label_ar?: string | null
+          field_label_en?: string
+          field_name?: string
+          field_order?: number | null
+          field_type?: string
+          id?: string
+          is_required?: boolean | null
+          is_visible?: boolean | null
+          options?: Json | null
+          period_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tna_template_fields_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "tna_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       training_providers: {
         Row: {
           approved_at: string | null
