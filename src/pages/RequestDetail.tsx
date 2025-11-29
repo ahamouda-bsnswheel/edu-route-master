@@ -94,6 +94,22 @@ export default function RequestDetail() {
     enabled: !!id,
   });
 
+  // Fetch all approvals for this request (to show history/rejection reason)
+  const { data: approvals } = useQuery({
+    queryKey: ['approvals-history', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('approvals')
+        .select('*')
+        .eq('request_id', id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
   // Fetch approval record for current user
   const { data: pendingApproval } = useQuery({
     queryKey: ['pending-approval', id, user?.id],
@@ -350,6 +366,46 @@ export default function RequestDetail() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Rejection/Approval Decision */}
+          {(request.status === 'rejected' || request.status === 'approved') && approvals && approvals.length > 0 && (
+            <Card className={`md:col-span-2 ${request.status === 'rejected' ? 'border-destructive/50 bg-destructive/5' : 'border-green-500/50 bg-green-500/5'}`}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  {request.status === 'rejected' ? (
+                    <>
+                      <XCircle className="h-5 w-5 text-destructive" />
+                      <span className="text-destructive">Request Rejected</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="h-5 w-5 text-green-600" />
+                      <span className="text-green-600">Request Approved</span>
+                    </>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {approvals.filter(a => a.status === request.status).map((approval) => (
+                  <div key={approval.id} className="space-y-2">
+                    {approval.decision_date && (
+                      <p className="text-sm text-muted-foreground">
+                        Decision made on {format(new Date(approval.decision_date), 'PPP')}
+                      </p>
+                    )}
+                    {approval.comments && (
+                      <div>
+                        <p className="text-sm font-medium">{request.status === 'rejected' ? 'Rejection Reason:' : 'Comments:'}</p>
+                        <p className="mt-1 p-3 bg-background rounded-md border">
+                          {approval.comments}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Approval Actions */}
           {canApprove && (
