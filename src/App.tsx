@@ -17,6 +17,7 @@ import TrainingRequest from "./pages/TrainingRequest";
 import Sessions from "./pages/Sessions";
 import SessionDetails from "./pages/SessionDetails";
 import Reports from "./pages/Reports";
+import TeamNominations from "./pages/TeamNominations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -121,17 +122,19 @@ function AppRoutes() {
         }
       />
 
-      {/* Placeholder routes for sidebar links */}
+      {/* Team Nominations */}
       <Route
-        path="/calendar"
+        path="/team-requests"
         element={
           <ProtectedRoute>
-            <Dashboard />
+            <TeamNominations />
           </ProtectedRoute>
         }
       />
+
+      {/* Placeholder routes */}
       <Route
-        path="/team-requests"
+        path="/calendar"
         element={
           <ProtectedRoute>
             <Dashboard />
