@@ -361,13 +361,21 @@ export default function SessionDetails() {
           </div>
           {canManage && session.status !== 'cancelled' && session.status !== 'completed' && (
             <div className="flex gap-2">
+              <Button variant="outline" onClick={() => navigate(`/sessions/${id}/attendance`)}>
+                <Users className="h-4 w-4 mr-2" />
+                Attendance
+              </Button>
+              <Button variant="outline" onClick={() => navigate(`/sessions/${id}/completion`)}>
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Completion
+              </Button>
               <Button variant="outline" onClick={() => navigate(`/sessions/${id}/edit`)}>
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
               </Button>
               <Button variant="destructive" onClick={() => setShowCancelDialog(true)}>
                 <XCircle className="h-4 w-4 mr-2" />
-                Cancel Session
+                Cancel
               </Button>
             </div>
           )}
