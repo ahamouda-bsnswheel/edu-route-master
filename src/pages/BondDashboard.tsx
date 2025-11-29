@@ -20,7 +20,8 @@ import {
   Users,
   ArrowRight
 } from 'lucide-react';
-import { useBonds, useBondDashboardStats, ServiceBond } from '@/hooks/useBonds';
+import { useBonds, useBondDashboardStats, usePendingWaivers, ServiceBond } from '@/hooks/useBonds';
+import { PendingWaiversList } from '@/components/bonds/PendingWaiversList';
 import { format, differenceInDays, differenceInMonths } from 'date-fns';
 
 const STATUS_CONFIG: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; color: string }> = {
@@ -66,6 +67,7 @@ export default function BondDashboard() {
 
   const { data: stats, isLoading: statsLoading } = useBondDashboardStats();
   const { data: bonds, isLoading: bondsLoading } = useBonds({ status: statusFilter });
+  const { data: pendingWaivers } = usePendingWaivers();
 
   const filteredBonds = bonds?.filter(bond => {
     const employeeName = `${bond.employee?.first_name_en || ''} ${bond.employee?.last_name_en || ''}`.toLowerCase();
@@ -146,6 +148,11 @@ export default function BondDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Pending Waivers Section */}
+      {pendingWaivers && pendingWaivers.length > 0 && (
+        <PendingWaiversList />
+      )}
 
       {/* Main Content */}
       <Card>

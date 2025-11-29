@@ -29,6 +29,7 @@ import {
 import { useScholarRiskScore, useTriggerRiskScoring, useOverrideRiskBand } from '@/hooks/useScholarRisk';
 import { RiskExplanationPanel } from '@/components/risk/RiskExplanationPanel';
 import { RiskOverrideDialog } from '@/components/risk/RiskOverrideDialog';
+import { BondSummaryCard } from '@/components/bonds/BondSummaryCard';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -341,14 +342,19 @@ export default function ScholarRecord() {
                       <span className="font-medium">{record.current_term_number} / {record.total_terms || '?'}</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+              </CardContent>
+            </Card>
             </div>
             
-            {/* AI Risk Explanation */}
-            {isLnD && (
-              <RiskExplanationPanel riskScore={aiRiskScore} showDetails={true} />
-            )}
+            {/* Bond Summary Card */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <BondSummaryCard scholarRecordId={id || ''} />
+              
+              {/* AI Risk Explanation */}
+              {isLnD && (
+                <RiskExplanationPanel riskScore={aiRiskScore} showDetails={true} />
+              )}
+            </div>
             
             {/* Timeline */}
             <Card>

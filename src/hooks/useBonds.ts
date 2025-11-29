@@ -354,6 +354,22 @@ export function useBondDashboardStats() {
       const now = new Date();
       const threeMonthsLater = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
 
+      // Check for bonds that should be marked as fulfilled
+      const bondsToFulfill = bonds?.filter(b => {
+        if (b.status !== 'active' || !b.bond_end_date) return false;
+        const endDate = new Date(b.bond_end_date);
+        return endDate <= now;
+      }) || [];
+
+      // Auto-update fulfilled bonds
+      for (const bond of bondsToFulfill) {
+        await supabase
+          .from('service_bonds')
+          .update({ status: 'fulfilled', fulfilled_at: new Date().toISOString() })
+          .eq('status', 'active')
+          .lte('bond_end_date', now.toISOString().split('T')[0]);
+      }
+
       const stats = {
         total: bonds?.length || 0,
         pending: bonds?.filter(b => b.status === 'pending').length || 0,
@@ -372,6 +388,76 @@ export function useBondDashboardStats() {
       };
 
       return stats;
+    },
+  });
+}
+
+// Pending waivers for approval
+export interface PendingWaiver {
+  event: BondEvent;
+  bondId: string;
+  employeeName: string;
+  employeeId: string;
+  programName: string;
+  institution: string;
+}
+
+export function usePendingWaivers() {
+  return useQuery({
+    queryKey: ['pending-waivers'],
+    queryFn: async () => {
+      // Get all pending waiver events
+      const { data: events, error } = await supabase
+        .from('bond_events')
+        .select('*')
+        .eq('event_type', 'waiver_request')
+        .eq('approval_status', 'pending')
+        .order('event_date', { ascending: false });
+
+      if (error) throw error;
+      if (!events || events.length === 0) return [];
+
+      // Get bond IDs
+      const bondIds = [...new Set(events.map(e => e.bond_id))];
+
+      // Fetch bonds with scholar records
+      const { data: bonds } = await supabase
+        .from('service_bonds')
+        .select(`
+          id,
+          scholar_record:scholar_records(
+            employee_id,
+            program_name,
+            institution
+          )
+        `)
+        .in('id', bondIds);
+
+      // Fetch employee profiles
+      const employeeIds = bonds?.map(b => b.scholar_record?.employee_id).filter(Boolean) || [];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, first_name_en, last_name_en, employee_id')
+        .in('id', employeeIds);
+
+      const bondMap = new Map(bonds?.map(b => [b.id, b]) || []);
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
+      return events.map(event => {
+        const bond = bondMap.get(event.bond_id);
+        const profile = bond?.scholar_record?.employee_id 
+          ? profileMap.get(bond.scholar_record.employee_id)
+          : null;
+
+        return {
+          event: event as BondEvent,
+          bondId: event.bond_id,
+          employeeName: profile ? `${profile.first_name_en} ${profile.last_name_en}` : 'Unknown',
+          employeeId: profile?.employee_id || '',
+          programName: bond?.scholar_record?.program_name || 'Unknown',
+          institution: bond?.scholar_record?.institution || 'Unknown',
+        } as PendingWaiver;
+      });
     },
   });
 }
