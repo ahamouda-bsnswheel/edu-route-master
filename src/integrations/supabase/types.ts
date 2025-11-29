@@ -3018,6 +3018,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      process_training_request_approval: {
+        Args: {
+          p_current_approver_id?: string
+          p_new_status: string
+          p_request_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role:

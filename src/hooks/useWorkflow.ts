@@ -91,15 +91,14 @@ export function useApprovalActions() {
 
       if (approvalError) throw approvalError;
 
-      // Update the training request
+      // Update the training request using security definer function
       if (status === 'rejected') {
-        await supabase
-          .from('training_requests')
-          .update({ 
-            status: 'rejected',
-            current_approver_id: null,
-          })
-          .eq('id', requestId);
+        const { error: updateError } = await supabase.rpc('process_training_request_approval', {
+          p_request_id: requestId,
+          p_new_status: 'rejected',
+          p_current_approver_id: null,
+        });
+        if (updateError) throw updateError;
 
         // Notify requester of rejection
         await createNotification({
@@ -111,13 +110,18 @@ export function useApprovalActions() {
           reference_id: requestId,
         });
       } else if (nextApproverId && nextApprovalLevel) {
-        // Move to next approval step
+        // Move to next approval step using security definer function
+        const { error: updateError } = await supabase.rpc('process_training_request_approval', {
+          p_request_id: requestId,
+          p_new_status: 'pending',
+          p_current_approver_id: nextApproverId,
+        });
+        if (updateError) throw updateError;
+        
+        // Update the approval level separately (not in the function)
         await supabase
           .from('training_requests')
-          .update({
-            current_approver_id: nextApproverId,
-            current_approval_level: nextApprovalLevel,
-          })
+          .update({ current_approval_level: nextApprovalLevel })
           .eq('id', requestId);
 
         // Create next approval record
@@ -139,14 +143,13 @@ export function useApprovalActions() {
           reference_id: requestId,
         });
       } else {
-        // Final approval - mark as approved
-        await supabase
-          .from('training_requests')
-          .update({
-            status: 'approved',
-            current_approver_id: null,
-          })
-          .eq('id', requestId);
+        // Final approval - mark as approved using security definer function
+        const { error: updateError } = await supabase.rpc('process_training_request_approval', {
+          p_request_id: requestId,
+          p_new_status: 'approved',
+          p_current_approver_id: null,
+        });
+        if (updateError) throw updateError;
 
         // Notify requester of approval
         await createNotification({
