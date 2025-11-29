@@ -2346,6 +2346,117 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_scenarios: {
+        Row: {
+          baseline_total_cost: number | null
+          baseline_total_participants: number | null
+          basis_plan_id: string
+          basis_plan_version: number
+          created_at: string
+          creation_job_id: string | null
+          creation_progress: number | null
+          cut_abroad_first: boolean | null
+          cut_order: string[] | null
+          description: string | null
+          entity_caps: Json | null
+          global_budget_type: string | null
+          global_budget_value: number | null
+          id: string
+          include_priority_bands: string[] | null
+          last_recalculation_at: string | null
+          name: string
+          owner_id: string
+          promoted_at: string | null
+          promoted_by: string | null
+          promoted_to_plan_id: string | null
+          protected_categories: string[] | null
+          scenario_total_cost: number | null
+          scenario_total_participants: number | null
+          status: string
+          updated_at: string
+          visibility_entities: string[] | null
+          visibility_scope: string
+          visibility_users: string[] | null
+        }
+        Insert: {
+          baseline_total_cost?: number | null
+          baseline_total_participants?: number | null
+          basis_plan_id: string
+          basis_plan_version?: number
+          created_at?: string
+          creation_job_id?: string | null
+          creation_progress?: number | null
+          cut_abroad_first?: boolean | null
+          cut_order?: string[] | null
+          description?: string | null
+          entity_caps?: Json | null
+          global_budget_type?: string | null
+          global_budget_value?: number | null
+          id?: string
+          include_priority_bands?: string[] | null
+          last_recalculation_at?: string | null
+          name: string
+          owner_id: string
+          promoted_at?: string | null
+          promoted_by?: string | null
+          promoted_to_plan_id?: string | null
+          protected_categories?: string[] | null
+          scenario_total_cost?: number | null
+          scenario_total_participants?: number | null
+          status?: string
+          updated_at?: string
+          visibility_entities?: string[] | null
+          visibility_scope?: string
+          visibility_users?: string[] | null
+        }
+        Update: {
+          baseline_total_cost?: number | null
+          baseline_total_participants?: number | null
+          basis_plan_id?: string
+          basis_plan_version?: number
+          created_at?: string
+          creation_job_id?: string | null
+          creation_progress?: number | null
+          cut_abroad_first?: boolean | null
+          cut_order?: string[] | null
+          description?: string | null
+          entity_caps?: Json | null
+          global_budget_type?: string | null
+          global_budget_value?: number | null
+          id?: string
+          include_priority_bands?: string[] | null
+          last_recalculation_at?: string | null
+          name?: string
+          owner_id?: string
+          promoted_at?: string | null
+          promoted_by?: string | null
+          promoted_to_plan_id?: string | null
+          protected_categories?: string[] | null
+          scenario_total_cost?: number | null
+          scenario_total_participants?: number | null
+          status?: string
+          updated_at?: string
+          visibility_entities?: string[] | null
+          visibility_scope?: string
+          visibility_users?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_scenarios_basis_plan_id_fkey"
+            columns: ["basis_plan_id"]
+            isOneToOne: false
+            referencedRelation: "training_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plan_scenarios_promoted_to_plan_id_fkey"
+            columns: ["promoted_to_plan_id"]
+            isOneToOne: false
+            referencedRelation: "training_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -2917,6 +3028,183 @@ export type Database = {
             columns: ["request_id"]
             isOneToOne: false
             referencedRelation: "training_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scenario_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          details: Json | null
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          scenario_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          scenario_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          scenario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scenario_audit_log_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "plan_scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scenario_items: {
+        Row: {
+          baseline_cost: number
+          baseline_cost_per_participant: number | null
+          baseline_sessions: number
+          baseline_volume: number
+          category_id: string | null
+          category_name: string | null
+          cost_delta: number | null
+          course_id: string | null
+          course_name: string | null
+          created_at: string
+          cut_reason: string | null
+          department_id: string | null
+          department_name: string | null
+          entity_id: string | null
+          entity_name: string | null
+          id: string
+          is_abroad: boolean | null
+          is_cut: boolean | null
+          is_hse_mandatory: boolean | null
+          is_locally_adjusted: boolean | null
+          is_protected: boolean | null
+          local_adjustment_at: string | null
+          local_adjustment_by: string | null
+          local_adjustment_reason: string | null
+          priority_band: string | null
+          priority_score: number | null
+          provider_id: string | null
+          provider_name: string | null
+          scenario_cost: number
+          scenario_id: string
+          scenario_sessions: number
+          scenario_volume: number
+          source_plan_item_id: string | null
+          updated_at: string
+          volume_delta: number | null
+        }
+        Insert: {
+          baseline_cost?: number
+          baseline_cost_per_participant?: number | null
+          baseline_sessions?: number
+          baseline_volume?: number
+          category_id?: string | null
+          category_name?: string | null
+          cost_delta?: number | null
+          course_id?: string | null
+          course_name?: string | null
+          created_at?: string
+          cut_reason?: string | null
+          department_id?: string | null
+          department_name?: string | null
+          entity_id?: string | null
+          entity_name?: string | null
+          id?: string
+          is_abroad?: boolean | null
+          is_cut?: boolean | null
+          is_hse_mandatory?: boolean | null
+          is_locally_adjusted?: boolean | null
+          is_protected?: boolean | null
+          local_adjustment_at?: string | null
+          local_adjustment_by?: string | null
+          local_adjustment_reason?: string | null
+          priority_band?: string | null
+          priority_score?: number | null
+          provider_id?: string | null
+          provider_name?: string | null
+          scenario_cost?: number
+          scenario_id: string
+          scenario_sessions?: number
+          scenario_volume?: number
+          source_plan_item_id?: string | null
+          updated_at?: string
+          volume_delta?: number | null
+        }
+        Update: {
+          baseline_cost?: number
+          baseline_cost_per_participant?: number | null
+          baseline_sessions?: number
+          baseline_volume?: number
+          category_id?: string | null
+          category_name?: string | null
+          cost_delta?: number | null
+          course_id?: string | null
+          course_name?: string | null
+          created_at?: string
+          cut_reason?: string | null
+          department_id?: string | null
+          department_name?: string | null
+          entity_id?: string | null
+          entity_name?: string | null
+          id?: string
+          is_abroad?: boolean | null
+          is_cut?: boolean | null
+          is_hse_mandatory?: boolean | null
+          is_locally_adjusted?: boolean | null
+          is_protected?: boolean | null
+          local_adjustment_at?: string | null
+          local_adjustment_by?: string | null
+          local_adjustment_reason?: string | null
+          priority_band?: string | null
+          priority_score?: number | null
+          provider_id?: string | null
+          provider_name?: string | null
+          scenario_cost?: number
+          scenario_id?: string
+          scenario_sessions?: number
+          scenario_volume?: number
+          source_plan_item_id?: string | null
+          updated_at?: string
+          volume_delta?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scenario_items_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scenario_items_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "plan_scenarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scenario_items_source_plan_item_id_fkey"
+            columns: ["source_plan_item_id"]
+            isOneToOne: false
+            referencedRelation: "training_plan_items"
             referencedColumns: ["id"]
           },
         ]
