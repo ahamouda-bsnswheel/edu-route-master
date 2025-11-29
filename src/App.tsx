@@ -45,6 +45,9 @@ import RiskDashboard from "./pages/RiskDashboard";
 import BondDashboard from "./pages/BondDashboard";
 import BondRecord from "./pages/BondRecord";
 import MyBond from "./pages/MyBond";
+import CatalogueAdmin from "./pages/CatalogueAdmin";
+import CatalogueDetail from "./pages/CatalogueDetail";
+import CatalogueForm from "./pages/CatalogueForm";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -385,6 +388,40 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <MyBond />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Catalogue Routes */}
+      <Route
+        path="/catalogue"
+        element={
+          <ProtectedRoute>
+            <CatalogueAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/catalogue/new"
+        element={
+          <ProtectedRoute>
+            <CatalogueForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/catalogue/:id"
+        element={
+          <ProtectedRoute>
+            <CatalogueDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/catalogue/:id/edit"
+        element={
+          <ProtectedRoute>
+            <CatalogueForm />
           </ProtectedRoute>
         }
       />
