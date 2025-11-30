@@ -91,6 +91,8 @@ const adminNavItems = [
   { title: 'Logistics Console', url: '/logistics-console', icon: Plane, roles: ['l_and_d', 'admin', 'travel'] },
   { title: 'Incident Console', url: '/incident-console', icon: AlertTriangle, roles: ['l_and_d', 'admin', 'travel', 'hrbp'] },
   { title: 'Expense Exports', url: '/expense-exports', icon: FileSpreadsheet, roles: ['finance', 'l_and_d', 'admin', 'comp_benefits'] },
+  { title: 'Export Config', url: '/export-config', icon: Settings, roles: ['finance', 'admin', 'comp_benefits'] },
+  { title: 'Training Spend', url: '/training-spend', icon: BarChart3, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
 ];
 

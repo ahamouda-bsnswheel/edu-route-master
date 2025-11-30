@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import { lazy } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -74,6 +75,8 @@ import LogisticsConsole from "./pages/LogisticsConsole";
 import IncidentConsole from "./pages/IncidentConsole";
 import ExpenseExportConsole from "./pages/ExpenseExportConsole";
 import ExpenseExportDetail from "./pages/ExpenseExportDetail";
+import ExportConfigAdmin from "./pages/ExportConfigAdmin";
+import TrainingSpendSummary from "./pages/TrainingSpendSummary";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -674,6 +677,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ExpenseExportDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/export-config"
+        element={
+          <ProtectedRoute>
+            <ExportConfigAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/training-spend"
+        element={
+          <ProtectedRoute>
+            <TrainingSpendSummary />
           </ProtectedRoute>
         }
       />
