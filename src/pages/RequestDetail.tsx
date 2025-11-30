@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { format } from "date-fns";
+import { TravelVisaSection } from "@/components/travel/TravelVisaSection";
 import { 
   ArrowLeft, 
   Clock, 
@@ -20,7 +21,8 @@ import {
   MapPin,
   CheckCircle2,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  Plane
 } from "lucide-react";
 import {
   AlertDialog,
@@ -366,6 +368,22 @@ export default function RequestDetail() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Travel & Visa Section for Approved Abroad Requests */}
+          {request.status === 'approved' && request.course?.training_location === 'abroad' && (
+            <div className="md:col-span-2">
+              <TravelVisaSection 
+                trainingRequestId={request.id}
+                employeeId={request.requester_id}
+                courseName={request.course?.name_en || 'Training'}
+                destinationCountry={(request as any).destination_country || 'International'}
+                destinationCity={(request as any).destination_city}
+                trainingStartDate={request.preferred_start_date || new Date().toISOString()}
+                trainingEndDate={request.preferred_end_date || new Date().toISOString()}
+                isApproved={true}
+              />
+            </div>
+          )}
 
           {/* Rejection/Approval Decision */}
           {(request.status === 'rejected' || request.status === 'approved') && approvals && approvals.length > 0 && (

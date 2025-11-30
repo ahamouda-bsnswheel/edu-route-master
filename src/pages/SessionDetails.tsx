@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { createNotification } from '@/hooks/useNotifications';
+import { SessionTravelVisaTab } from '@/components/travel/SessionTravelVisaTab';
 import {
   ArrowLeft,
   Calendar,
@@ -43,6 +44,7 @@ import {
   XCircle,
   AlertTriangle,
   Edit,
+  Plane,
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -570,6 +572,11 @@ export default function SessionDetails() {
             </Tabs>
           </CardContent>
         </Card>
+
+        {/* Travel & Visa Tab for Abroad Sessions */}
+        {session.course?.training_location === 'abroad' && (
+          <SessionTravelVisaTab sessionId={id!} />
+        )}
 
         {/* Add Participants Dialog */}
         <Dialog open={showAddParticipants} onOpenChange={setShowAddParticipants}>
