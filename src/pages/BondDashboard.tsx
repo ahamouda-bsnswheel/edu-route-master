@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { 
@@ -225,83 +224,41 @@ export default function BondDashboard() {
                   <p>No bond records found</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto -mx-6 px-6">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Employee</TableHead>
-                      <TableHead>Program</TableHead>
-                      <TableHead>Bond Duration</TableHead>
-                      <TableHead>Progress</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Bond End Date</TableHead>
-                      <TableHead></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredBonds?.map((bond) => {
-                      const statusConfig = STATUS_CONFIG[bond.status] || STATUS_CONFIG.pending;
-                      return (
-                        <TableRow key={bond.id}>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">
-                                {bond.employee?.first_name_en} {bond.employee?.last_name_en}
-                              </p>
-                              <p className="text-sm text-muted-foreground">
-                                {bond.employee?.employee_id}
-                              </p>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{bond.scholar_record?.program_name}</p>
-                              <p className="text-sm text-muted-foreground">
-                                {bond.scholar_record?.institution}
-                              </p>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-4 w-4 text-muted-foreground" />
-                              <span>{bond.bond_duration_months} months</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="min-w-[200px]">
-                            <BondProgressBar bond={bond} />
-                            {bond.status === 'pending' && (
-                              <span className="text-xs text-amber-600">Awaiting return</span>
-                            )}
-                            {bond.status === 'fulfilled' && (
-                              <span className="text-xs text-green-600">Completed</span>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={statusConfig.variant} className={statusConfig.color}>
-                              {statusConfig.label}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {bond.bond_end_date ? (
-                              format(new Date(bond.bond_end_date), 'dd MMM yyyy')
-                            ) : (
-                              <span className="text-muted-foreground">Not started</span>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => navigate(`/bonds/${bond.id}`)}
-                            >
-                              View <ArrowRight className="h-4 w-4 ml-1" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-                </Table>
+                <div className="space-y-3">
+                  {filteredBonds?.map((bond) => {
+                    const statusConfigItem = STATUS_CONFIG[bond.status] || STATUS_CONFIG.pending;
+                    return (
+                      <div
+                        key={bond.id}
+                        className="border rounded-lg p-3 space-y-2 bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+                        onClick={() => navigate(`/bonds/${bond.id}`)}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm">
+                              {bond.employee?.first_name_en} {bond.employee?.last_name_en}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">{bond.scholar_record?.program_name}</p>
+                          </div>
+                          <Badge variant={statusConfigItem.variant} className={`${statusConfigItem.color} shrink-0 text-xs`}>
+                            {statusConfigItem.label}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            <span>{bond.bond_duration_months} months</span>
+                          </div>
+                          <span>
+                            {bond.bond_end_date 
+                              ? `Ends ${format(new Date(bond.bond_end_date), 'MMM dd, yyyy')}` 
+                              : 'Not started'}
+                          </span>
+                        </div>
+                        {bond.status === 'active' && <BondProgressBar bond={bond} />}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </TabsContent>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
 import { 
   GraduationCap, Search, Filter, Eye, TrendingUp, TrendingDown, 
   Clock, AlertTriangle, Users, CheckCircle, XCircle
@@ -196,84 +196,46 @@ export default function Scholars() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
             ) : filteredRecords && filteredRecords.length > 0 ? (
-              <div className="overflow-x-auto -mx-6 px-6">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Scholar</TableHead>
-                    <TableHead>Program</TableHead>
-                    <TableHead>Institution</TableHead>
-                    <TableHead>Country</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Risk</TableHead>
-                    <TableHead>Progress</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredRecords.map(record => {
-                    const statusInfo = STATUS_CONFIG[record.status] || STATUS_CONFIG.active;
-                    const riskInfo = RISK_CONFIG[record.risk_level] || RISK_CONFIG.on_track;
-                    const progress = record.total_credits_required 
-                      ? Math.round((record.credits_completed / record.total_credits_required) * 100)
-                      : 0;
-                    
-                    return (
-                      <TableRow key={record.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">
-                              {record.employee?.first_name_en} {record.employee?.last_name_en}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {record.employee?.employee_id}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{record.program_name}</p>
-                            <p className="text-xs text-muted-foreground capitalize">
-                              {record.degree_level.replace('_', ' ')}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell>{record.institution}</TableCell>
-                        <TableCell>{record.country}</TableCell>
-                        <TableCell>
-                          <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${riskInfo.bgColor} ${riskInfo.color}`}>
+              <div className="space-y-3">
+                {filteredRecords.map(record => {
+                  const statusInfo = STATUS_CONFIG[record.status] || STATUS_CONFIG.active;
+                  const riskInfo = RISK_CONFIG[record.risk_level] || RISK_CONFIG.on_track;
+                  const progress = record.total_credits_required 
+                    ? Math.round((record.credits_completed / record.total_credits_required) * 100)
+                    : 0;
+                  
+                  return (
+                    <div
+                      key={record.id}
+                      className="border rounded-lg p-3 space-y-2 bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/scholars/${record.id}`)}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-sm">
+                            {record.employee?.first_name_en} {record.employee?.last_name_en}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">{record.program_name}</p>
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <Badge variant={statusInfo.variant} className="text-xs">{statusInfo.label}</Badge>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${riskInfo.bgColor} ${riskInfo.color}`}>
                             {riskInfo.label}
                           </span>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                              <div 
-                                className="h-full bg-primary rounded-full"
-                                style={{ width: `${progress}%` }}
-                              />
-                            </div>
-                            <span className="text-xs text-muted-foreground">{progress}%</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{record.institution} • {record.country}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-12 h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div className="h-full bg-primary rounded-full" style={{ width: `${progress}%` }} />
                           </div>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => navigate(`/scholars/${record.id}`)}
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+                          <span>{progress}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-12">

@@ -26,14 +26,6 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import {
   Plus,
@@ -293,91 +285,41 @@ export default function Sessions() {
                 ))}
               </div>
             ) : filteredSessions && filteredSessions.length > 0 ? (
-              <div className="overflow-x-auto -mx-6 px-6">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Course / Session</TableHead>
-                    <TableHead>Dates</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Capacity</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredSessions.map((session) => (
-                    <TableRow key={session.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">{session.course?.name_en}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {session.session_code || 'No code'}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <div>
-                            <p className="text-sm">
-                              {format(new Date(session.start_date), 'MMM dd, yyyy')}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              to {format(new Date(session.end_date), 'MMM dd, yyyy')}
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{session.location_en || 'TBD'}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">
-                            {session.enrolled_count || 0}/{session.capacity || 0}
-                          </span>
-                          {(session.waitlist_count || 0) > 0 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{session.waitlist_count} waitlist
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={statusConfig[session.status || 'scheduled']?.color}>
-                          {statusConfig[session.status || 'scheduled']?.label}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => navigate(`/sessions/${session.id}`)}
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View
-                          </Button>
-                          {canManage && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => navigate(`/sessions/${session.id}/edit`)}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="space-y-3">
+                {filteredSessions.map((session) => (
+                  <div
+                    key={session.id}
+                    className="border rounded-lg p-3 space-y-2 bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+                    onClick={() => navigate(`/sessions/${session.id}`)}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-sm truncate">{session.course?.name_en}</p>
+                        <p className="text-xs text-muted-foreground">{session.session_code || 'No code'}</p>
+                      </div>
+                      <Badge className={`${statusConfig[session.status || 'scheduled']?.color} shrink-0 text-xs`}>
+                        {statusConfig[session.status || 'scheduled']?.label}
+                      </Badge>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        <span>{format(new Date(session.start_date), 'MMM dd')} - {format(new Date(session.end_date), 'MMM dd')}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        <span>{session.location_en || 'TBD'}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        <span>{session.enrolled_count || 0}/{session.capacity || 0}</span>
+                        {(session.waitlist_count || 0) > 0 && (
+                          <span className="text-warning">+{session.waitlist_count}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="text-center py-12">

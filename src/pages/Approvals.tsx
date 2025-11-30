@@ -16,14 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import {
   requiresExtendedWorkflow,
@@ -201,89 +193,56 @@ export default function Approvals() {
                 ))}
               </div>
             ) : pendingApprovals && pendingApprovals.length > 0 ? (
-              <div className="overflow-x-auto -mx-6 px-6">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Request</TableHead>
-                    <TableHead>Requester</TableHead>
-                    <TableHead>Course</TableHead>
-                    <TableHead>Submitted</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {pendingApprovals.map((approval) => (
-                    <TableRow key={approval.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium">
-                            {approval.request?.request_number || '-'}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-muted-foreground" />
-                          <div>
-                            <p className="font-medium">
-                              {(approval.request as any)?.requester?.first_name_en} {(approval.request as any)?.requester?.last_name_en}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {(approval.request as any)?.requester?.job_title_en || (approval.request as any)?.requester?.employee_id}
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">
-                            {approval.request?.course?.name_en}
-                          </p>
-                          <div className="flex gap-1 mt-1">
-                            <Badge variant="outline" className="text-xs">
-                              {approval.request?.course?.delivery_mode?.replace('_', ' ')}
-                            </Badge>
-                            {approval.request?.course?.training_location === 'abroad' && (
-                              <Badge variant="secondary" className="text-xs">
-                                Abroad
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
+              <div className="space-y-3">
+                {pendingApprovals.map((approval) => (
+                  <div key={approval.id} className="border rounded-lg p-3 space-y-3 bg-card">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-sm truncate">{approval.request?.course?.name_en}</p>
+                        <p className="text-xs text-muted-foreground">#{approval.request?.request_number || '-'}</p>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <Badge variant="outline" className="text-xs">
+                          {approval.request?.course?.delivery_mode?.replace('_', ' ')}
+                        </Badge>
+                        {approval.request?.course?.training_location === 'abroad' && (
+                          <Badge variant="secondary" className="text-xs">Abroad</Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <User className="h-3 w-3" />
+                      <span>
+                        {(approval.request as any)?.requester?.first_name_en} {(approval.request as any)?.requester?.last_name_en}
+                      </span>
+                      <span>•</span>
+                      <span>
                         {approval.request?.submitted_at
-                          ? format(new Date(approval.request.submitted_at), 'MMM dd, yyyy')
+                          ? format(new Date(approval.request.submitted_at), 'MMM dd')
                           : '-'}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-success border-success hover:bg-success hover:text-success-foreground"
-                            onClick={() => handleAction(approval, 'approve')}
-                          >
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            Approve
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
-                            onClick={() => handleAction(approval, 'reject')}
-                          >
-                            <XCircle className="h-4 w-4 mr-1" />
-                            Reject
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        className="flex-1 bg-success hover:bg-success/90 text-success-foreground"
+                        onClick={() => handleAction(approval, 'approve')}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        Approve
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="flex-1"
+                        onClick={() => handleAction(approval, 'reject')}
+                      >
+                        <XCircle className="h-4 w-4 mr-1" />
+                        Reject
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="text-center py-12">

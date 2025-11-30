@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Plus, Search, Building2, Globe, MapPin, Filter, 
@@ -201,128 +200,61 @@ export default function ProviderAdmin() {
 
             {/* Provider List */}
             <Card>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Provider Name</TableHead>
-                      <TableHead>Country / City</TableHead>
-                      <TableHead>Categories</TableHead>
-                      <TableHead>Contact</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Last Updated</TableHead>
-                      <TableHead className="w-20">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {isLoading ? (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8">
-                          Loading providers...
-                        </TableCell>
-                      </TableRow>
-                    ) : filteredProviders.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                          No providers found
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      filteredProviders.map((provider) => {
-                        const status = (provider.provider_status || 'draft') as ProviderStatus;
-                        const config = statusConfig[status];
-                        const StatusIcon = config.icon;
-                        return (
-                          <TableRow 
-                            key={provider.id} 
-                            className="cursor-pointer hover:bg-muted/50"
-                            onClick={() => navigate(`/providers/${provider.id}`)}
-                          >
-                            <TableCell>
-                              <div>
-                                <p className="font-medium">{provider.name_en}</p>
-                                {provider.name_ar && (
-                                  <p className="text-sm text-muted-foreground">{provider.name_ar}</p>
-                                )}
-                                {provider.vendor_code && (
-                                  <p className="text-xs text-muted-foreground">Code: {provider.vendor_code}</p>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                {provider.is_local ? (
-                                  <Badge variant="outline" className="text-xs">Local</Badge>
-                                ) : (
-                                  <Badge variant="secondary" className="text-xs">Int'l</Badge>
-                                )}
-                                <span>{provider.country || 'N/A'}</span>
-                              </div>
-                              {provider.city && (
-                                <p className="text-sm text-muted-foreground">{provider.city}</p>
+              <CardContent className="p-3">
+                {isLoading ? (
+                  <div className="text-center py-8">Loading providers...</div>
+                ) : filteredProviders.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">No providers found</div>
+                ) : (
+                  <div className="space-y-3">
+                    {filteredProviders.map((provider) => {
+                      const status = (provider.provider_status || 'draft') as ProviderStatus;
+                      const config = statusConfig[status];
+                      const StatusIcon = config.icon;
+                      return (
+                        <div
+                          key={provider.id}
+                          className="border rounded-lg p-3 space-y-2 bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+                          onClick={() => navigate(`/providers/${provider.id}`)}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-sm truncate">{provider.name_en}</p>
+                              {provider.vendor_code && (
+                                <p className="text-xs text-muted-foreground">Code: {provider.vendor_code}</p>
                               )}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex flex-wrap gap-1">
-                                {((provider.categories as string[]) || []).slice(0, 2).map(cat => (
-                                  <Badge key={cat} variant="outline" className="text-xs">{cat}</Badge>
-                                ))}
-                                {((provider.categories as string[]) || []).length > 2 && (
-                                  <Badge variant="outline" className="text-xs">
-                                    +{((provider.categories as string[]) || []).length - 2}
-                                  </Badge>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="text-sm">
-                                <p>{provider.contact_email || '-'}</p>
-                                {provider.contact_phone && (
-                                  <p className="text-muted-foreground">{provider.contact_phone}</p>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={config.variant} className="gap-1">
-                                <StatusIcon className="h-3 w-3" />
-                                {config.label}
+                            </div>
+                            <Badge variant={config.variant} className="gap-1 shrink-0 text-xs">
+                              <StatusIcon className="h-3 w-3" />
+                              {config.label}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              {provider.is_local ? (
+                                <Badge variant="outline" className="text-xs">Local</Badge>
+                              ) : (
+                                <Badge variant="secondary" className="text-xs">Int'l</Badge>
+                              )}
+                              <span>{provider.country || 'N/A'}</span>
+                            </div>
+                            <span>{provider.updated_at ? format(new Date(provider.updated_at), 'MMM d') : '-'}</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {((provider.categories as string[]) || []).slice(0, 3).map(cat => (
+                              <Badge key={cat} variant="outline" className="text-xs">{cat}</Badge>
+                            ))}
+                            {((provider.categories as string[]) || []).length > 3 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{((provider.categories as string[]) || []).length - 3}
                               </Badge>
-                            </TableCell>
-                            <TableCell className="text-sm text-muted-foreground">
-                              {provider.updated_at ? format(new Date(provider.updated_at), 'MMM d, yyyy') : '-'}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex gap-1">
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/providers/${provider.id}`);
-                                  }}
-                                >
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/providers/${provider.id}/edit`);
-                                  }}
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
-                    )}
-                </TableBody>
-                </Table>
-                </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

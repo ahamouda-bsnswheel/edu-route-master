@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import {
   Search,
@@ -456,65 +455,42 @@ export default function CatalogueAdmin() {
                 </CardContent>
               </Card>
             ) : viewMode === 'table' ? (
-              <Card className="card-shadow">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Code / ID</TableHead>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Delivery Mode</TableHead>
-                      <TableHead>Provider</TableHead>
-                      <TableHead>Duration</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Last Updated</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredCourses?.map((course) => (
-                      <TableRow 
-                        key={course.id} 
-                        className="cursor-pointer hover:bg-muted/50"
-                        onClick={() => navigate(`/catalogue/${course.id}`)}
-                      >
-                        <TableCell className="font-mono text-sm">
-                          {course.code || course.id.slice(0, 8)}
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{course.name_en}</p>
-                            {course.name_ar && (
-                              <p className="text-sm text-muted-foreground" dir="rtl">
-                                {course.name_ar}
-                              </p>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>{course.category?.name_en || '-'}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {deliveryModeLabels[course.delivery_mode] || course.delivery_mode}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{course.provider?.name_en || 'TBD'}</TableCell>
-                        <TableCell>
-                          {course.duration_days ? `${course.duration_days} days` : '-'}
-                        </TableCell>
-                        <TableCell>
-                          {renderStatusBadge(course.catalogue_status as CatalogueStatus)}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {course.updated_at ? format(new Date(course.updated_at), 'MMM dd, yyyy') : '-'}
-                        </TableCell>
-                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+              <div className="space-y-3">
+                {filteredCourses?.map((course) => (
+                  <Card
+                    key={course.id}
+                    className="card-shadow hover:bg-accent/50 transition-colors cursor-pointer"
+                    onClick={() => navigate(`/catalogue/${course.id}`)}
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-sm truncate">{course.name_en}</p>
+                          <p className="text-xs text-muted-foreground">{course.code || course.id.slice(0, 8)}</p>
+                        </div>
+                        {renderStatusBadge(course.catalogue_status as CatalogueStatus)}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-2">
+                        <Badge variant="outline" className="text-xs">
+                          {deliveryModeLabels[course.delivery_mode] || course.delivery_mode}
+                        </Badge>
+                        {course.duration_days && (
+                          <span>{course.duration_days} days</span>
+                        )}
+                        {course.training_location === 'abroad' && (
+                          <Badge variant="secondary" className="text-xs">Abroad</Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">{course.provider?.name_en || 'TBD'}</span>
+                        <div onClick={(e) => e.stopPropagation()}>
                           {renderCourseActions(course)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Card>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {filteredCourses?.map((course) => (
