@@ -30,6 +30,7 @@ import {
   Download,
   AlertTriangle,
   PieChart,
+  Settings,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import {
@@ -47,6 +48,8 @@ import {
   LineChart,
   Line,
 } from 'recharts';
+import { TrainingVsNonTrainingChart } from '@/components/cost/TrainingVsNonTrainingChart';
+import { AnomalyRulesConfig } from '@/components/cost/AnomalyRulesConfig';
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(142, 76%, 36%)', 'hsl(45, 93%, 47%)', 'hsl(0, 84%, 60%)', 'hsl(280, 65%, 60%)'];
 
@@ -246,16 +249,21 @@ export default function CostDashboard() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList>
+          <TabsList className="flex-wrap h-auto gap-1">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="entity">By Entity</TabsTrigger>
             <TabsTrigger value="provider">By Provider</TabsTrigger>
             <TabsTrigger value="destination">By Destination</TabsTrigger>
+            <TabsTrigger value="training-travel">Training vs Other Travel</TabsTrigger>
             <TabsTrigger value="anomalies">
               Anomalies
               {openAnomalies.length > 0 && (
                 <Badge variant="destructive" className="ml-2">{openAnomalies.length}</Badge>
               )}
+            </TabsTrigger>
+            <TabsTrigger value="settings">
+              <Settings className="h-4 w-4 mr-1" />
+              Settings
             </TabsTrigger>
           </TabsList>
 
@@ -550,6 +558,10 @@ export default function CostDashboard() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="training-travel" className="space-y-4">
+            <TrainingVsNonTrainingChart fiscalYear={fiscalYear} entity={entityFilter} />
+          </TabsContent>
+
           <TabsContent value="anomalies" className="space-y-4">
             <Card>
               <CardHeader>
@@ -603,6 +615,10 @@ export default function CostDashboard() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-4">
+            <AnomalyRulesConfig />
           </TabsContent>
         </Tabs>
       </div>
