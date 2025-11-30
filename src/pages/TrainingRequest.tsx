@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { PerDiemEstimatePanel } from '@/components/per-diem/PerDiemEstimatePanel';
 import { format, addMonths, startOfQuarter, endOfQuarter } from 'date-fns';
+import { requiresExtendedWorkflow, initializeWorkflow } from '@/hooks/useApprovalWorkflow';
 
 type Step = 'course' | 'session' | 'details' | 'review';
 type PreferredPeriodType = 'any' | 'specific_session' | 'quarter' | 'date_range';
@@ -118,29 +119,10 @@ export default function TrainingRequest() {
     enabled: !!courseId,
   });
 
-  // Fetch fresh manager_id from profile to ensure it's current
-  const { data: freshProfile } = useQuery({
-    queryKey: ['fresh-profile', user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('manager_id')
-        .eq('id', user?.id)
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!user?.id,
-  });
-
   const submitMutation = useMutation({
     mutationFn: async () => {
-      // Get manager_id from fresh profile query or fallback to auth context
-      const managerId = freshProfile?.manager_id || profile?.manager_id;
-
-      if (!managerId) {
-        throw new Error('No manager assigned to your profile. Please contact HR to set up your reporting structure.');
-      }
+      // Determine if this requires extended workflow (Abroad/High-cost)
+      const isExtendedWorkflow = requiresExtendedWorkflow(course || {});
 
       const { data: request, error: requestError } = await supabase
         .from('training_requests')
@@ -153,8 +135,6 @@ export default function TrainingRequest() {
           abroad_reason: course?.training_location === 'abroad' ? abroadReason : null,
           status: 'pending',
           submitted_at: new Date().toISOString(),
-          current_approval_level: 1,
-          current_approver_id: managerId,
           estimated_cost: course?.cost_amount,
         })
         .select()
@@ -162,35 +142,23 @@ export default function TrainingRequest() {
 
       if (requestError) throw requestError;
 
-      // Create initial approval record for manager
-      const { error: approvalError } = await supabase
-        .from('approvals')
-        .insert({
-          request_id: request.id,
-          approver_id: managerId,
-          approver_role: 'manager',
-          approval_level: 1,
-          status: 'pending',
-        });
-
-      if (approvalError) throw approvalError;
-
-      // Notify manager about the new approval request
-      await supabase.from('notifications').insert({
-        user_id: managerId,
-        title: 'Training Approval Required',
-        message: `${profile?.first_name_en || 'An employee'} has requested training for "${course?.name_en}".`,
-        type: 'approval_required',
-        reference_type: 'training_request',
-        reference_id: request.id,
+      // Use the workflow engine to initialize approvals
+      await initializeWorkflow({
+        nominatorId: user?.id || '',
+        employeeId: user?.id || '', // Employee is requesting for themselves
+        requestId: request.id,
+        courseName: course?.name_en || 'training',
+        isExtendedWorkflow,
       });
 
-      return request;
+      return { request, isExtendedWorkflow };
     },
-    onSuccess: () => {
+    onSuccess: ({ isExtendedWorkflow }) => {
       toast({
         title: 'Request Submitted',
-        description: 'Your training request has been submitted for approval. Your manager will be notified.',
+        description: isExtendedWorkflow
+          ? 'Your training request has been submitted. It will go through the full approval chain (Manager → HRBP → L&D → CHRO).'
+          : 'Your training request has been submitted for manager approval.',
       });
       navigate('/my-requests');
     },
