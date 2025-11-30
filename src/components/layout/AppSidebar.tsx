@@ -33,6 +33,7 @@ import {
   GitBranch,
   Plane,
   Wallet,
+  AlertTriangle,
 } from 'lucide-react';
 
 const mainNavItems = [
@@ -87,6 +88,7 @@ const adminNavItems = [
   { title: 'Per Diem Policy', url: '/per-diem-admin', icon: Wallet, roles: ['comp_benefits', 'l_and_d', 'admin'] },
   { title: 'Per Diem Reports', url: '/per-diem-reports', icon: Wallet, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance', 'comp_benefits'] },
   { title: 'Logistics Console', url: '/logistics-console', icon: Plane, roles: ['l_and_d', 'admin', 'travel'] },
+  { title: 'Incident Console', url: '/incident-console', icon: AlertTriangle, roles: ['l_and_d', 'admin', 'travel', 'hrbp'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
 ];
 

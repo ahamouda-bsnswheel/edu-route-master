@@ -2271,6 +2271,94 @@ export type Database = {
           },
         ]
       }
+      incident_attachments: {
+        Row: {
+          description: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          incident_id: string
+          mime_type: string | null
+          uploaded_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          description?: string | null
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          incident_id: string
+          mime_type?: string | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          description?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          incident_id?: string
+          mime_type?: string | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incident_attachments_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "travel_incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      incident_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          field_changed: string | null
+          id: string
+          incident_id: string
+          new_value: string | null
+          old_value: string | null
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          incident_id: string
+          new_value?: string | null
+          old_value?: string | null
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          field_changed?: string | null
+          id?: string
+          incident_id?: string
+          new_value?: string | null
+          old_value?: string | null
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incident_audit_log_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "travel_incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       itinerary_accommodations: {
         Row: {
           booking_reference: string | null
@@ -5893,6 +5981,173 @@ export type Database = {
         }
         Relationships: []
       }
+      travel_incidents: {
+        Row: {
+          actions_taken: string | null
+          assigned_to: string | null
+          confidential_notes: string | null
+          contributing_factors: string[] | null
+          created_at: string | null
+          created_by: string | null
+          days_missed: number | null
+          description: string
+          employee_id: string
+          escalated_at: string | null
+          escalated_by: string | null
+          escalated_to: string | null
+          escalation_reason: string | null
+          external_case_id: string | null
+          follow_up_completed: boolean | null
+          follow_up_description: string | null
+          follow_up_due_date: string | null
+          follow_up_required: boolean | null
+          id: string
+          incident_datetime: string
+          incident_timezone: string | null
+          incident_type: Database["public"]["Enums"]["incident_type"]
+          internal_notes: string | null
+          itinerary_id: string | null
+          location_city: string | null
+          location_country: string | null
+          location_detail: string | null
+          outcome: string | null
+          owner_role: string | null
+          resolution_summary: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          root_cause: string | null
+          secondary_type: Database["public"]["Enums"]["incident_type"] | null
+          session_id: string | null
+          severity: Database["public"]["Enums"]["incident_severity"]
+          source: string | null
+          status: Database["public"]["Enums"]["incident_status"]
+          training_impact: Database["public"]["Enums"]["training_impact"]
+          training_request_id: string | null
+          travel_system_ref: string | null
+          travel_visa_request_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          actions_taken?: string | null
+          assigned_to?: string | null
+          confidential_notes?: string | null
+          contributing_factors?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          days_missed?: number | null
+          description: string
+          employee_id: string
+          escalated_at?: string | null
+          escalated_by?: string | null
+          escalated_to?: string | null
+          escalation_reason?: string | null
+          external_case_id?: string | null
+          follow_up_completed?: boolean | null
+          follow_up_description?: string | null
+          follow_up_due_date?: string | null
+          follow_up_required?: boolean | null
+          id?: string
+          incident_datetime: string
+          incident_timezone?: string | null
+          incident_type: Database["public"]["Enums"]["incident_type"]
+          internal_notes?: string | null
+          itinerary_id?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          location_detail?: string | null
+          outcome?: string | null
+          owner_role?: string | null
+          resolution_summary?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          root_cause?: string | null
+          secondary_type?: Database["public"]["Enums"]["incident_type"] | null
+          session_id?: string | null
+          severity?: Database["public"]["Enums"]["incident_severity"]
+          source?: string | null
+          status?: Database["public"]["Enums"]["incident_status"]
+          training_impact?: Database["public"]["Enums"]["training_impact"]
+          training_request_id?: string | null
+          travel_system_ref?: string | null
+          travel_visa_request_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          actions_taken?: string | null
+          assigned_to?: string | null
+          confidential_notes?: string | null
+          contributing_factors?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          days_missed?: number | null
+          description?: string
+          employee_id?: string
+          escalated_at?: string | null
+          escalated_by?: string | null
+          escalated_to?: string | null
+          escalation_reason?: string | null
+          external_case_id?: string | null
+          follow_up_completed?: boolean | null
+          follow_up_description?: string | null
+          follow_up_due_date?: string | null
+          follow_up_required?: boolean | null
+          id?: string
+          incident_datetime?: string
+          incident_timezone?: string | null
+          incident_type?: Database["public"]["Enums"]["incident_type"]
+          internal_notes?: string | null
+          itinerary_id?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          location_detail?: string | null
+          outcome?: string | null
+          owner_role?: string | null
+          resolution_summary?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          root_cause?: string | null
+          secondary_type?: Database["public"]["Enums"]["incident_type"] | null
+          session_id?: string | null
+          severity?: Database["public"]["Enums"]["incident_severity"]
+          source?: string | null
+          status?: Database["public"]["Enums"]["incident_status"]
+          training_impact?: Database["public"]["Enums"]["training_impact"]
+          training_request_id?: string | null
+          travel_system_ref?: string | null
+          travel_visa_request_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "travel_incidents_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "travel_itineraries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "travel_incidents_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "travel_incidents_training_request_id_fkey"
+            columns: ["training_request_id"]
+            isOneToOne: false
+            referencedRelation: "training_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "travel_incidents_travel_visa_request_id_fkey"
+            columns: ["travel_visa_request_id"]
+            isOneToOne: false
+            referencedRelation: "travel_visa_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       travel_itineraries: {
         Row: {
           created_at: string | null
@@ -6504,6 +6759,30 @@ export type Database = {
       cost_level: "low" | "medium" | "high"
       cost_unit_type: "per_participant" | "per_session"
       delivery_mode: "classroom" | "online" | "blended" | "on_the_job"
+      incident_severity: "minor" | "moderate" | "major" | "critical"
+      incident_status:
+        | "open"
+        | "under_review"
+        | "resolved_no_impact"
+        | "resolved_training_adjusted"
+        | "escalated"
+        | "closed"
+      incident_type:
+        | "flight_delay"
+        | "flight_cancellation"
+        | "missed_connection"
+        | "lost_baggage"
+        | "no_pickup"
+        | "wrong_pickup"
+        | "hotel_issue"
+        | "medical_incident"
+        | "accident_injury"
+        | "security_threat"
+        | "lost_stolen_documents"
+        | "weather_disruption"
+        | "strike_disruption"
+        | "political_event"
+        | "other"
       provider_status:
         | "draft"
         | "pending_approval"
@@ -6532,6 +6811,13 @@ export type Database = {
         | "completed"
         | "failed"
         | "cancelled"
+      training_impact:
+        | "none"
+        | "late_arrival"
+        | "missed_days"
+        | "complete_no_show"
+        | "session_cancelled"
+        | "session_postponed"
       training_location: "local" | "abroad"
       training_plan_status:
         | "draft"
@@ -6696,6 +6982,32 @@ export const Constants = {
       cost_level: ["low", "medium", "high"],
       cost_unit_type: ["per_participant", "per_session"],
       delivery_mode: ["classroom", "online", "blended", "on_the_job"],
+      incident_severity: ["minor", "moderate", "major", "critical"],
+      incident_status: [
+        "open",
+        "under_review",
+        "resolved_no_impact",
+        "resolved_training_adjusted",
+        "escalated",
+        "closed",
+      ],
+      incident_type: [
+        "flight_delay",
+        "flight_cancellation",
+        "missed_connection",
+        "lost_baggage",
+        "no_pickup",
+        "wrong_pickup",
+        "hotel_issue",
+        "medical_incident",
+        "accident_injury",
+        "security_threat",
+        "lost_stolen_documents",
+        "weather_disruption",
+        "strike_disruption",
+        "political_event",
+        "other",
+      ],
       provider_status: [
         "draft",
         "pending_approval",
@@ -6727,6 +7039,14 @@ export const Constants = {
         "completed",
         "failed",
         "cancelled",
+      ],
+      training_impact: [
+        "none",
+        "late_arrival",
+        "missed_days",
+        "complete_no_show",
+        "session_cancelled",
+        "session_postponed",
       ],
       training_location: ["local", "abroad"],
       training_plan_status: [

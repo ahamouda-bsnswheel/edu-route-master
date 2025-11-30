@@ -71,6 +71,7 @@ import TravelVisaReports from "./pages/TravelVisaReports";
 import PerDiemAdmin from "./pages/PerDiemAdmin";
 import PerDiemReports from "./pages/PerDiemReports";
 import LogisticsConsole from "./pages/LogisticsConsole";
+import IncidentConsole from "./pages/IncidentConsole";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -647,6 +648,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <LogisticsConsole />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/incident-console"
+        element={
+          <ProtectedRoute>
+            <IncidentConsole />
           </ProtectedRoute>
         }
       />
