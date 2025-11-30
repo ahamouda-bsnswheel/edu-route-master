@@ -77,6 +77,8 @@ import ExpenseExportConsole from "./pages/ExpenseExportConsole";
 import ExpenseExportDetail from "./pages/ExpenseExportDetail";
 import ExportConfigAdmin from "./pages/ExportConfigAdmin";
 import TrainingSpendSummary from "./pages/TrainingSpendSummary";
+import CostDashboard from "./pages/CostDashboard";
+import BudgetControl from "./pages/BudgetControl";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -693,6 +695,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <TrainingSpendSummary />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/cost-dashboard"
+        element={
+          <ProtectedRoute>
+            <CostDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/budget-control"
+        element={
+          <ProtectedRoute>
+            <BudgetControl />
           </ProtectedRoute>
         }
       />
