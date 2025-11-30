@@ -309,7 +309,7 @@ export function useUpdateTravelVisaConfig() {
   });
 }
 
-export function useTravelVisaAuditLog(travelVisaRequestId?: string) {
+export function useTravelVisaAuditLog(travelVisaRequestId?: string | null) {
   return useQuery({
     queryKey: ['travel-visa-audit', travelVisaRequestId],
     queryFn: async () => {
@@ -326,8 +326,7 @@ export function useTravelVisaAuditLog(travelVisaRequestId?: string) {
       const { data, error } = await query;
       if (error) throw error;
       return data;
-    },
-    enabled: !!travelVisaRequestId || travelVisaRequestId === undefined
+    }
   });
 }
 

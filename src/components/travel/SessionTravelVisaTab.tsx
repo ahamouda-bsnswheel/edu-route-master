@@ -60,24 +60,28 @@ export function SessionTravelVisaTab({ sessionId }: SessionTravelVisaTabProps) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('session_enrollments')
-        .select('id, employee_id, status')
+        .select('id, participant_id, status')
         .eq('session_id', sessionId)
         .in('status', ['confirmed', 'enrolled', 'attended', 'completed']);
 
       if (error) throw error;
       
       // Fetch profiles separately
-      const employeeIds = data?.map(e => e.employee_id) || [];
+      const participantIds = data?.map(e => e.participant_id) || [];
+      if (participantIds.length === 0) return [];
+      
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, first_name_en, last_name_en, employee_number, nationality')
-        .in('id', employeeIds);
+        .select('id, first_name_en, last_name_en, employee_id')
+        .in('id', participantIds);
       
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
       
       return data?.map(e => ({
-        ...e,
-        profile: profileMap.get(e.employee_id)
+        id: e.id,
+        participant_id: e.participant_id,
+        status: e.status,
+        profile: profileMap.get(e.participant_id)
       })) || [];
     }
   });
@@ -89,7 +93,7 @@ export function SessionTravelVisaTab({ sessionId }: SessionTravelVisaTabProps) {
 
   const syncMutation = useSyncTravelStatus();
 
-  // Create a map of employee_id to travel request
+  // Create a map of participant_id to travel request
   const travelMap = useMemo(() => {
     const map = new Map<string, TravelVisaRequest>();
     travelRequests?.forEach(req => {
@@ -101,11 +105,14 @@ export function SessionTravelVisaTab({ sessionId }: SessionTravelVisaTabProps) {
   // Filter and combine data
   const participantData = useMemo(() => {
     return enrollments?.map(enrollment => {
-      const travel = travelMap.get(enrollment.employee_id);
+      const travel = travelMap.get(enrollment.participant_id);
       const readiness = travel ? getTravelReadiness(travel) : 'critical';
 
       return {
-        ...enrollment,
+        id: enrollment.id,
+        participant_id: enrollment.participant_id,
+        status: enrollment.status,
+        profile: enrollment.profile,
         travel,
         readiness
       };
@@ -143,22 +150,22 @@ export function SessionTravelVisaTab({ sessionId }: SessionTravelVisaTabProps) {
     if (selectedParticipants.length === participantData.length) {
       setSelectedParticipants([]);
     } else {
-      setSelectedParticipants(participantData.map(p => p.employee_id));
+      setSelectedParticipants(participantData.map(p => p.participant_id));
     }
   };
 
-  const toggleSelect = (employeeId: string) => {
+  const toggleSelect = (participantId: string) => {
     setSelectedParticipants(prev => 
-      prev.includes(employeeId)
-        ? prev.filter(id => id !== employeeId)
-        : [...prev, employeeId]
+      prev.includes(participantId)
+        ? prev.filter(id => id !== participantId)
+        : [...prev, participantId]
     );
   };
 
   const handleExport = () => {
     const csvData = participantData.map(p => ({
-      'Employee ID': p.profile?.employee_number || '',
-      'Name': `${p.profile?.first_name_en || ''} ${p.profile?.last_name_en || ''}`,
+      'Employee ID': (p.profile as any)?.employee_id || '',
+      'Name': `${(p.profile as any)?.first_name_en || ''} ${(p.profile as any)?.last_name_en || ''}`,
       'Travel Request ID': p.travel?.travel_request_id || '',
       'Travel Status': p.travel ? travelStatusLabels[p.travel.travel_status] : 'Not Initiated',
       'Visa Request ID': p.travel?.visa_request_id || '',
@@ -257,7 +264,7 @@ export function SessionTravelVisaTab({ sessionId }: SessionTravelVisaTabProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => syncMutation.mutate()}
+            onClick={() => syncMutation.mutate(undefined)}
             disabled={syncMutation.isPending}
           >
             {syncMutation.isPending ? (
@@ -318,17 +325,17 @@ export function SessionTravelVisaTab({ sessionId }: SessionTravelVisaTabProps) {
                   <TableRow key={participant.id}>
                     <TableCell>
                       <Checkbox
-                        checked={selectedParticipants.includes(participant.employee_id)}
-                        onCheckedChange={() => toggleSelect(participant.employee_id)}
+                        checked={selectedParticipants.includes(participant.participant_id)}
+                        onCheckedChange={() => toggleSelect(participant.participant_id)}
                       />
                     </TableCell>
                     <TableCell>
                       <div>
                         <div className="font-medium">
-                          {participant.profile?.first_name_en} {participant.profile?.last_name_en}
+                          {(participant.profile as any)?.first_name_en} {(participant.profile as any)?.last_name_en}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {participant.profile?.employee_number}
+                          {(participant.profile as any)?.employee_id}
                         </div>
                       </div>
                     </TableCell>
