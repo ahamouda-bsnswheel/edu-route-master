@@ -66,14 +66,34 @@ export default function TeamNominations() {
 
   const isManager = hasRole('manager') || hasRole('hrbp') || hasRole('l_and_d') || hasRole('admin');
 
-  // Fetch team members (direct reports)
+  // Fetch team members based on role:
+  // - Manager: direct reports only
+  // - HRBP: all employees in their entity
+  // - L&D/Admin: all employees
   const { data: teamMembers, isLoading: teamLoading } = useQuery({
-    queryKey: ['team-members', user?.id],
+    queryKey: ['team-members', user?.id, profile?.entity_id, hasRole('hrbp'), hasRole('l_and_d'), hasRole('admin')],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('profiles')
-        .select('id, first_name_en, last_name_en, email, job_title_en, employee_id')
-        .eq('manager_id', user?.id);
+        .select('id, first_name_en, last_name_en, email, job_title_en, employee_id, entity_id');
+
+      // L&D and Admin can see all employees
+      if (hasRole('l_and_d') || hasRole('admin')) {
+        // No filter - see everyone
+      } 
+      // HRBP can see all employees in their entity
+      else if (hasRole('hrbp') && profile?.entity_id) {
+        query = query.eq('entity_id', profile.entity_id);
+      }
+      // Managers see only direct reports
+      else {
+        query = query.eq('manager_id', user?.id);
+      }
+
+      // Exclude self from the list
+      query = query.neq('id', user?.id);
+
+      const { data, error } = await query;
 
       if (error) throw error;
       return data;
