@@ -7448,6 +7448,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      initialize_training_request_workflow: {
+        Args: {
+          p_current_approval_level: number
+          p_current_approver_id: string
+          p_request_id: string
+          p_status?: string
+        }
+        Returns: undefined
+      }
       process_training_request_approval: {
         Args: {
           p_current_approver_id?: string
