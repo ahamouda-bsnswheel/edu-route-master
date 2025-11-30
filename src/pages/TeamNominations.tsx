@@ -78,13 +78,13 @@ export default function TeamNominations() {
     enabled: !!user?.id && isManager,
   });
 
-  // Fetch courses
+  // Fetch courses with cost level for workflow determination
   const { data: courses } = useQuery({
     queryKey: ['courses-for-nomination'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('courses')
-        .select('id, name_en, delivery_mode, training_location, duration_days')
+        .select('id, name_en, delivery_mode, training_location, duration_days, cost_level')
         .eq('is_active', true)
         .order('name_en');
 
@@ -116,10 +116,71 @@ export default function TeamNominations() {
     enabled: !!teamMembers?.length,
   });
 
+  // Helper function to determine if course requires extended approval workflow
+  const requiresExtendedWorkflow = (course: { training_location?: string; cost_level?: string }) => {
+    // Abroad or high-cost courses require HRBP → L&D → CHRO approval
+    return course?.training_location === 'abroad' || course?.cost_level === 'high';
+  };
+
+  // Helper function to find HRBP for an employee's entity
+  const findHRBPForEntity = async (employeeId: string) => {
+    // Get employee's entity_id
+    const { data: employeeProfile } = await supabase
+      .from('profiles')
+      .select('entity_id')
+      .eq('id', employeeId)
+      .single();
+
+    if (!employeeProfile?.entity_id) {
+      // Fallback: find any HRBP if no entity match
+      const { data: anyHrbp } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'hrbp')
+        .limit(1)
+        .single();
+      return anyHrbp?.user_id;
+    }
+
+    // Find HRBP assigned to the same entity
+    const { data: hrbpForEntity } = await supabase
+      .from('user_roles')
+      .select('user_id, profiles!inner(entity_id)')
+      .eq('role', 'hrbp')
+      .eq('profiles.entity_id', employeeProfile.entity_id)
+      .limit(1)
+      .single();
+
+    if (hrbpForEntity?.user_id) {
+      return hrbpForEntity.user_id;
+    }
+
+    // Fallback: find any HRBP
+    const { data: anyHrbp } = await supabase
+      .from('user_roles')
+      .select('user_id')
+      .eq('role', 'hrbp')
+      .limit(1)
+      .single();
+    return anyHrbp?.user_id;
+  };
+
+  // Helper function to find L&D user
+  const findLandDUser = async () => {
+    const { data } = await supabase
+      .from('user_roles')
+      .select('user_id')
+      .eq('role', 'l_and_d')
+      .limit(1)
+      .single();
+    return data?.user_id;
+  };
+
   // Create nomination mutation
   const nominateMutation = useMutation({
     mutationFn: async () => {
       const selectedCourseData = courses?.find(c => c.id === selectedCourse);
+      const isExtendedWorkflow = requiresExtendedWorkflow(selectedCourseData || {});
       
       // Create a training request for each selected team member
       const requests = selectedTeamMembers.map(memberId => ({
@@ -141,29 +202,20 @@ export default function TeamNominations() {
 
       if (error) throw error;
 
-      // Create approval records and notifications for each
+      // Process each request through the workflow
       for (const request of createdRequests || []) {
-        // Create approval record
+        // Record manager's auto-approval (Level 1)
         await supabase.from('approvals').insert({
           request_id: request.id,
           approver_id: user?.id,
           approval_level: 1,
           approver_role: 'manager',
-          status: 'approved', // Manager auto-approves their own nominations
+          status: 'approved',
           decision_date: new Date().toISOString(),
           comments: 'Manager nomination - auto-approved',
         });
 
-        // Update request to next approval level
-        await supabase
-          .from('training_requests')
-          .update({
-            current_approval_level: 2,
-            status: 'pending',
-          })
-          .eq('id', request.id);
-
-        // Notify the team member
+        // Notify the team member about nomination
         await createNotification({
           user_id: request.requester_id,
           title: 'Training Nomination',
@@ -172,14 +224,104 @@ export default function TeamNominations() {
           reference_type: 'training_request',
           reference_id: request.id,
         });
+
+        if (isExtendedWorkflow) {
+          // Extended workflow: Manager → HRBP → L&D → CHRO
+          const nextApproverId = await findHRBPForEntity(request.requester_id);
+          
+          if (nextApproverId) {
+            // Update request to Level 2 (HRBP)
+            await supabase
+              .from('training_requests')
+              .update({
+                current_approval_level: 2,
+                current_approver_id: nextApproverId,
+                status: 'pending',
+              })
+              .eq('id', request.id);
+
+            // Create pending approval for HRBP
+            await supabase.from('approvals').insert({
+              request_id: request.id,
+              approver_id: nextApproverId,
+              approval_level: 2,
+              approver_role: 'hrbp',
+              status: 'pending',
+            });
+
+            // Notify HRBP
+            await createNotification({
+              user_id: nextApproverId,
+              title: 'Training Approval Required',
+              message: `A training nomination for "${selectedCourseData?.name_en}" requires your approval.`,
+              type: 'approval_required',
+              reference_type: 'training_request',
+              reference_id: request.id,
+            });
+          } else {
+            // No HRBP found, try L&D
+            const landDUserId = await findLandDUser();
+            if (landDUserId) {
+              await supabase
+                .from('training_requests')
+                .update({
+                  current_approval_level: 3,
+                  current_approver_id: landDUserId,
+                  status: 'pending',
+                })
+                .eq('id', request.id);
+
+              await supabase.from('approvals').insert({
+                request_id: request.id,
+                approver_id: landDUserId,
+                approval_level: 3,
+                approver_role: 'l_and_d',
+                status: 'pending',
+              });
+
+              await createNotification({
+                user_id: landDUserId,
+                title: 'Training Approval Required',
+                message: `A training nomination for "${selectedCourseData?.name_en}" requires your approval.`,
+                type: 'approval_required',
+                reference_type: 'training_request',
+                reference_id: request.id,
+              });
+            }
+          }
+        } else {
+          // Simple workflow: Local/Low-cost → Auto-approved after manager
+          await supabase
+            .from('training_requests')
+            .update({
+              status: 'approved',
+              current_approver_id: null,
+            })
+            .eq('id', request.id);
+
+          // Notify team member of full approval
+          await createNotification({
+            user_id: request.requester_id,
+            title: 'Training Request Approved',
+            message: `Your training nomination for "${selectedCourseData?.name_en}" has been fully approved.`,
+            type: 'request_approved',
+            reference_type: 'training_request',
+            reference_id: request.id,
+          });
+        }
       }
 
       return createdRequests;
     },
     onSuccess: (data) => {
+      const selectedCourseData = courses?.find(c => c.id === selectedCourse);
+      const isExtendedWorkflow = requiresExtendedWorkflow(selectedCourseData || {});
+      
       toast({
         title: 'Nominations Submitted',
-        description: `${data?.length || 0} team member(s) have been nominated for training.`,
+        description: isExtendedWorkflow 
+          ? `${data?.length || 0} nomination(s) sent for HRBP approval.`
+          : `${data?.length || 0} nomination(s) have been approved.`,
       });
       queryClient.invalidateQueries({ queryKey: ['team-nominations'] });
       setShowNominationDialog(false);
