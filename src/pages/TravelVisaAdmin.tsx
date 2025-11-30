@@ -47,7 +47,7 @@ export default function TravelVisaAdmin() {
   const { data: config, isLoading: loadingConfig } = useTravelVisaConfig();
   const updateConfig = useUpdateTravelVisaConfig();
   const syncStatus = useSyncTravelStatus();
-  const { data: auditLogs, isLoading: loadingLogs } = useTravelVisaAuditLog(undefined);
+  const { data: auditLogs, isLoading: loadingLogs } = useTravelVisaAuditLog(null);
 
   const [formData, setFormData] = useState<any>({});
 
@@ -62,7 +62,7 @@ export default function TravelVisaAdmin() {
   };
 
   const handleSync = () => {
-    syncStatus.mutate();
+    syncStatus.mutate(undefined);
   };
 
   if (loadingConfig) {

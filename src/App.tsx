@@ -598,6 +598,32 @@ function AppRoutes() {
         }
       />
 
+      {/* Travel & Visa Routes */}
+      <Route
+        path="/my-abroad-trainings"
+        element={
+          <ProtectedRoute>
+            <MyAbroadTrainings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/travel-visa-admin"
+        element={
+          <ProtectedRoute>
+            <TravelVisaAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/travel-visa-reports"
+        element={
+          <ProtectedRoute>
+            <TravelVisaReports />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Placeholder routes */}
       <Route
         path="/calendar"
