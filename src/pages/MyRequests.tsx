@@ -72,6 +72,7 @@ export default function MyRequests() {
     }
 
     return (
+      <div className="overflow-x-auto -mx-6 px-6">
       <Table>
         <TableHeader>
           <TableRow>
@@ -133,6 +134,7 @@ export default function MyRequests() {
           })}
         </TableBody>
       </Table>
+      </div>
     );
   };
 
@@ -142,7 +144,7 @@ export default function MyRequests() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">My Requests</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">My Requests</h1>
             <p className="text-muted-foreground mt-1">
               Track and manage your training requests
             </p>

@@ -160,7 +160,7 @@ export default function Approvals() {
       <div className="space-y-6 animate-fade-in">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Pending Approvals</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Pending Approvals</h1>
           <p className="text-muted-foreground mt-1">
             Review and process training requests awaiting your approval
           </p>
@@ -201,6 +201,7 @@ export default function Approvals() {
                 ))}
               </div>
             ) : pendingApprovals && pendingApprovals.length > 0 ? (
+              <div className="overflow-x-auto -mx-6 px-6">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -283,6 +284,7 @@ export default function Approvals() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             ) : (
               <div className="text-center py-12">
                 <CheckCircle className="h-12 w-12 mx-auto text-success mb-4" />

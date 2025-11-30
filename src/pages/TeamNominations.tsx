@@ -254,7 +254,7 @@ export default function TeamNominations() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Team Nominations</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Team Nominations</h1>
             <p className="text-muted-foreground mt-1">
               Nominate team members for training courses
             </p>
@@ -322,6 +322,7 @@ export default function TeamNominations() {
                 ))}
               </div>
             ) : teamRequests && teamRequests.length > 0 ? (
+              <div className="overflow-x-auto -mx-6 px-6">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -372,6 +373,7 @@ export default function TeamNominations() {
                   })}
                 </TableBody>
               </Table>
+              </div>
             ) : (
               <div className="text-center py-12">
                 <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />

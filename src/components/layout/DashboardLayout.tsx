@@ -101,7 +101,7 @@ export function DashboardLayout({ children, title, description }: DashboardLayou
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 overflow-auto bg-background">
+          <main className="flex-1 p-3 sm:p-6 overflow-auto bg-background">
             {(title || description) && (
               <div className="mb-6">
                 {title && <h1 className="text-2xl font-bold tracking-tight">{title}</h1>}

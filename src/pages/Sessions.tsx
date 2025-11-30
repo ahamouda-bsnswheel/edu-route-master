@@ -185,7 +185,7 @@ export default function Sessions() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Training Sessions</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Training Sessions</h1>
             <p className="text-muted-foreground mt-1">
               Manage training sessions, enrollments, and capacity
             </p>
@@ -199,7 +199,7 @@ export default function Sessions() {
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <Card className="card-shadow">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -293,6 +293,7 @@ export default function Sessions() {
                 ))}
               </div>
             ) : filteredSessions && filteredSessions.length > 0 ? (
+              <div className="overflow-x-auto -mx-6 px-6">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -377,6 +378,7 @@ export default function Sessions() {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             ) : (
               <div className="text-center py-12">
                 <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
