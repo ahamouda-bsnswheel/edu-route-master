@@ -175,28 +175,53 @@ async function pullRecords(supabase: any, body: ExportRequest, userId: string | 
   const exportedIds = new Set((existingRecords || []).map((r: any) => r.source_id));
   const eligibleRecords = (perDiemRecords || []).filter((r: any) => !exportedIds.has(r.id));
 
-  // Create export records
-  const recordsToInsert = eligibleRecords.map((r: any) => ({
-    batch_id: batchId,
-    source_type: 'per_diem',
-    source_id: r.id,
-    employee_id: r.employee_id,
-    employee_payroll_id: r.profiles?.employee_id || null,
-    employee_name: r.profiles ? `${r.profiles.first_name_en || ''} ${r.profiles.last_name_en || ''}`.trim() : null,
-    training_request_id: r.training_request_id,
-    session_id: r.session_id,
-    expense_type: 'PER_DIEM_TRAINING',
-    amount: r.final_amount || r.estimated_amount,
-    currency: r.currency || 'LYD',
-    cost_centre: r.profiles?.department || null,
-    expense_date: r.actual_end_date || r.planned_end_date,
-    posting_period: new Date(r.actual_end_date || r.planned_end_date || new Date()).toISOString().substring(0, 7),
-    destination_country: r.destination_country,
-    destination_city: r.destination_city,
-    status: 'pending',
-    export_key: `PD-${r.id}-${Date.now()}`,
-    has_incident_adjustment: false,
-  }));
+  // Get all incidents for the period to check for adjustments
+  const { data: incidents } = await supabase
+    .from('travel_incidents')
+    .select('id, employee_id, session_id, trip_id, incident_type, training_impact')
+    .gte('incident_date', batch.period_start)
+    .lte('incident_date', batch.period_end)
+    .in('training_impact', ['late_arrival', 'missed_days', 'no_show', 'session_cancelled']);
+
+  // Create a map of employee+session to incidents
+  const incidentMap = new Map<string, string[]>();
+  for (const incident of incidents || []) {
+    const key = `${incident.employee_id}-${incident.session_id || 'none'}`;
+    if (!incidentMap.has(key)) {
+      incidentMap.set(key, []);
+    }
+    incidentMap.get(key)!.push(incident.id);
+  }
+
+  // Create export records with incident adjustment flags
+  const recordsToInsert = eligibleRecords.map((r: any) => {
+    const incidentKey = `${r.employee_id}-${r.session_id || 'none'}`;
+    const relatedIncidents = incidentMap.get(incidentKey) || [];
+    
+    return {
+      batch_id: batchId,
+      source_type: 'per_diem',
+      source_id: r.id,
+      employee_id: r.employee_id,
+      employee_payroll_id: r.profiles?.employee_id || null,
+      employee_name: r.profiles ? `${r.profiles.first_name_en || ''} ${r.profiles.last_name_en || ''}`.trim() : null,
+      training_request_id: r.training_request_id,
+      session_id: r.session_id,
+      trip_id: r.trip_id || null,
+      expense_type: 'PER_DIEM_TRAINING',
+      amount: r.final_amount || r.estimated_amount,
+      currency: r.currency || 'LYD',
+      cost_centre: r.profiles?.department || null,
+      expense_date: r.actual_end_date || r.planned_end_date,
+      posting_period: new Date(r.actual_end_date || r.planned_end_date || new Date()).toISOString().substring(0, 7),
+      destination_country: r.destination_country,
+      destination_city: r.destination_city,
+      status: 'pending',
+      export_key: `PD-${r.id}-${Date.now()}`,
+      has_incident_adjustment: relatedIncidents.length > 0,
+      incident_ids: relatedIncidents,
+    };
+  });
 
   if (recordsToInsert.length > 0) {
     const { error: insertError } = await supabase
@@ -208,6 +233,7 @@ async function pullRecords(supabase: any, body: ExportRequest, userId: string | 
 
   // Update batch totals
   const totalAmount = recordsToInsert.reduce((sum: number, r: any) => sum + (r.amount || 0), 0);
+  const incidentAdjustedCount = recordsToInsert.filter((r: any) => r.has_incident_adjustment).length;
   
   await supabase
     .from('expense_export_batches')
@@ -223,14 +249,21 @@ async function pullRecords(supabase: any, body: ExportRequest, userId: string | 
     batch_id: batchId,
     action: 'pull_records',
     actor_id: userId,
-    details: { records_pulled: recordsToInsert.length, total_amount: totalAmount },
+    details: { 
+      records_pulled: recordsToInsert.length, 
+      total_amount: totalAmount,
+      incident_adjusted_count: incidentAdjustedCount
+    },
   });
+
+  console.log(`[pull_records] Pulled ${recordsToInsert.length} records, ${incidentAdjustedCount} with incident adjustments`);
 
   return new Response(
     JSON.stringify({ 
       success: true, 
       recordsCount: recordsToInsert.length,
-      totalAmount 
+      totalAmount,
+      incidentAdjustedCount
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );
