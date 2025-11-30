@@ -2271,6 +2271,317 @@ export type Database = {
           },
         ]
       }
+      itinerary_accommodations: {
+        Row: {
+          booking_reference: string | null
+          check_in_date: string | null
+          check_in_time: string | null
+          check_out_date: string | null
+          check_out_time: string | null
+          confirmation_number: string | null
+          created_at: string | null
+          data_source: string | null
+          edit_reason: string | null
+          hotel_address: string | null
+          hotel_city: string | null
+          hotel_country: string | null
+          hotel_email: string | null
+          hotel_name: string
+          hotel_phone: string | null
+          hotel_website: string | null
+          id: string
+          itinerary_id: string
+          manually_edited: boolean | null
+          room_type: string | null
+          special_requests: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          booking_reference?: string | null
+          check_in_date?: string | null
+          check_in_time?: string | null
+          check_out_date?: string | null
+          check_out_time?: string | null
+          confirmation_number?: string | null
+          created_at?: string | null
+          data_source?: string | null
+          edit_reason?: string | null
+          hotel_address?: string | null
+          hotel_city?: string | null
+          hotel_country?: string | null
+          hotel_email?: string | null
+          hotel_name: string
+          hotel_phone?: string | null
+          hotel_website?: string | null
+          id?: string
+          itinerary_id: string
+          manually_edited?: boolean | null
+          room_type?: string | null
+          special_requests?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          booking_reference?: string | null
+          check_in_date?: string | null
+          check_in_time?: string | null
+          check_out_date?: string | null
+          check_out_time?: string | null
+          confirmation_number?: string | null
+          created_at?: string | null
+          data_source?: string | null
+          edit_reason?: string | null
+          hotel_address?: string | null
+          hotel_city?: string | null
+          hotel_country?: string | null
+          hotel_email?: string | null
+          hotel_name?: string
+          hotel_phone?: string | null
+          hotel_website?: string | null
+          id?: string
+          itinerary_id?: string
+          manually_edited?: boolean | null
+          room_type?: string | null
+          special_requests?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_accommodations_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "travel_itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      itinerary_audit_log: {
+        Row: {
+          access_reason: string | null
+          action: string
+          action_details: string | null
+          actor_id: string | null
+          actor_role: string | null
+          created_at: string | null
+          employee_id: string | null
+          export_row_count: number | null
+          fields_accessed: string[] | null
+          filters_used: Json | null
+          id: string
+          ip_address: unknown
+          itinerary_id: string | null
+          session_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          access_reason?: string | null
+          action: string
+          action_details?: string | null
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string | null
+          employee_id?: string | null
+          export_row_count?: number | null
+          fields_accessed?: string[] | null
+          filters_used?: Json | null
+          id?: string
+          ip_address?: unknown
+          itinerary_id?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          access_reason?: string | null
+          action?: string
+          action_details?: string | null
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string | null
+          employee_id?: string | null
+          export_row_count?: number | null
+          fields_accessed?: string[] | null
+          filters_used?: Json | null
+          id?: string
+          ip_address?: unknown
+          itinerary_id?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_audit_log_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "travel_itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      itinerary_flight_segments: {
+        Row: {
+          airline_code: string | null
+          airline_name: string | null
+          arrival_datetime: string | null
+          booking_reference: string | null
+          cabin_class: string | null
+          created_at: string | null
+          data_source: string | null
+          departure_datetime: string | null
+          edit_reason: string | null
+          flight_number: string | null
+          from_airport_code: string | null
+          from_airport_name: string | null
+          from_city: string | null
+          id: string
+          itinerary_id: string
+          manually_edited: boolean | null
+          pnr_number: string | null
+          seat_number: string | null
+          segment_order: number
+          segment_type: string
+          ticket_number: string | null
+          to_airport_code: string | null
+          to_airport_name: string | null
+          to_city: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          airline_code?: string | null
+          airline_name?: string | null
+          arrival_datetime?: string | null
+          booking_reference?: string | null
+          cabin_class?: string | null
+          created_at?: string | null
+          data_source?: string | null
+          departure_datetime?: string | null
+          edit_reason?: string | null
+          flight_number?: string | null
+          from_airport_code?: string | null
+          from_airport_name?: string | null
+          from_city?: string | null
+          id?: string
+          itinerary_id: string
+          manually_edited?: boolean | null
+          pnr_number?: string | null
+          seat_number?: string | null
+          segment_order?: number
+          segment_type?: string
+          ticket_number?: string | null
+          to_airport_code?: string | null
+          to_airport_name?: string | null
+          to_city?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          airline_code?: string | null
+          airline_name?: string | null
+          arrival_datetime?: string | null
+          booking_reference?: string | null
+          cabin_class?: string | null
+          created_at?: string | null
+          data_source?: string | null
+          departure_datetime?: string | null
+          edit_reason?: string | null
+          flight_number?: string | null
+          from_airport_code?: string | null
+          from_airport_name?: string | null
+          from_city?: string | null
+          id?: string
+          itinerary_id?: string
+          manually_edited?: boolean | null
+          pnr_number?: string | null
+          seat_number?: string | null
+          segment_order?: number
+          segment_type?: string
+          ticket_number?: string | null
+          to_airport_code?: string | null
+          to_airport_name?: string | null
+          to_city?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_flight_segments_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "travel_itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      itinerary_ground_transport: {
+        Row: {
+          company_name: string | null
+          company_phone: string | null
+          created_at: string | null
+          data_source: string | null
+          driver_name: string | null
+          driver_phone: string | null
+          dropoff_location: string | null
+          id: string
+          itinerary_id: string
+          manually_edited: boolean | null
+          meeting_point_description: string | null
+          notes: string | null
+          pickup_datetime: string | null
+          pickup_location: string | null
+          shuttle_id: string | null
+          shuttle_route: string | null
+          transport_type: string
+          updated_at: string | null
+          vehicle_description: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          company_phone?: string | null
+          created_at?: string | null
+          data_source?: string | null
+          driver_name?: string | null
+          driver_phone?: string | null
+          dropoff_location?: string | null
+          id?: string
+          itinerary_id: string
+          manually_edited?: boolean | null
+          meeting_point_description?: string | null
+          notes?: string | null
+          pickup_datetime?: string | null
+          pickup_location?: string | null
+          shuttle_id?: string | null
+          shuttle_route?: string | null
+          transport_type?: string
+          updated_at?: string | null
+          vehicle_description?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          company_phone?: string | null
+          created_at?: string | null
+          data_source?: string | null
+          driver_name?: string | null
+          driver_phone?: string | null
+          dropoff_location?: string | null
+          id?: string
+          itinerary_id?: string
+          manually_edited?: boolean | null
+          meeting_point_description?: string | null
+          notes?: string | null
+          pickup_datetime?: string | null
+          pickup_location?: string | null
+          shuttle_id?: string | null
+          shuttle_route?: string | null
+          transport_type?: string
+          updated_at?: string | null
+          vehicle_description?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itinerary_ground_transport_itinerary_id_fkey"
+            columns: ["itinerary_id"]
+            isOneToOne: false
+            referencedRelation: "travel_itineraries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_roles: {
         Row: {
           code: string
@@ -5581,6 +5892,121 @@ export type Database = {
           site_type?: string | null
         }
         Relationships: []
+      }
+      travel_itineraries: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          data_source: string | null
+          destination_city: string | null
+          destination_country: string
+          dietary_requirements: string | null
+          employee_id: string
+          external_trip_id: string | null
+          hse_instructions: string | null
+          id: string
+          last_synced_at: string | null
+          mobility_needs: string | null
+          notes: string | null
+          safety_notes: string | null
+          session_id: string | null
+          status: string
+          sync_error_message: string | null
+          sync_status: string | null
+          training_request_id: string | null
+          training_venue_address: string | null
+          training_venue_contact_email: string | null
+          training_venue_contact_name: string | null
+          training_venue_contact_phone: string | null
+          training_venue_map_url: string | null
+          training_venue_name: string | null
+          travel_visa_request_id: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          data_source?: string | null
+          destination_city?: string | null
+          destination_country: string
+          dietary_requirements?: string | null
+          employee_id: string
+          external_trip_id?: string | null
+          hse_instructions?: string | null
+          id?: string
+          last_synced_at?: string | null
+          mobility_needs?: string | null
+          notes?: string | null
+          safety_notes?: string | null
+          session_id?: string | null
+          status?: string
+          sync_error_message?: string | null
+          sync_status?: string | null
+          training_request_id?: string | null
+          training_venue_address?: string | null
+          training_venue_contact_email?: string | null
+          training_venue_contact_name?: string | null
+          training_venue_contact_phone?: string | null
+          training_venue_map_url?: string | null
+          training_venue_name?: string | null
+          travel_visa_request_id?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          data_source?: string | null
+          destination_city?: string | null
+          destination_country?: string
+          dietary_requirements?: string | null
+          employee_id?: string
+          external_trip_id?: string | null
+          hse_instructions?: string | null
+          id?: string
+          last_synced_at?: string | null
+          mobility_needs?: string | null
+          notes?: string | null
+          safety_notes?: string | null
+          session_id?: string | null
+          status?: string
+          sync_error_message?: string | null
+          sync_status?: string | null
+          training_request_id?: string | null
+          training_venue_address?: string | null
+          training_venue_contact_email?: string | null
+          training_venue_contact_name?: string | null
+          training_venue_contact_phone?: string | null
+          training_venue_map_url?: string | null
+          training_venue_name?: string | null
+          travel_visa_request_id?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "travel_itineraries_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "travel_itineraries_training_request_id_fkey"
+            columns: ["training_request_id"]
+            isOneToOne: false
+            referencedRelation: "training_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "travel_itineraries_travel_visa_request_id_fkey"
+            columns: ["travel_visa_request_id"]
+            isOneToOne: false
+            referencedRelation: "travel_visa_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       travel_visa_audit_log: {
         Row: {

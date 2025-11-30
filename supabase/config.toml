@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.calculate-per-diem]
 verify_jwt = false
+
+[functions.manage-itinerary]
+verify_jwt = false
