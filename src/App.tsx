@@ -65,6 +65,9 @@ import MyTeamTrainingPlan from "./pages/MyTeamTrainingPlan";
 import AIPriorityAdmin from "./pages/AIPriorityAdmin";
 import ScenarioConsole from "./pages/ScenarioConsole";
 import ScenarioWorkspace from "./pages/ScenarioWorkspace";
+import MyAbroadTrainings from "./pages/MyAbroadTrainings";
+import TravelVisaAdmin from "./pages/TravelVisaAdmin";
+import TravelVisaReports from "./pages/TravelVisaReports";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
