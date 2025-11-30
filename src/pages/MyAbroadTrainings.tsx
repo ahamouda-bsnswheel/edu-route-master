@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,12 +12,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { 
   Plane, 
   MapPin, 
   Calendar, 
   ExternalLink,
-  Wallet
+  Wallet,
+  FileText
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
@@ -30,12 +37,18 @@ import {
 } from '@/hooks/useTravelVisa';
 import { TravelReadinessIndicator } from '@/components/travel/TravelReadinessIndicator';
 import { PerDiemEstimatePanel } from '@/components/per-diem/PerDiemEstimatePanel';
+import { ItineraryViewPanel } from '@/components/itinerary/ItineraryViewPanel';
+import { useMyItineraries, TravelItinerary } from '@/hooks/useItinerary';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 export default function MyAbroadTrainings() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const [selectedItinerary, setSelectedItinerary] = useState<TravelItinerary | null>(null);
+
+  // Fetch user's itineraries
+  const { data: itineraries, isLoading: loadingItineraries } = useMyItineraries(user?.id);
 
   // Fetch user's abroad training requests
   const { data: abroadTrainings, isLoading: loadingTrainings } = useQuery({
@@ -91,7 +104,18 @@ export default function MyAbroadTrainings() {
     return map;
   }, [travelRequests]);
 
-  const isLoading = loadingTrainings || loadingTravel;
+  // Create a map of training_request_id to itinerary
+  const itineraryMap = React.useMemo(() => {
+    const map = new Map<string, TravelItinerary>();
+    itineraries?.forEach(it => {
+      if (it.training_request_id) {
+        map.set(it.training_request_id, it);
+      }
+    });
+    return map;
+  }, [itineraries]);
+
+  const isLoading = loadingTrainings || loadingTravel || loadingItineraries;
 
   // Get employee grade from profile (mock - would come from HR system)
   const employeeGrade = profile?.grade || 5;
@@ -149,14 +173,15 @@ export default function MyAbroadTrainings() {
                     <TableHead>Dates</TableHead>
                     <TableHead>Travel Status</TableHead>
                     <TableHead>Visa Status</TableHead>
-                    <TableHead>Per Diem</TableHead>
+                    <TableHead>Itinerary</TableHead>
                     <TableHead>Readiness</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {abroadTrainings?.map((training) => {
+                {abroadTrainings?.map((training) => {
                     const travel = travelMap.get(training.id);
+                    const itinerary = itineraryMap.get(training.id);
                     const readiness = travel ? getTravelReadiness(travel) : 'critical';
 
                     return (
@@ -205,13 +230,19 @@ export default function MyAbroadTrainings() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {training.courses?.abroad_country && training.preferred_start_date && training.preferred_end_date ? (
-                            <div className="flex items-center gap-1">
-                              <Wallet className="h-4 w-4 text-muted-foreground" />
-                              <span className="text-sm">As per policy</span>
-                            </div>
+                          {itinerary ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setSelectedItinerary(itinerary)}
+                            >
+                              <FileText className="h-4 w-4 mr-1" />
+                              View
+                            </Button>
                           ) : (
-                            <span className="text-sm text-muted-foreground">-</span>
+                            <span className="text-sm text-muted-foreground">
+                              Being arranged
+                            </span>
                           )}
                         </TableCell>
                         <TableCell>
@@ -314,6 +345,19 @@ export default function MyAbroadTrainings() {
             ))}
           </div>
         )}
+
+        {/* Itinerary View Dialog */}
+        <Dialog open={!!selectedItinerary} onOpenChange={() => setSelectedItinerary(null)}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>My Travel Itinerary</DialogTitle>
+            </DialogHeader>
+            <ItineraryViewPanel 
+              itinerary={selectedItinerary} 
+              showSensitiveFields={false}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
