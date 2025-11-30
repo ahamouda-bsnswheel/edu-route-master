@@ -24,7 +24,8 @@ import {
   Calendar, 
   ExternalLink,
   Wallet,
-  FileText
+  FileText,
+  AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
@@ -39,6 +40,8 @@ import { TravelReadinessIndicator } from '@/components/travel/TravelReadinessInd
 import { PerDiemEstimatePanel } from '@/components/per-diem/PerDiemEstimatePanel';
 import { ItineraryViewPanel } from '@/components/itinerary/ItineraryViewPanel';
 import { useMyItineraries, TravelItinerary } from '@/hooks/useItinerary';
+import { IncidentReportDialog } from '@/components/incidents/IncidentReportDialog';
+import { useEmployeeIncidents } from '@/hooks/useIncidents';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,6 +49,15 @@ export default function MyAbroadTrainings() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [selectedItinerary, setSelectedItinerary] = useState<TravelItinerary | null>(null);
+  const [reportIncidentFor, setReportIncidentFor] = useState<{
+    trainingId: string;
+    sessionId?: string;
+    country?: string;
+    city?: string;
+  } | null>(null);
+
+  // Fetch employee incidents
+  const { data: myIncidents } = useEmployeeIncidents(user?.id);
 
   // Fetch user's itineraries
   const { data: itineraries, isLoading: loadingItineraries } = useMyItineraries(user?.id);
@@ -175,6 +187,7 @@ export default function MyAbroadTrainings() {
                     <TableHead>Visa Status</TableHead>
                     <TableHead>Itinerary</TableHead>
                     <TableHead>Readiness</TableHead>
+                    <TableHead>Issue</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -247,6 +260,21 @@ export default function MyAbroadTrainings() {
                         </TableCell>
                         <TableCell>
                           <TravelReadinessIndicator readiness={readiness} />
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setReportIncidentFor({
+                              trainingId: training.id,
+                              sessionId: undefined,
+                              country: training.courses?.abroad_country || undefined,
+                              city: training.courses?.abroad_city || undefined,
+                            })}
+                          >
+                            <AlertTriangle className="h-4 w-4 mr-1" />
+                            Report Issue
+                          </Button>
                         </TableCell>
                         <TableCell>
                           <Button
@@ -358,6 +386,19 @@ export default function MyAbroadTrainings() {
             />
           </DialogContent>
         </Dialog>
+
+        {/* Incident Report Dialog */}
+        <IncidentReportDialog
+          open={!!reportIncidentFor}
+          onOpenChange={() => setReportIncidentFor(null)}
+          employeeId={user?.id || ''}
+          trainingRequestId={reportIncidentFor?.trainingId}
+          sessionId={reportIncidentFor?.sessionId}
+          defaultLocation={{
+            country: reportIncidentFor?.country,
+            city: reportIncidentFor?.city,
+          }}
+        />
       </div>
     </DashboardLayout>
   );
