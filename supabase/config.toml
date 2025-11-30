@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.manage-scenario]
 verify_jwt = false
+
+[functions.manage-travel-visa]
+verify_jwt = false

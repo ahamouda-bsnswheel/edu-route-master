@@ -5196,6 +5196,276 @@ export type Database = {
         }
         Relationships: []
       }
+      travel_visa_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          error_details: string | null
+          external_request_id: string | null
+          external_response: Json | null
+          id: string
+          new_value: Json | null
+          old_value: Json | null
+          travel_visa_request_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          error_details?: string | null
+          external_request_id?: string | null
+          external_response?: Json | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          travel_visa_request_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          error_details?: string | null
+          external_request_id?: string | null
+          external_response?: Json | null
+          id?: string
+          new_value?: Json | null
+          old_value?: Json | null
+          travel_visa_request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "travel_visa_audit_log_travel_visa_request_id_fkey"
+            columns: ["travel_visa_request_id"]
+            isOneToOne: false
+            referencedRelation: "travel_visa_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      travel_visa_config: {
+        Row: {
+          config_name: string
+          created_at: string
+          created_by: string | null
+          enable_bulk_initiation: boolean | null
+          enable_cost_display: boolean | null
+          enable_manual_linking: boolean | null
+          field_mappings: Json | null
+          id: string
+          is_active: boolean | null
+          last_sync_at: string | null
+          last_sync_error: string | null
+          last_sync_status: string | null
+          sync_enabled: boolean | null
+          sync_interval_minutes: number | null
+          training_purpose_code: string | null
+          travel_api_auth_method: string | null
+          travel_api_retry_count: number | null
+          travel_api_retry_delay_ms: number | null
+          travel_api_timeout_ms: number | null
+          travel_api_url: string | null
+          updated_at: string
+          updated_by: string | null
+          visa_api_auth_method: string | null
+          visa_api_timeout_ms: number | null
+          visa_api_url: string | null
+        }
+        Insert: {
+          config_name?: string
+          created_at?: string
+          created_by?: string | null
+          enable_bulk_initiation?: boolean | null
+          enable_cost_display?: boolean | null
+          enable_manual_linking?: boolean | null
+          field_mappings?: Json | null
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          last_sync_error?: string | null
+          last_sync_status?: string | null
+          sync_enabled?: boolean | null
+          sync_interval_minutes?: number | null
+          training_purpose_code?: string | null
+          travel_api_auth_method?: string | null
+          travel_api_retry_count?: number | null
+          travel_api_retry_delay_ms?: number | null
+          travel_api_timeout_ms?: number | null
+          travel_api_url?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          visa_api_auth_method?: string | null
+          visa_api_timeout_ms?: number | null
+          visa_api_url?: string | null
+        }
+        Update: {
+          config_name?: string
+          created_at?: string
+          created_by?: string | null
+          enable_bulk_initiation?: boolean | null
+          enable_cost_display?: boolean | null
+          enable_manual_linking?: boolean | null
+          field_mappings?: Json | null
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          last_sync_error?: string | null
+          last_sync_status?: string | null
+          sync_enabled?: boolean | null
+          sync_interval_minutes?: number | null
+          training_purpose_code?: string | null
+          travel_api_auth_method?: string | null
+          travel_api_retry_count?: number | null
+          travel_api_retry_delay_ms?: number | null
+          travel_api_timeout_ms?: number | null
+          travel_api_url?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          visa_api_auth_method?: string | null
+          visa_api_timeout_ms?: number | null
+          visa_api_url?: string | null
+        }
+        Relationships: []
+      }
+      travel_visa_requests: {
+        Row: {
+          accommodation_cost: number | null
+          cost_last_updated_at: string | null
+          created_at: string
+          destination_city: string | null
+          destination_country: string
+          employee_id: string
+          enrollment_id: string | null
+          external_data: Json | null
+          id: string
+          initiated_at: string | null
+          initiated_by: string | null
+          initiation_method: string | null
+          is_active: boolean | null
+          per_diem_amount: number | null
+          session_id: string | null
+          total_travel_cost: number | null
+          training_end_date: string | null
+          training_request_id: string | null
+          training_start_date: string | null
+          travel_booking_reference: string | null
+          travel_cost_amount: number | null
+          travel_cost_currency: string | null
+          travel_end_date: string | null
+          travel_request_id: string | null
+          travel_start_date: string | null
+          travel_status: Database["public"]["Enums"]["travel_status"]
+          travel_status_updated_at: string | null
+          travel_ticket_number: string | null
+          updated_at: string
+          visa_expiry_date: string | null
+          visa_issue_date: string | null
+          visa_number: string | null
+          visa_request_id: string | null
+          visa_required: boolean | null
+          visa_status: Database["public"]["Enums"]["visa_status"]
+          visa_status_updated_at: string | null
+        }
+        Insert: {
+          accommodation_cost?: number | null
+          cost_last_updated_at?: string | null
+          created_at?: string
+          destination_city?: string | null
+          destination_country: string
+          employee_id: string
+          enrollment_id?: string | null
+          external_data?: Json | null
+          id?: string
+          initiated_at?: string | null
+          initiated_by?: string | null
+          initiation_method?: string | null
+          is_active?: boolean | null
+          per_diem_amount?: number | null
+          session_id?: string | null
+          total_travel_cost?: number | null
+          training_end_date?: string | null
+          training_request_id?: string | null
+          training_start_date?: string | null
+          travel_booking_reference?: string | null
+          travel_cost_amount?: number | null
+          travel_cost_currency?: string | null
+          travel_end_date?: string | null
+          travel_request_id?: string | null
+          travel_start_date?: string | null
+          travel_status?: Database["public"]["Enums"]["travel_status"]
+          travel_status_updated_at?: string | null
+          travel_ticket_number?: string | null
+          updated_at?: string
+          visa_expiry_date?: string | null
+          visa_issue_date?: string | null
+          visa_number?: string | null
+          visa_request_id?: string | null
+          visa_required?: boolean | null
+          visa_status?: Database["public"]["Enums"]["visa_status"]
+          visa_status_updated_at?: string | null
+        }
+        Update: {
+          accommodation_cost?: number | null
+          cost_last_updated_at?: string | null
+          created_at?: string
+          destination_city?: string | null
+          destination_country?: string
+          employee_id?: string
+          enrollment_id?: string | null
+          external_data?: Json | null
+          id?: string
+          initiated_at?: string | null
+          initiated_by?: string | null
+          initiation_method?: string | null
+          is_active?: boolean | null
+          per_diem_amount?: number | null
+          session_id?: string | null
+          total_travel_cost?: number | null
+          training_end_date?: string | null
+          training_request_id?: string | null
+          training_start_date?: string | null
+          travel_booking_reference?: string | null
+          travel_cost_amount?: number | null
+          travel_cost_currency?: string | null
+          travel_end_date?: string | null
+          travel_request_id?: string | null
+          travel_start_date?: string | null
+          travel_status?: Database["public"]["Enums"]["travel_status"]
+          travel_status_updated_at?: string | null
+          travel_ticket_number?: string | null
+          updated_at?: string
+          visa_expiry_date?: string | null
+          visa_issue_date?: string | null
+          visa_number?: string | null
+          visa_request_id?: string | null
+          visa_required?: boolean | null
+          visa_status?: Database["public"]["Enums"]["visa_status"]
+          visa_status_updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "travel_visa_requests_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "session_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "travel_visa_requests_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "travel_visa_requests_training_request_id_fkey"
+            columns: ["training_request_id"]
+            isOneToOne: false
+            referencedRelation: "training_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -5214,6 +5484,45 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      visa_requirements: {
+        Row: {
+          created_at: string
+          destination_country: string
+          employee_nationality: string
+          id: string
+          is_active: boolean | null
+          notes: string | null
+          processing_days_estimate: number | null
+          updated_at: string
+          visa_required: boolean
+          visa_type: string | null
+        }
+        Insert: {
+          created_at?: string
+          destination_country: string
+          employee_nationality: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          processing_days_estimate?: number | null
+          updated_at?: string
+          visa_required?: boolean
+          visa_type?: string | null
+        }
+        Update: {
+          created_at?: string
+          destination_country?: string
+          employee_nationality?: string
+          id?: string
+          is_active?: boolean | null
+          notes?: string | null
+          processing_days_estimate?: number | null
+          updated_at?: string
+          visa_required?: boolean
+          visa_type?: string | null
         }
         Relationships: []
       }
@@ -5418,6 +5727,20 @@ export type Database = {
         | "under_corporate_review"
         | "approved"
         | "locked"
+      travel_status:
+        | "not_initiated"
+        | "requested"
+        | "approved"
+        | "ticketed"
+        | "completed"
+        | "cancelled"
+      visa_status:
+        | "not_required"
+        | "initiated"
+        | "submitted"
+        | "approved"
+        | "rejected"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -5600,6 +5923,22 @@ export const Constants = {
         "under_corporate_review",
         "approved",
         "locked",
+      ],
+      travel_status: [
+        "not_initiated",
+        "requested",
+        "approved",
+        "ticketed",
+        "completed",
+        "cancelled",
+      ],
+      visa_status: [
+        "not_required",
+        "initiated",
+        "submitted",
+        "approved",
+        "rejected",
+        "cancelled",
       ],
     },
   },
