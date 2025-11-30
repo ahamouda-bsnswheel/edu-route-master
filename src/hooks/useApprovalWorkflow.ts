@@ -48,18 +48,32 @@ export const findManagerForEmployee = async (employeeId: string): Promise<string
 
 // Find HRBP for an employee's entity
 export const findHRBPForEntity = async (employeeId: string): Promise<string | null> => {
-  const { data: employeeProfile } = await supabase
+  console.log('[findHRBPForEntity] Looking for HRBP for employee:', employeeId);
+  
+  const { data: employeeProfile, error: profileError } = await supabase
     .from('profiles')
     .select('entity_id')
     .eq('id', employeeId)
     .single();
 
+  if (profileError) {
+    console.error('[findHRBPForEntity] Error fetching employee profile:', profileError);
+  }
+  
+  console.log('[findHRBPForEntity] Employee entity_id:', employeeProfile?.entity_id);
+
   if (employeeProfile?.entity_id) {
     // Find all HRBPs
-    const { data: hrbpRoles } = await supabase
+    const { data: hrbpRoles, error: rolesError } = await supabase
       .from('user_roles')
       .select('user_id')
       .eq('role', 'hrbp');
+
+    if (rolesError) {
+      console.error('[findHRBPForEntity] Error fetching HRBP roles:', rolesError);
+    }
+    
+    console.log('[findHRBPForEntity] Found HRBP roles:', hrbpRoles);
 
     if (hrbpRoles && hrbpRoles.length > 0) {
       // Check each HRBP's entity
@@ -70,7 +84,10 @@ export const findHRBPForEntity = async (employeeId: string): Promise<string | nu
           .eq('id', hrbpRole.user_id)
           .single();
         
+        console.log('[findHRBPForEntity] Checking HRBP:', hrbpRole.user_id, 'entity:', hrbpProfile?.entity_id);
+        
         if (hrbpProfile?.entity_id === employeeProfile.entity_id) {
+          console.log('[findHRBPForEntity] Found matching HRBP:', hrbpRole.user_id);
           return hrbpRole.user_id;
         }
       }
@@ -78,51 +95,67 @@ export const findHRBPForEntity = async (employeeId: string): Promise<string | nu
   }
 
   // Fallback: find any HRBP
+  console.log('[findHRBPForEntity] Using fallback - finding any HRBP');
   const { data: anyHrbp } = await supabase
     .from('user_roles')
     .select('user_id')
     .eq('role', 'hrbp')
     .limit(1)
     .maybeSingle();
+  
+  console.log('[findHRBPForEntity] Fallback HRBP:', anyHrbp?.user_id);
   return anyHrbp?.user_id || null;
 };
 
 // Find L&D user
 export const findLandDUser = async (): Promise<string | null> => {
-  const { data } = await supabase
+  console.log('[findLandDUser] Looking for L&D user');
+  const { data, error } = await supabase
     .from('user_roles')
     .select('user_id')
     .eq('role', 'l_and_d')
     .limit(1)
     .maybeSingle();
+  
+  if (error) console.error('[findLandDUser] Error:', error);
+  console.log('[findLandDUser] Found:', data?.user_id);
   return data?.user_id || null;
 };
 
 // Find CHRO user
 export const findCHROUser = async (): Promise<string | null> => {
-  const { data } = await supabase
+  console.log('[findCHROUser] Looking for CHRO user');
+  const { data, error } = await supabase
     .from('user_roles')
     .select('user_id')
     .eq('role', 'chro')
     .limit(1)
     .maybeSingle();
+  
+  if (error) console.error('[findCHROUser] Error:', error);
+  console.log('[findCHROUser] Found:', data?.user_id);
   return data?.user_id || null;
 };
 
 // Get the highest role level for a user
 export const getUserHighestRoleLevel = async (userId: string): Promise<number> => {
+  console.log('[getUserHighestRoleLevel] Getting level for user:', userId);
   const { data: roles } = await supabase
     .from('user_roles')
     .select('role')
     .eq('user_id', userId);
 
-  if (!roles || roles.length === 0) return 0;
+  if (!roles || roles.length === 0) {
+    console.log('[getUserHighestRoleLevel] No roles found, returning 0');
+    return 0;
+  }
 
   let maxLevel = 0;
   for (const { role } of roles) {
     const level = ROLE_TO_LEVEL[role] || 0;
     if (level > maxLevel) maxLevel = level;
   }
+  console.log('[getUserHighestRoleLevel] Max level:', maxLevel, 'roles:', roles);
   return maxLevel;
 };
 
@@ -132,13 +165,16 @@ export const findNextApprover = async (
   employeeId: string
 ): Promise<{ approverId: string | null; level: number; role: string | null }> => {
   const nextLevel = currentLevel + 1;
+  console.log('[findNextApprover] Current level:', currentLevel, '-> Next level:', nextLevel);
 
   if (nextLevel > APPROVAL_LEVELS.CHRO) {
+    console.log('[findNextApprover] Beyond CHRO level, returning null');
     return { approverId: null, level: nextLevel, role: null }; // End of chain
   }
 
   let approverId: string | null = null;
   const role = LEVEL_TO_ROLE[nextLevel] || null;
+  console.log('[findNextApprover] Looking for role:', role);
 
   switch (nextLevel) {
     case APPROVAL_LEVELS.MANAGER:
@@ -155,11 +191,15 @@ export const findNextApprover = async (
       break;
   }
 
+  console.log('[findNextApprover] Found approver:', approverId, 'for level:', nextLevel);
+
   // If approver not found at this level, try next level
   if (!approverId && nextLevel < APPROVAL_LEVELS.CHRO) {
+    console.log('[findNextApprover] No approver found at level', nextLevel, '- trying next level');
     return findNextApprover(nextLevel, employeeId);
   }
 
+  console.log('[findNextApprover] Returning:', { approverId, level: nextLevel, role });
   return { approverId, level: nextLevel, role };
 };
 
@@ -183,11 +223,15 @@ export const initializeWorkflow = async ({
   courseName,
   isExtendedWorkflow,
 }: WorkflowInitParams): Promise<void> => {
+  console.log('[initializeWorkflow] Starting workflow:', { nominatorId, employeeId, requestId, courseName, isExtendedWorkflow });
+  
   // Determine nominator's position in the approval chain
   const nominatorLevel = await getUserHighestRoleLevel(nominatorId);
+  console.log('[initializeWorkflow] Nominator level:', nominatorLevel, 'isExtendedWorkflow:', isExtendedWorkflow);
 
   // For simple workflow (local/low-cost), only manager approval needed
   if (!isExtendedWorkflow) {
+    console.log('[initializeWorkflow] Simple workflow path');
     if (nominatorLevel >= APPROVAL_LEVELS.MANAGER) {
       // Nominator is manager or higher - auto-approve
       await supabase.from('approvals').insert({
@@ -252,9 +296,12 @@ export const initializeWorkflow = async ({
   }
 
   // Extended workflow: Auto-record approval at nominator's level, route to next
+  console.log('[Workflow] Extended workflow for request:', requestId);
+  console.log('[Workflow] Nominator level:', nominatorLevel);
+  
   if (nominatorLevel >= APPROVAL_LEVELS.MANAGER) {
     // Record auto-approval for nominator's level
-    await supabase.from('approvals').insert({
+    const { error: autoApprovalError } = await supabase.from('approvals').insert({
       request_id: requestId,
       approver_id: nominatorId,
       approval_level: nominatorLevel,
@@ -263,14 +310,24 @@ export const initializeWorkflow = async ({
       decision_date: new Date().toISOString(),
       comments: `Auto-approved by ${LEVEL_TO_ROLE[nominatorLevel]} nomination`,
     });
+    
+    if (autoApprovalError) {
+      console.error('[Workflow] Error recording auto-approval:', autoApprovalError);
+    }
   }
 
   // Find next approver after nominator's level
   const startLevel = Math.max(nominatorLevel, 0);
+  console.log('[Workflow] Finding next approver from level:', startLevel);
+  
   const { approverId, level, role } = await findNextApprover(startLevel, employeeId);
+  
+  console.log('[Workflow] Next approver result:', { approverId, level, role });
 
   if (approverId && level <= APPROVAL_LEVELS.CHRO) {
-    await supabase
+    console.log('[Workflow] Routing to next approver:', approverId, 'at level:', level);
+    
+    const { error: updateError } = await supabase
       .from('training_requests')
       .update({
         current_approval_level: level,
@@ -279,13 +336,21 @@ export const initializeWorkflow = async ({
       })
       .eq('id', requestId);
 
-    await supabase.from('approvals').insert({
+    if (updateError) {
+      console.error('[Workflow] Error updating request:', updateError);
+    }
+
+    const { error: insertApprovalError } = await supabase.from('approvals').insert({
       request_id: requestId,
       approver_id: approverId,
       approval_level: level,
       approver_role: role as any,
       status: 'pending',
     });
+
+    if (insertApprovalError) {
+      console.error('[Workflow] Error creating pending approval:', insertApprovalError);
+    }
 
     await createNotification({
       user_id: approverId,
@@ -309,13 +374,19 @@ export const initializeWorkflow = async ({
     }
   } else {
     // No next approver (nominator is CHRO) - auto-approve
-    await supabase
+    console.log('[Workflow] No next approver found, auto-approving');
+    
+    const { error: finalApproveError } = await supabase
       .from('training_requests')
       .update({
         status: 'approved',
         current_approver_id: null,
       })
       .eq('id', requestId);
+
+    if (finalApproveError) {
+      console.error('[Workflow] Error final approving:', finalApproveError);
+    }
 
     await createNotification({
       user_id: employeeId,
