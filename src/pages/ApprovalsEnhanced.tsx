@@ -32,14 +32,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useApprovalActions } from '@/hooks/useWorkflow';
@@ -432,32 +424,14 @@ export default function ApprovalsEnhanced() {
                     ))}
                   </div>
                 ) : filteredApprovals && filteredApprovals.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-12">
-                          <Checkbox
-                            checked={selectedApprovals.length === filteredApprovals.length}
-                            onCheckedChange={toggleSelectAll}
-                          />
-                        </TableHead>
-                        <TableHead>Request</TableHead>
-                        <TableHead>Requester</TableHead>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Priority</TableHead>
-                        {canViewCost && <TableHead>Cost</TableHead>}
-                        <TableHead>Submitted</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredApprovals.map((approval) => (
-                        <TableRow 
-                          key={approval.id}
-                          className="cursor-pointer"
-                          onClick={() => handleViewDetails(approval)}
-                        >
-                          <TableCell onClick={(e) => e.stopPropagation()}>
+                  <div className="space-y-3">
+                    {filteredApprovals.map((approval) => (
+                      <div
+                        key={approval.id}
+                        className="border rounded-lg p-3 space-y-2 bg-card"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2">
                             <Checkbox
                               checked={selectedApprovals.includes(approval.id)}
                               onCheckedChange={(checked) => {
@@ -468,105 +442,64 @@ export default function ApprovalsEnhanced() {
                                 }
                               }}
                             />
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <FileText className="h-4 w-4 text-muted-foreground" />
-                              <span className="font-medium">
-                                {approval.request?.request_number || '-'}
-                              </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-sm truncate">{approval.request?.course?.name_en}</p>
+                              <p className="text-xs text-muted-foreground">#{approval.request?.request_number || '-'}</p>
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <User className="h-4 w-4 text-muted-foreground" />
-                              <div>
-                                <p className="font-medium">
-                                  {(approval.request as any)?.requester?.first_name_en} {(approval.request as any)?.requester?.last_name_en}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {(approval.request as any)?.requester?.job_title_en || (approval.request as any)?.requester?.employee_id}
-                                </p>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{approval.request?.course?.name_en}</p>
-                              <div className="flex gap-1 mt-1">
-                                <Badge variant="outline" className="text-xs">
-                                  {approval.request?.course?.delivery_mode?.replace('_', ' ')}
-                                </Badge>
-                                {approval.request?.course?.training_location === 'abroad' && (
-                                  <Badge variant="secondary" className="text-xs">
-                                    <MapPin className="h-3 w-3 mr-1" />
-                                    Abroad
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={priorityConfig[approval.request?.priority || 'normal']?.color}>
-                              {priorityConfig[approval.request?.priority || 'normal']?.label}
-                            </Badge>
-                          </TableCell>
-                          {canViewCost && (
-                            <TableCell>
-                              {approval.request?.course?.cost_amount ? (
-                                <span className="font-medium">
-                                  {approval.request.course.cost_amount.toLocaleString()} LYD
-                                </span>
-                              ) : (
-                                <Badge variant="outline" className="text-xs">
-                                  {approval.request?.course?.cost_level || 'N/A'}
-                                </Badge>
-                              )}
-                            </TableCell>
-                          )}
-                          <TableCell>
+                          </div>
+                          <Badge className={`${priorityConfig[approval.request?.priority || 'normal']?.color} shrink-0 text-xs`}>
+                            {priorityConfig[approval.request?.priority || 'normal']?.label}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <User className="h-3 w-3" />
+                          <span>{(approval.request as any)?.requester?.first_name_en} {(approval.request as any)?.requester?.last_name_en}</span>
+                          <span>•</span>
+                          <span>
                             {approval.request?.submitted_at
-                              ? format(new Date(approval.request.submitted_at), 'MMM dd, yyyy')
+                              ? format(new Date(approval.request.submitted_at), 'MMM dd')
                               : '-'}
-                          </TableCell>
-                          <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex justify-end gap-1">
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleViewDetails(approval)}
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="text-success hover:text-success"
-                                onClick={() => handleAction(approval, 'approve')}
-                              >
-                                <CheckCircle className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="text-destructive hover:text-destructive"
-                                onClick={() => handleAction(approval, 'reject')}
-                              >
-                                <XCircle className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleDelegate(approval)}
-                              >
-                                <Forward className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          <Badge variant="outline" className="text-xs">
+                            {approval.request?.course?.delivery_mode?.replace('_', ' ')}
+                          </Badge>
+                          {approval.request?.course?.training_location === 'abroad' && (
+                            <Badge variant="secondary" className="text-xs">Abroad</Badge>
+                          )}
+                        </div>
+                        <div className="flex gap-1 pt-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => handleViewDetails(approval)}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            View
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="flex-1 bg-success hover:bg-success/90 text-success-foreground"
+                            onClick={() => handleAction(approval, 'approve')}
+                          >
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="flex-1"
+                            onClick={() => handleAction(approval, 'reject')}
+                          >
+                            <XCircle className="h-3 w-3 mr-1" />
+                            Reject
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <div className="text-center py-12">
                     <CheckCircle className="h-12 w-12 mx-auto text-success mb-4" />
@@ -588,45 +521,36 @@ export default function ApprovalsEnhanced() {
               </CardHeader>
               <CardContent>
                 {approvalHistory && approvalHistory.length > 0 ? (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Request</TableHead>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Decision</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Comments</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {approvalHistory.map((approval) => (
-                        <TableRow key={approval.id}>
-                          <TableCell className="font-medium">
-                            {approval.request?.request_number || '-'}
-                          </TableCell>
-                          <TableCell>{approval.request?.course?.name_en}</TableCell>
-                          <TableCell>
-                            <Badge variant={approval.status === 'approved' ? 'default' : 'destructive'}>
-                              {approval.status === 'approved' ? (
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                              ) : (
-                                <XCircle className="h-3 w-3 mr-1" />
-                              )}
-                              {approval.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
+                  <div className="space-y-3">
+                    {approvalHistory.map((approval) => (
+                      <div key={approval.id} className="border rounded-lg p-3 space-y-2 bg-card">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm truncate">{approval.request?.course?.name_en}</p>
+                            <p className="text-xs text-muted-foreground">#{approval.request?.request_number || '-'}</p>
+                          </div>
+                          <Badge variant={approval.status === 'approved' ? 'default' : 'destructive'} className="shrink-0 text-xs">
+                            {approval.status === 'approved' ? (
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                            ) : (
+                              <XCircle className="h-3 w-3 mr-1" />
+                            )}
+                            {approval.status}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>
                             {approval.decision_date
                               ? format(new Date(approval.decision_date), 'MMM dd, yyyy')
                               : '-'}
-                          </TableCell>
-                          <TableCell className="max-w-xs truncate">
-                            {approval.comments || '-'}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                          </span>
+                          {approval.comments && (
+                            <span className="truncate max-w-[200px]">{approval.comments}</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
                     <Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />

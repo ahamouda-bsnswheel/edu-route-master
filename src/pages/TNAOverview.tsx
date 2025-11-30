@@ -13,14 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { BarChart3, Search, AlertCircle, Download, Eye, CheckCircle, RotateCcw, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -284,87 +276,78 @@ export default function TNAOverview() {
                   <p>No submissions found</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto -mx-6 px-6">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Employee</TableHead>
-                      <TableHead>Employee ID</TableHead>
-                      <TableHead>Position</TableHead>
-                      <TableHead>Items</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Submitted</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredSubmissions.map((sub) => (
-                      <TableRow key={sub.id}>
-                        <TableCell className="font-medium">
-                          {sub.employee ? `${sub.employee.first_name_en} ${sub.employee.last_name_en}` : 'N/A'}
-                        </TableCell>
-                        <TableCell>{sub.employee?.employee_id || 'N/A'}</TableCell>
-                        <TableCell>{sub.employee?.job_title_en || 'N/A'}</TableCell>
-                        <TableCell>{sub.items_count || 0}</TableCell>
-                        <TableCell>
-                          <Badge className={statusColors[sub.status]}>
-                            {statusLabels[sub.status]}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
+                <div className="space-y-3">
+                  {filteredSubmissions.map((sub) => (
+                    <div
+                      key={sub.id}
+                      className="border rounded-lg p-3 space-y-2 bg-card"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-sm">
+                            {sub.employee ? `${sub.employee.first_name_en} ${sub.employee.last_name_en}` : 'N/A'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">{sub.employee?.job_title_en || 'N/A'}</p>
+                        </div>
+                        <Badge className={`${statusColors[sub.status]} shrink-0 text-xs`}>
+                          {statusLabels[sub.status]}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{sub.items_count || 0} items</span>
+                        <span>
                           {sub.submitted_at 
                             ? new Date(sub.submitted_at).toLocaleDateString()
                             : '-'
                           }
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-1">
+                        </span>
+                      </div>
+                      <div className="flex gap-1 pt-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => navigate(`/tna/form/${sub.id}`)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        {sub.status === 'submitted' && (
+                          <>
                             <Button
                               size="sm"
-                              variant="ghost"
-                              onClick={() => navigate(`/tna/form/${sub.id}`)}
+                              variant="outline"
+                              className="text-green-600 border-green-600"
+                              onClick={() => handleApprove(sub.id)}
+                              disabled={approveTNA.isPending}
                             >
-                              <Eye className="h-4 w-4" />
+                              <CheckCircle className="h-3 w-3" />
                             </Button>
-                            {sub.status === 'submitted' && (
-                              <>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="text-green-600"
-                                  onClick={() => handleApprove(sub.id)}
-                                  disabled={approveTNA.isPending}
-                                >
-                                  <CheckCircle className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="text-orange-600"
-                                  onClick={() => handleReturn(sub.id)}
-                                  disabled={approveTNA.isPending}
-                                >
-                                  <RotateCcw className="h-4 w-4" />
-                                </Button>
-                              </>
-                            )}
-                            {sub.status === 'approved' && (
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="text-purple-600"
-                                onClick={() => handleLock(sub.id)}
-                                disabled={approveTNA.isPending}
-                              >
-                                <Lock className="h-4 w-4" />
-                              </Button>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-orange-600 border-orange-600"
+                              onClick={() => handleReturn(sub.id)}
+                              disabled={approveTNA.isPending}
+                            >
+                              <RotateCcw className="h-3 w-3" />
+                            </Button>
+                          </>
+                        )}
+                        {sub.status === 'approved' && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-purple-600 border-purple-600"
+                            onClick={() => handleLock(sub.id)}
+                            disabled={approveTNA.isPending}
+                          >
+                            <Lock className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </CardContent>
