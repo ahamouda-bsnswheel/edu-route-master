@@ -266,61 +266,61 @@ export default function CatalogueAdmin() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-4">
           <Card className="card-shadow">
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold">{stats.total}</div>
-              <p className="text-sm text-muted-foreground">Total Items</p>
+            <CardContent className="p-3 sm:pt-4 sm:p-6">
+              <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
+              <p className="text-xs sm:text-sm text-muted-foreground">Total</p>
             </CardContent>
           </Card>
           <Card className="card-shadow">
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-muted-foreground">{stats.draft}</div>
-              <p className="text-sm text-muted-foreground">Draft</p>
+            <CardContent className="p-3 sm:pt-4 sm:p-6">
+              <div className="text-lg sm:text-2xl font-bold text-muted-foreground">{stats.draft}</div>
+              <p className="text-xs sm:text-sm text-muted-foreground">Draft</p>
             </CardContent>
           </Card>
           <Card className="card-shadow">
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-warning">{stats.pending}</div>
-              <p className="text-sm text-muted-foreground">Pending</p>
+            <CardContent className="p-3 sm:pt-4 sm:p-6">
+              <div className="text-lg sm:text-2xl font-bold text-warning">{stats.pending}</div>
+              <p className="text-xs sm:text-sm text-muted-foreground">Pending</p>
             </CardContent>
           </Card>
           <Card className="card-shadow">
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-success">{stats.active}</div>
-              <p className="text-sm text-muted-foreground">Active</p>
+            <CardContent className="p-3 sm:pt-4 sm:p-6">
+              <div className="text-lg sm:text-2xl font-bold text-success">{stats.active}</div>
+              <p className="text-xs sm:text-sm text-muted-foreground">Active</p>
             </CardContent>
           </Card>
           <Card className="card-shadow">
-            <CardContent className="pt-4">
-              <div className="text-2xl font-bold text-destructive">{stats.retired}</div>
-              <p className="text-sm text-muted-foreground">Retired</p>
+            <CardContent className="p-3 sm:pt-4 sm:p-6">
+              <div className="text-lg sm:text-2xl font-bold text-destructive">{stats.retired}</div>
+              <p className="text-xs sm:text-sm text-muted-foreground">Retired</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger value="catalogue" className="gap-2">
-              <FileText className="h-4 w-4" />
-              Catalogue
+          <TabsList className="w-full overflow-x-auto flex-nowrap justify-start sm:justify-center">
+            <TabsTrigger value="catalogue" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Catalogue</span>
             </TabsTrigger>
-            <TabsTrigger value="import" className="gap-2">
-              <Upload className="h-4 w-4" />
-              Import
+            <TabsTrigger value="import" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+              <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Import</span>
             </TabsTrigger>
-            <TabsTrigger value="reports" className="gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Reports
+            <TabsTrigger value="reports" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+              <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Reports</span>
             </TabsTrigger>
-            <TabsTrigger value="ai-tagging" className="gap-2">
-              <Sparkles className="h-4 w-4" />
-              AI Tagging
+            <TabsTrigger value="ai-tagging" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">AI Tag</span>
             </TabsTrigger>
-            <TabsTrigger value="ai-config" className="gap-2">
-              <Settings className="h-4 w-4" />
-              AI Config
+            <TabsTrigger value="ai-config" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+              <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Config</span>
             </TabsTrigger>
           </TabsList>
 
@@ -357,7 +357,7 @@ export default function CatalogueAdmin() {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
                       <SelectTrigger>
                         <SelectValue placeholder="Status" />
