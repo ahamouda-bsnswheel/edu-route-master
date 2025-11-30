@@ -93,14 +93,14 @@ export default function BondDashboard() {
   return (
     <DashboardLayout title="Bond & Return Tracking" description="Monitor service bonds, return-to-work status, and bond fulfilment">
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4 mb-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Bonds</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Bonds</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.total || 0}</div>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{stats?.total || 0}</div>
             <p className="text-xs text-muted-foreground">
               {stats?.active || 0} active, {stats?.fulfilled || 0} fulfilled
             </p>
@@ -109,41 +109,41 @@ export default function BondDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Return</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">Pending Return</CardTitle>
             <CalendarClock className="h-4 w-4 text-amber-600" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-amber-600">{stats?.pendingReturn || 0}</div>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold text-amber-600">{stats?.pendingReturn || 0}</div>
             <p className="text-xs text-muted-foreground">
-              Awaiting return confirmation
+              Awaiting return
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Approaching Fulfilment</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">Approaching</CardTitle>
             <Clock className="h-4 w-4 text-blue-600" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats?.approachingFulfilment || 0}</div>
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats?.approachingFulfilment || 0}</div>
             <p className="text-xs text-muted-foreground">
-              Within next 3 months
+              Within 3 months
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Outstanding Repayments</CardTitle>
+            <CardTitle className="text-xs sm:text-sm font-medium">Repayments</CardTitle>
             <DollarSign className="h-4 w-4 text-red-600" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
-              {stats?.outstandingRepayment?.toLocaleString() || 0} LYD
+          <CardContent className="p-3 sm:p-6 pt-0">
+            <div className="text-lg sm:text-2xl font-bold text-red-600">
+              {stats?.outstandingRepayment?.toLocaleString() || 0}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats?.broken || 0} broken bonds
+              {stats?.broken || 0} broken
             </p>
           </CardContent>
         </Card>
@@ -164,41 +164,43 @@ export default function BondDashboard() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <div className="flex flex-col sm:flex-row gap-4 mb-4">
-              <TabsList>
-                <TabsTrigger value="all">All Bonds</TabsTrigger>
-                <TabsTrigger value="pending-return">
-                  Pending Return
-                  {stats?.pendingReturn ? (
-                    <Badge variant="secondary" className="ml-2">{stats.pendingReturn}</Badge>
-                  ) : null}
-                </TabsTrigger>
-                <TabsTrigger value="approaching">
-                  Approaching Fulfilment
-                  {stats?.approachingFulfilment ? (
-                    <Badge variant="secondary" className="ml-2">{stats.approachingFulfilment}</Badge>
-                  ) : null}
-                </TabsTrigger>
-                <TabsTrigger value="broken">
-                  Broken Bonds
-                  {stats?.broken ? (
-                    <Badge variant="destructive" className="ml-2">{stats.broken}</Badge>
-                  ) : null}
-                </TabsTrigger>
-              </TabsList>
+            <div className="flex flex-col gap-4 mb-4">
+              <div className="overflow-x-auto -mx-6 px-6">
+                <TabsList className="w-max">
+                  <TabsTrigger value="all" className="text-xs sm:text-sm">All</TabsTrigger>
+                  <TabsTrigger value="pending-return" className="text-xs sm:text-sm">
+                    Pending
+                    {stats?.pendingReturn ? (
+                      <Badge variant="secondary" className="ml-1 sm:ml-2">{stats.pendingReturn}</Badge>
+                    ) : null}
+                  </TabsTrigger>
+                  <TabsTrigger value="approaching" className="text-xs sm:text-sm">
+                    Approaching
+                    {stats?.approachingFulfilment ? (
+                      <Badge variant="secondary" className="ml-1 sm:ml-2">{stats.approachingFulfilment}</Badge>
+                    ) : null}
+                  </TabsTrigger>
+                  <TabsTrigger value="broken" className="text-xs sm:text-sm">
+                    Broken
+                    {stats?.broken ? (
+                      <Badge variant="destructive" className="ml-1 sm:ml-2">{stats.broken}</Badge>
+                    ) : null}
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-              <div className="flex gap-2 ml-auto">
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="relative flex-1">
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search by name or program..."
+                    placeholder="Search..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-8 w-[250px]"
+                    className="pl-8"
                   />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full sm:w-[150px]">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -223,6 +225,7 @@ export default function BondDashboard() {
                   <p>No bond records found</p>
                 </div>
               ) : (
+                <div className="overflow-x-auto -mx-6 px-6">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -297,8 +300,9 @@ export default function BondDashboard() {
                         </TableRow>
                       );
                     })}
-                  </TableBody>
+                </TableBody>
                 </Table>
+                </div>
               )}
             </TabsContent>
           </Tabs>

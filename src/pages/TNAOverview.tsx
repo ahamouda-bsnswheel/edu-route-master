@@ -159,9 +159,9 @@ export default function TNAOverview() {
                 </AlertDescription>
               </Alert>
             ) : (
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-4">
                 <Select value={selectedPeriodId} onValueChange={setSelectedPeriodId}>
-                  <SelectTrigger className="w-64">
+                  <SelectTrigger className="w-full sm:w-64">
                     <SelectValue placeholder="Select planning period" />
                   </SelectTrigger>
                   <SelectContent>
@@ -173,7 +173,7 @@ export default function TNAOverview() {
                   </SelectContent>
                 </Select>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -185,9 +185,9 @@ export default function TNAOverview() {
                     <SelectItem value="locked">Locked</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={handleExport} disabled={filteredSubmissions.length === 0}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Export CSV
+                <Button variant="outline" size="sm" onClick={handleExport} disabled={filteredSubmissions.length === 0}>
+                  <Download className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Export CSV</span>
                 </Button>
               </div>
             )}
@@ -196,41 +196,41 @@ export default function TNAOverview() {
 
         {/* Statistics */}
         {selectedPeriodId && !submissionsLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold">{stats.total}</div>
-                <p className="text-sm text-muted-foreground">Total</p>
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
+                <p className="text-xs text-muted-foreground">Total</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold text-yellow-600">{stats.draft}</div>
-                <p className="text-sm text-muted-foreground">Draft</p>
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="text-lg sm:text-2xl font-bold text-yellow-600">{stats.draft}</div>
+                <p className="text-xs text-muted-foreground">Draft</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold text-blue-600">{stats.submitted}</div>
-                <p className="text-sm text-muted-foreground">Submitted</p>
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.submitted}</div>
+                <p className="text-xs text-muted-foreground">Submitted</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold text-orange-600">{stats.returned}</div>
-                <p className="text-sm text-muted-foreground">Returned</p>
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="text-lg sm:text-2xl font-bold text-orange-600">{stats.returned}</div>
+                <p className="text-xs text-muted-foreground">Returned</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
-                <p className="text-sm text-muted-foreground">Approved</p>
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="text-lg sm:text-2xl font-bold text-green-600">{stats.approved}</div>
+                <p className="text-xs text-muted-foreground">Approved</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
-                <div className="text-2xl font-bold text-purple-600">{stats.locked}</div>
-                <p className="text-sm text-muted-foreground">Locked</p>
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="text-lg sm:text-2xl font-bold text-purple-600">{stats.locked}</div>
+                <p className="text-xs text-muted-foreground">Locked</p>
               </CardContent>
             </Card>
           </div>
@@ -253,14 +253,14 @@ export default function TNAOverview() {
         {selectedPeriodId && (
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <CardTitle>TNA Submissions</CardTitle>
                   <CardDescription>
                     {filteredSubmissions.length} {filteredSubmissions.length === 1 ? 'submission' : 'submissions'}
                   </CardDescription>
                 </div>
-                <div className="relative w-64">
+                <div className="relative w-full sm:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search employees..."
@@ -284,6 +284,7 @@ export default function TNAOverview() {
                   <p>No submissions found</p>
                 </div>
               ) : (
+                <div className="overflow-x-auto -mx-6 px-6">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -364,6 +365,7 @@ export default function TNAOverview() {
                     ))}
                   </TableBody>
                 </Table>
+                </div>
               )}
             </CardContent>
           </Card>

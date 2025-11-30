@@ -58,8 +58,8 @@ export default function Scholars() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <GraduationCap className="h-8 w-8" />
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+            <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8" />
             Scholar Records
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -69,68 +69,68 @@ export default function Scholars() {
         
         {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-muted-foreground" />
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <div>
-                    <div className="text-2xl font-bold">{stats.total}</div>
-                    <p className="text-xs text-muted-foreground">Total Scholars</p>
+                    <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
+                    <p className="text-xs text-muted-foreground">Total</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-blue-500" />
+                  <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
                   <div>
-                    <div className="text-2xl font-bold">{stats.active}</div>
+                    <div className="text-lg sm:text-2xl font-bold">{stats.active}</div>
                     <p className="text-xs text-muted-foreground">Active</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                   <div>
-                    <div className="text-2xl font-bold">{stats.onTrack}</div>
+                    <div className="text-lg sm:text-2xl font-bold">{stats.onTrack}</div>
                     <p className="text-xs text-muted-foreground">On Track</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-amber-500" />
+                  <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
                   <div>
-                    <div className="text-2xl font-bold">{stats.watch}</div>
+                    <div className="text-lg sm:text-2xl font-bold">{stats.watch}</div>
                     <p className="text-xs text-muted-foreground">Watch</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-red-500" />
+                  <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
                   <div>
-                    <div className="text-2xl font-bold">{stats.atRisk}</div>
+                    <div className="text-lg sm:text-2xl font-bold">{stats.atRisk}</div>
                     <p className="text-xs text-muted-foreground">At Risk</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex items-center gap-2">
-                  <GraduationCap className="h-5 w-5 text-green-600" />
+                  <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                   <div>
-                    <div className="text-2xl font-bold">{stats.completed}</div>
+                    <div className="text-lg sm:text-2xl font-bold">{stats.completed}</div>
                     <p className="text-xs text-muted-foreground">Completed</p>
                   </div>
                 </div>
@@ -196,6 +196,7 @@ export default function Scholars() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
             ) : filteredRecords && filteredRecords.length > 0 ? (
+              <div className="overflow-x-auto -mx-6 px-6">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -273,6 +274,7 @@ export default function Scholars() {
                   })}
                 </TableBody>
               </Table>
+              </div>
             ) : (
               <div className="text-center py-12">
                 <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />

@@ -93,7 +93,7 @@ export default function ProviderAdmin() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Provider Registry</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Provider Registry</h1>
             <p className="text-muted-foreground">Manage training providers (local & international)</p>
           </div>
           <Button onClick={() => navigate('/providers/new')}>
@@ -103,7 +103,7 @@ export default function ProviderAdmin() {
         </div>
 
         {/* Status Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
           {Object.entries(statusCounts).map(([status, count]) => {
             const config = status === 'all' 
               ? { label: 'Total', variant: 'outline' as const, icon: Building2 }
@@ -115,13 +115,13 @@ export default function ProviderAdmin() {
                 className={`cursor-pointer transition-colors ${statusFilter === status ? 'ring-2 ring-primary' : ''}`}
                 onClick={() => setStatusFilter(status)}
               >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">{config?.label || status}</p>
-                      <p className="text-2xl font-bold">{count}</p>
+                <CardContent className="p-2 sm:p-4">
+                  <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-1">
+                    <div className="text-center sm:text-left">
+                      <p className="text-xs text-muted-foreground">{config?.label || status}</p>
+                      <p className="text-lg sm:text-2xl font-bold">{count}</p>
                     </div>
-                    <Icon className="h-8 w-8 text-muted-foreground/50" />
+                    <Icon className="h-5 w-5 sm:h-8 sm:w-8 text-muted-foreground/50 hidden sm:block" />
                   </div>
                 </CardContent>
               </Card>
@@ -202,6 +202,7 @@ export default function ProviderAdmin() {
             {/* Provider List */}
             <Card>
               <CardContent className="p-0">
+                <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -319,8 +320,9 @@ export default function ProviderAdmin() {
                         );
                       })
                     )}
-                  </TableBody>
+                </TableBody>
                 </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

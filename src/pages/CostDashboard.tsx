@@ -110,10 +110,10 @@ export default function CostDashboard() {
     >
       <div className="space-y-6">
         {/* Filters and Actions */}
-        <div className="flex items-center justify-between">
-          <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             <Select value={fiscalYear.toString()} onValueChange={(v) => setFiscalYear(parseInt(v))}>
-              <SelectTrigger className="w-32">
+              <SelectTrigger className="w-24 sm:w-32">
                 <SelectValue placeholder="Year" />
               </SelectTrigger>
               <SelectContent>
@@ -123,7 +123,7 @@ export default function CostDashboard() {
               </SelectContent>
             </Select>
             <Select value={entityFilter} onValueChange={setEntityFilter}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-32 sm:w-48">
                 <SelectValue placeholder="All Entities" />
               </SelectTrigger>
               <SelectContent>
@@ -137,19 +137,21 @@ export default function CostDashboard() {
           <div className="flex gap-2">
             <Button
               variant="outline"
+              size="sm"
               onClick={() => refreshAnalytics.mutate({ fiscalYear })}
               disabled={refreshAnalytics.isPending}
             >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh Data
+              <RefreshCw className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Refresh</span>
             </Button>
             <Button
               variant="outline"
+              size="sm"
               onClick={() => exportCosts.mutate({ filters, exportType: 'summary' })}
               disabled={exportCosts.isPending}
             >
-              <Download className="h-4 w-4 mr-2" />
-              Export
+              <Download className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Export</span>
             </Button>
           </div>
         </div>
@@ -165,20 +167,20 @@ export default function CostDashboard() {
         )}
 
         {/* KPI Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Training Cost</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Total Cost</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-6 pt-0">
               {loadingSummary ? (
                 <Skeleton className="h-8 w-24" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold">{formatCurrency(summary?.totalCost || 0)}</div>
+                  <div className="text-lg sm:text-2xl font-bold">{formatCurrency(summary?.totalCost || 0)}</div>
                   <div className="flex items-center text-xs text-muted-foreground mt-1">
-                    <span>{summary?.budgetUsedPercentage || 0}% of budget used</span>
+                    <span>{summary?.budgetUsedPercentage || 0}% used</span>
                   </div>
                   <Progress value={summary?.budgetUsedPercentage || 0} className="mt-2 h-2" />
                 </>
@@ -188,15 +190,15 @@ export default function CostDashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Travel & Per Diem</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Travel & Per Diem</CardTitle>
               <Plane className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-6 pt-0">
               {loadingSummary ? (
                 <Skeleton className="h-8 w-24" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold">
+                  <div className="text-lg sm:text-2xl font-bold">
                     {formatCurrency((summary?.travelCost || 0) + (summary?.perDiemCost || 0))}
                   </div>
                   <p className="text-xs text-muted-foreground">
@@ -209,15 +211,15 @@ export default function CostDashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Participants</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Participants</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-6 pt-0">
               {loadingSummary ? (
                 <Skeleton className="h-8 w-16" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold">{summary?.participantCount || 0}</div>
+                  <div className="text-lg sm:text-2xl font-bold">{summary?.participantCount || 0}</div>
                   <p className="text-xs text-muted-foreground">
                     Avg {formatCurrency(summary?.participantCount ? summary.totalCost / summary.participantCount : 0)}/person
                   </p>
@@ -228,15 +230,15 @@ export default function CostDashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Abroad vs Local</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Abroad vs Local</CardTitle>
               <Globe className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-6 pt-0">
               {loadingSummary ? (
                 <Skeleton className="h-8 w-24" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold">
+                  <div className="text-lg sm:text-2xl font-bold">
                     {summary?.totalCost ? Math.round((summary.abroadCost / summary.totalCost) * 100) : 0}%
                   </div>
                   <p className="text-xs text-muted-foreground">
