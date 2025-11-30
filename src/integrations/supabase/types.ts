@@ -1227,6 +1227,92 @@ export type Database = {
           },
         ]
       }
+      budget_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          budget_id: string | null
+          created_at: string | null
+          id: string
+          justification: string | null
+          new_values: Json | null
+          old_values: Json | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          budget_id?: string | null
+          created_at?: string | null
+          id?: string
+          justification?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          budget_id?: string | null
+          created_at?: string | null
+          id?: string
+          justification?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_audit_log_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "training_budgets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_thresholds: {
+        Row: {
+          applies_to: string
+          category_filter: string[] | null
+          created_at: string | null
+          created_by: string | null
+          entity_filter: string[] | null
+          id: string
+          is_active: boolean | null
+          requires_approval_role: string | null
+          threshold_name: string
+          threshold_percentage: number
+          threshold_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          applies_to?: string
+          category_filter?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          entity_filter?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          requires_approval_role?: string | null
+          threshold_name: string
+          threshold_percentage: number
+          threshold_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          applies_to?: string
+          category_filter?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          entity_filter?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          requires_approval_role?: string | null
+          threshold_name?: string
+          threshold_percentage?: number
+          threshold_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       catalogue_approvals: {
         Row: {
           approver_id: string
@@ -1728,6 +1814,215 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cost_analytics: {
+        Row: {
+          cost_centre: string | null
+          created_at: string | null
+          destination_city: string | null
+          destination_country: string | null
+          entity: string | null
+          id: string
+          is_abroad: boolean | null
+          last_refreshed_at: string | null
+          participant_count: number | null
+          per_diem_cost: number | null
+          per_diem_source: string | null
+          period_month: number
+          period_year: number
+          provider_id: string | null
+          provider_name: string | null
+          session_count: number | null
+          total_cost: number | null
+          training_category: string | null
+          travel_cost: number | null
+          travel_source: string | null
+          trip_count: number | null
+          tuition_cost: number | null
+          tuition_source: string | null
+        }
+        Insert: {
+          cost_centre?: string | null
+          created_at?: string | null
+          destination_city?: string | null
+          destination_country?: string | null
+          entity?: string | null
+          id?: string
+          is_abroad?: boolean | null
+          last_refreshed_at?: string | null
+          participant_count?: number | null
+          per_diem_cost?: number | null
+          per_diem_source?: string | null
+          period_month: number
+          period_year: number
+          provider_id?: string | null
+          provider_name?: string | null
+          session_count?: number | null
+          total_cost?: number | null
+          training_category?: string | null
+          travel_cost?: number | null
+          travel_source?: string | null
+          trip_count?: number | null
+          tuition_cost?: number | null
+          tuition_source?: string | null
+        }
+        Update: {
+          cost_centre?: string | null
+          created_at?: string | null
+          destination_city?: string | null
+          destination_country?: string | null
+          entity?: string | null
+          id?: string
+          is_abroad?: boolean | null
+          last_refreshed_at?: string | null
+          participant_count?: number | null
+          per_diem_cost?: number | null
+          per_diem_source?: string | null
+          period_month?: number
+          period_year?: number
+          provider_id?: string | null
+          provider_name?: string | null
+          session_count?: number | null
+          total_cost?: number | null
+          training_category?: string | null
+          travel_cost?: number | null
+          travel_source?: string | null
+          trip_count?: number | null
+          tuition_cost?: number | null
+          tuition_source?: string | null
+        }
+        Relationships: []
+      }
+      cost_anomalies: {
+        Row: {
+          actual_value: number | null
+          detected_at: string | null
+          entity_id: string
+          entity_name: string | null
+          entity_type: string
+          expected_value: number | null
+          id: string
+          period_month: number | null
+          period_year: number | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          rule_id: string | null
+          severity: string
+          status: string | null
+          variance_percentage: number | null
+        }
+        Insert: {
+          actual_value?: number | null
+          detected_at?: string | null
+          entity_id: string
+          entity_name?: string | null
+          entity_type: string
+          expected_value?: number | null
+          id?: string
+          period_month?: number | null
+          period_year?: number | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          rule_id?: string | null
+          severity: string
+          status?: string | null
+          variance_percentage?: number | null
+        }
+        Update: {
+          actual_value?: number | null
+          detected_at?: string | null
+          entity_id?: string
+          entity_name?: string | null
+          entity_type?: string
+          expected_value?: number | null
+          id?: string
+          period_month?: number | null
+          period_year?: number | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          rule_id?: string | null
+          severity?: string
+          status?: string | null
+          variance_percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_anomalies_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "cost_anomaly_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cost_anomaly_rules: {
+        Row: {
+          applies_to: string | null
+          comparison_type: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          rule_name: string
+          rule_type: string
+          severity: string
+          threshold_value: number
+        }
+        Insert: {
+          applies_to?: string | null
+          comparison_type: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          rule_name: string
+          rule_type: string
+          severity?: string
+          threshold_value: number
+        }
+        Update: {
+          applies_to?: string | null
+          comparison_type?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          rule_name?: string
+          rule_type?: string
+          severity?: string
+          threshold_value?: number
+        }
+        Relationships: []
+      }
+      cost_export_log: {
+        Row: {
+          export_type: string
+          exported_at: string | null
+          exported_by: string | null
+          filters: Json | null
+          id: string
+          row_count: number | null
+        }
+        Insert: {
+          export_type: string
+          exported_at?: string | null
+          exported_by?: string | null
+          filters?: Json | null
+          id?: string
+          row_count?: number | null
+        }
+        Update: {
+          export_type?: string
+          exported_at?: string | null
+          exported_by?: string | null
+          filters?: Json | null
+          id?: string
+          row_count?: number | null
+        }
+        Relationships: []
       }
       course_categories: {
         Row: {
@@ -5812,6 +6107,72 @@ export type Database = {
           },
         ]
       }
+      training_budgets: {
+        Row: {
+          activated_at: string | null
+          activated_by: string | null
+          budget_amount: number
+          budget_type: string
+          cost_centre: string | null
+          created_at: string | null
+          created_by: string | null
+          currency: string
+          entity: string | null
+          fiscal_year: number
+          id: string
+          notes: string | null
+          period_number: number | null
+          period_type: Database["public"]["Enums"]["budget_period_type"]
+          status: Database["public"]["Enums"]["budget_status"]
+          training_category: string | null
+          updated_at: string | null
+          version: number
+          version_name: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          activated_by?: string | null
+          budget_amount: number
+          budget_type?: string
+          cost_centre?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string
+          entity?: string | null
+          fiscal_year: number
+          id?: string
+          notes?: string | null
+          period_number?: number | null
+          period_type?: Database["public"]["Enums"]["budget_period_type"]
+          status?: Database["public"]["Enums"]["budget_status"]
+          training_category?: string | null
+          updated_at?: string | null
+          version?: number
+          version_name?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          activated_by?: string | null
+          budget_amount?: number
+          budget_type?: string
+          cost_centre?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string
+          entity?: string | null
+          fiscal_year?: number
+          id?: string
+          notes?: string | null
+          period_number?: number | null
+          period_type?: Database["public"]["Enums"]["budget_period_type"]
+          status?: Database["public"]["Enums"]["budget_status"]
+          training_category?: string | null
+          updated_at?: string | null
+          version?: number
+          version_name?: string | null
+        }
+        Relationships: []
+      }
       training_plan_audit_log: {
         Row: {
           action: string
@@ -7107,6 +7468,8 @@ export type Database = {
         | "finance"
         | "committee"
       approval_status: "pending" | "approved" | "rejected" | "escalated"
+      budget_period_type: "annual" | "quarterly" | "monthly"
+      budget_status: "draft" | "active" | "revised" | "closed"
       catalogue_status: "draft" | "pending_approval" | "active" | "retired"
       confidence_level: "high" | "medium" | "low"
       cost_level: "low" | "medium" | "high"
@@ -7347,6 +7710,8 @@ export const Constants = {
         "committee",
       ],
       approval_status: ["pending", "approved", "rejected", "escalated"],
+      budget_period_type: ["annual", "quarterly", "monthly"],
+      budget_status: ["draft", "active", "revised", "closed"],
       catalogue_status: ["draft", "pending_approval", "active", "retired"],
       confidence_level: ["high", "medium", "low"],
       cost_level: ["low", "medium", "high"],
