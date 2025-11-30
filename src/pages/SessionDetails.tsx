@@ -32,6 +32,7 @@ import { useToast } from '@/hooks/use-toast';
 import { createNotification } from '@/hooks/useNotifications';
 import { SessionTravelVisaTab } from '@/components/travel/SessionTravelVisaTab';
 import { SessionItineraryTab } from '@/components/itinerary/SessionItineraryTab';
+import { SessionIncidentsTab } from '@/components/incidents/SessionIncidentsTab';
 import {
   ArrowLeft,
   Calendar,
@@ -579,6 +580,18 @@ export default function SessionDetails() {
           <>
             <SessionTravelVisaTab sessionId={id!} />
             <SessionItineraryTab 
+              sessionId={id!} 
+              participants={(enrollments || [])
+                .filter(e => e.status === 'confirmed')
+                .map(e => ({
+                  id: e.id,
+                  employee_id: e.participant_id,
+                  employee_name: (e.participant as any)
+                    ? `${(e.participant as any).first_name_en || ''} ${(e.participant as any).last_name_en || ''}`.trim()
+                    : undefined,
+                }))}
+            />
+            <SessionIncidentsTab 
               sessionId={id!} 
               participants={(enrollments || [])
                 .filter(e => e.status === 'confirmed')
