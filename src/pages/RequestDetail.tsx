@@ -248,7 +248,8 @@ export default function RequestDetail() {
   }
 
   const status = statusConfig[request.status || 'pending'] || statusConfig.pending;
-  const canApprove = pendingApproval && request.current_approver_id === user?.id;
+  // Allow approval if user has a pending approval record for this request
+  const canApprove = !!pendingApproval && ['pending', 'pending_approval'].includes(request.status as string);
 
   return (
     <DashboardLayout>
