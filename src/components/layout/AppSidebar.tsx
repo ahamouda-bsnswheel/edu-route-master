@@ -96,6 +96,7 @@ const adminNavItems = [
   { title: 'Training Spend', url: '/training-spend', icon: BarChart3, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance'] },
   { title: 'Cost Dashboard', url: '/cost-dashboard', icon: DollarSign, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance'] },
   { title: 'Budget Control', url: '/budget-control', icon: Wallet, roles: ['l_and_d', 'chro', 'admin', 'finance'] },
+  { title: 'My Team Costs', url: '/my-team-costs', icon: Users, roles: ['manager'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
 ];
 
