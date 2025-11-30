@@ -244,13 +244,13 @@ export const initializeWorkflow = async ({
         comments: 'Auto-approved - local/low-cost training',
       });
 
-      await supabase
-        .from('training_requests')
-        .update({
-          status: 'approved',
-          current_approver_id: null,
-        })
-        .eq('id', requestId);
+      // Use RPC to bypass RLS
+      await supabase.rpc('initialize_training_request_workflow', {
+        p_request_id: requestId,
+        p_current_approval_level: APPROVAL_LEVELS.MANAGER,
+        p_current_approver_id: null,
+        p_status: 'approved',
+      });
 
       await createNotification({
         user_id: employeeId,
@@ -265,14 +265,13 @@ export const initializeWorkflow = async ({
       const { approverId, level, role } = await findNextApprover(0, employeeId);
 
       if (approverId) {
-        await supabase
-          .from('training_requests')
-          .update({
-            current_approval_level: level,
-            current_approver_id: approverId,
-            status: 'pending',
-          })
-          .eq('id', requestId);
+        // Use RPC to bypass RLS for workflow initialization
+        await supabase.rpc('initialize_training_request_workflow', {
+          p_request_id: requestId,
+          p_current_approval_level: level,
+          p_current_approver_id: approverId,
+          p_status: 'pending',
+        });
 
         await supabase.from('approvals').insert({
           request_id: requestId,
@@ -327,14 +326,13 @@ export const initializeWorkflow = async ({
   if (approverId && level <= APPROVAL_LEVELS.CHRO) {
     console.log('[Workflow] Routing to next approver:', approverId, 'at level:', level);
     
-    const { error: updateError } = await supabase
-      .from('training_requests')
-      .update({
-        current_approval_level: level,
-        current_approver_id: approverId,
-        status: 'pending',
-      })
-      .eq('id', requestId);
+    // Use RPC to bypass RLS for workflow initialization
+    const { error: updateError } = await supabase.rpc('initialize_training_request_workflow', {
+      p_request_id: requestId,
+      p_current_approval_level: level,
+      p_current_approver_id: approverId,
+      p_status: 'pending',
+    });
 
     if (updateError) {
       console.error('[Workflow] Error updating request:', updateError);
@@ -376,13 +374,13 @@ export const initializeWorkflow = async ({
     // No next approver (nominator is CHRO) - auto-approve
     console.log('[Workflow] No next approver found, auto-approving');
     
-    const { error: finalApproveError } = await supabase
-      .from('training_requests')
-      .update({
-        status: 'approved',
-        current_approver_id: null,
-      })
-      .eq('id', requestId);
+    // Use RPC to bypass RLS
+    const { error: finalApproveError } = await supabase.rpc('initialize_training_request_workflow', {
+      p_request_id: requestId,
+      p_current_approval_level: APPROVAL_LEVELS.CHRO,
+      p_current_approver_id: null,
+      p_status: 'approved',
+    });
 
     if (finalApproveError) {
       console.error('[Workflow] Error final approving:', finalApproveError);
@@ -434,14 +432,13 @@ export const processApprovalDecision = async ({
     .eq('id', approvalId);
 
   if (status === 'rejected') {
-    // Rejected: Update request status and notify requester
-    await supabase
-      .from('training_requests')
-      .update({
-        status: 'rejected',
-        current_approver_id: null,
-      })
-      .eq('id', requestId);
+    // Rejected: Update request status and notify requester - use RPC to bypass RLS
+    await supabase.rpc('initialize_training_request_workflow', {
+      p_request_id: requestId,
+      p_current_approval_level: currentLevel,
+      p_current_approver_id: null,
+      p_status: 'rejected',
+    });
 
     await createNotification({
       user_id: employeeId,
@@ -456,14 +453,13 @@ export const processApprovalDecision = async ({
 
   // Approved: Determine next step
   if (!isExtendedWorkflow || currentLevel >= APPROVAL_LEVELS.CHRO) {
-    // Final approval
-    await supabase
-      .from('training_requests')
-      .update({
-        status: 'approved',
-        current_approver_id: null,
-      })
-      .eq('id', requestId);
+    // Final approval - use RPC to bypass RLS
+    await supabase.rpc('initialize_training_request_workflow', {
+      p_request_id: requestId,
+      p_current_approval_level: currentLevel,
+      p_current_approver_id: null,
+      p_status: 'approved',
+    });
 
     await createNotification({
       user_id: employeeId,
@@ -480,15 +476,13 @@ export const processApprovalDecision = async ({
   const { approverId, level, role } = await findNextApprover(currentLevel, employeeId);
 
   if (approverId && level <= APPROVAL_LEVELS.CHRO) {
-    // Route to next approver
-    await supabase
-      .from('training_requests')
-      .update({
-        current_approval_level: level,
-        current_approver_id: approverId,
-        status: 'pending',
-      })
-      .eq('id', requestId);
+    // Route to next approver - use RPC to bypass RLS
+    await supabase.rpc('initialize_training_request_workflow', {
+      p_request_id: requestId,
+      p_current_approval_level: level,
+      p_current_approver_id: approverId,
+      p_status: 'pending',
+    });
 
     await supabase.from('approvals').insert({
       request_id: requestId,
@@ -507,14 +501,13 @@ export const processApprovalDecision = async ({
       reference_id: requestId,
     });
   } else {
-    // No more approvers - finalize
-    await supabase
-      .from('training_requests')
-      .update({
-        status: 'approved',
-        current_approver_id: null,
-      })
-      .eq('id', requestId);
+    // No more approvers - finalize - use RPC to bypass RLS
+    await supabase.rpc('initialize_training_request_workflow', {
+      p_request_id: requestId,
+      p_current_approval_level: currentLevel,
+      p_current_approver_id: null,
+      p_status: 'approved',
+    });
 
     await createNotification({
       user_id: employeeId,
