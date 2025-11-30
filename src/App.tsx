@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import MyTeamCosts from "@/pages/MyTeamCosts";
 import { lazy } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -711,6 +712,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <BudgetControl />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-team-costs"
+        element={
+          <ProtectedRoute>
+            <MyTeamCosts />
           </ProtectedRoute>
         }
       />

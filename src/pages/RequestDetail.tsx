@@ -34,6 +34,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { BudgetImpactPanel } from "@/components/approval/BudgetImpactPanel";
 
 const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   pending: { label: "Pending", variant: "secondary" },
@@ -423,6 +424,17 @@ export default function RequestDetail() {
                 ))}
               </CardContent>
             </Card>
+          )}
+
+          {/* Budget Impact for Abroad Training */}
+          {canApprove && request.course?.training_location === 'abroad' && (
+            <div className="md:col-span-2">
+              <BudgetImpactPanel
+                entity={(request as any).entity}
+                category={(request.course as any)?.training_category}
+                estimatedCost={(request as any).estimated_cost || 5000}
+              />
+            </div>
           )}
 
           {/* Approval Actions */}
