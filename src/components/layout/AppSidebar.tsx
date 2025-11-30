@@ -31,6 +31,7 @@ import {
   Library,
   ClipboardList,
   GitBranch,
+  Plane,
 } from 'lucide-react';
 
 const mainNavItems = [
@@ -43,6 +44,7 @@ const mainNavItems = [
   { title: 'Scholarships', url: '/my-scholarships', icon: GraduationCap, roles: [] },
   { title: 'My Academic Progress', url: '/my-scholar-progress', icon: GraduationCap, roles: [] },
   { title: 'My Service Bond', url: '/my-bond', icon: Briefcase, roles: [] },
+  { title: 'My Abroad Trainings', url: '/my-abroad-trainings', icon: Plane, roles: [] },
   { title: 'Training Calendar', url: '/calendar', icon: Calendar, roles: [] },
 ];
 
@@ -79,6 +81,8 @@ const adminNavItems = [
   { title: 'Final Approval', url: '/scholarship/final-approval', icon: GraduationCap, roles: ['chro', 'admin'] },
   { title: 'Compliance', url: '/compliance', icon: Shield, roles: ['l_and_d', 'hrbp', 'chro', 'admin'] },
   { title: 'Reports', url: '/reports', icon: BarChart3, roles: ['hrbp', 'l_and_d', 'chro', 'admin'] },
+  { title: 'Travel & Visa Admin', url: '/travel-visa-admin', icon: Plane, roles: ['l_and_d', 'admin', 'travel'] },
+  { title: 'Travel & Visa Reports', url: '/travel-visa-reports', icon: Plane, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance', 'travel'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
 ];
 
