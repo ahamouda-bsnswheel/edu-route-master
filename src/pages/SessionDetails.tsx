@@ -31,6 +31,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { createNotification } from '@/hooks/useNotifications';
 import { SessionTravelVisaTab } from '@/components/travel/SessionTravelVisaTab';
+import { SessionItineraryTab } from '@/components/itinerary/SessionItineraryTab';
 import {
   ArrowLeft,
   Calendar,
@@ -575,7 +576,21 @@ export default function SessionDetails() {
 
         {/* Travel & Visa Tab for Abroad Sessions */}
         {session.course?.training_location === 'abroad' && (
-          <SessionTravelVisaTab sessionId={id!} />
+          <>
+            <SessionTravelVisaTab sessionId={id!} />
+            <SessionItineraryTab 
+              sessionId={id!} 
+              participants={(enrollments || [])
+                .filter(e => e.status === 'confirmed')
+                .map(e => ({
+                  id: e.id,
+                  employee_id: e.participant_id,
+                  employee_name: (e.participant as any)
+                    ? `${(e.participant as any).first_name_en || ''} ${(e.participant as any).last_name_en || ''}`.trim()
+                    : undefined,
+                }))}
+            />
+          </>
         )}
 
         {/* Add Participants Dialog */}
