@@ -2346,6 +2346,392 @@ export type Database = {
         }
         Relationships: []
       }
+      per_diem_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string | null
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          field_changed: string | null
+          id: string
+          new_value: string | null
+          old_value: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          field_changed?: string | null
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          field_changed?: string | null
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+        }
+        Relationships: []
+      }
+      per_diem_calculations: {
+        Row: {
+          accommodation_covered: boolean | null
+          actual_end_date: string | null
+          actual_start_date: string | null
+          calculated_at: string | null
+          calculation_type: string
+          config_missing: boolean | null
+          config_missing_reason: string | null
+          created_at: string | null
+          created_by: string | null
+          currency: string
+          daily_rate: number
+          destination_band: string | null
+          destination_band_id: string | null
+          destination_city: string | null
+          destination_country: string
+          employee_grade: number | null
+          employee_id: string
+          estimated_amount: number | null
+          excluded_days: number | null
+          final_amount: number | null
+          full_days: number | null
+          grade_band_id: string | null
+          has_override: boolean | null
+          id: string
+          is_domestic: boolean | null
+          notes: string | null
+          payment_period: string | null
+          payment_reference: string | null
+          payment_status: string | null
+          planned_end_date: string | null
+          planned_start_date: string | null
+          policy_snapshot: Json | null
+          session_id: string | null
+          status: string | null
+          total_eligible_days: number | null
+          training_request_id: string | null
+          travel_days: number | null
+          travel_visa_request_id: string | null
+          updated_at: string | null
+          weekend_days: number | null
+        }
+        Insert: {
+          accommodation_covered?: boolean | null
+          actual_end_date?: string | null
+          actual_start_date?: string | null
+          calculated_at?: string | null
+          calculation_type?: string
+          config_missing?: boolean | null
+          config_missing_reason?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string
+          daily_rate: number
+          destination_band?: string | null
+          destination_band_id?: string | null
+          destination_city?: string | null
+          destination_country: string
+          employee_grade?: number | null
+          employee_id: string
+          estimated_amount?: number | null
+          excluded_days?: number | null
+          final_amount?: number | null
+          full_days?: number | null
+          grade_band_id?: string | null
+          has_override?: boolean | null
+          id?: string
+          is_domestic?: boolean | null
+          notes?: string | null
+          payment_period?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
+          planned_end_date?: string | null
+          planned_start_date?: string | null
+          policy_snapshot?: Json | null
+          session_id?: string | null
+          status?: string | null
+          total_eligible_days?: number | null
+          training_request_id?: string | null
+          travel_days?: number | null
+          travel_visa_request_id?: string | null
+          updated_at?: string | null
+          weekend_days?: number | null
+        }
+        Update: {
+          accommodation_covered?: boolean | null
+          actual_end_date?: string | null
+          actual_start_date?: string | null
+          calculated_at?: string | null
+          calculation_type?: string
+          config_missing?: boolean | null
+          config_missing_reason?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string
+          daily_rate?: number
+          destination_band?: string | null
+          destination_band_id?: string | null
+          destination_city?: string | null
+          destination_country?: string
+          employee_grade?: number | null
+          employee_id?: string
+          estimated_amount?: number | null
+          excluded_days?: number | null
+          final_amount?: number | null
+          full_days?: number | null
+          grade_band_id?: string | null
+          has_override?: boolean | null
+          id?: string
+          is_domestic?: boolean | null
+          notes?: string | null
+          payment_period?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
+          planned_end_date?: string | null
+          planned_start_date?: string | null
+          policy_snapshot?: Json | null
+          session_id?: string | null
+          status?: string | null
+          total_eligible_days?: number | null
+          training_request_id?: string | null
+          travel_days?: number | null
+          travel_visa_request_id?: string | null
+          updated_at?: string | null
+          weekend_days?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_per_diem_calc_dest_band"
+            columns: ["destination_band_id"]
+            isOneToOne: false
+            referencedRelation: "per_diem_destination_bands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_per_diem_calc_grade_band"
+            columns: ["grade_band_id"]
+            isOneToOne: false
+            referencedRelation: "per_diem_grade_bands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      per_diem_destination_bands: {
+        Row: {
+          band: string
+          business_daily_rate: number | null
+          city: string | null
+          country: string
+          created_at: string | null
+          created_by: string | null
+          currency: string
+          id: string
+          is_active: boolean | null
+          is_domestic: boolean | null
+          training_daily_rate: number
+          updated_at: string | null
+          valid_from: string
+          valid_to: string | null
+        }
+        Insert: {
+          band?: string
+          business_daily_rate?: number | null
+          city?: string | null
+          country: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string
+          id?: string
+          is_active?: boolean | null
+          is_domestic?: boolean | null
+          training_daily_rate: number
+          updated_at?: string | null
+          valid_from?: string
+          valid_to?: string | null
+        }
+        Update: {
+          band?: string
+          business_daily_rate?: number | null
+          city?: string | null
+          country?: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string
+          id?: string
+          is_active?: boolean | null
+          is_domestic?: boolean | null
+          training_daily_rate?: number
+          updated_at?: string | null
+          valid_from?: string
+          valid_to?: string | null
+        }
+        Relationships: []
+      }
+      per_diem_grade_bands: {
+        Row: {
+          band_name: string
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          fixed_rate_override: number | null
+          grade_from: number
+          grade_to: number
+          id: string
+          is_active: boolean | null
+          multiplier: number | null
+          updated_at: string | null
+          valid_from: string
+          valid_to: string | null
+        }
+        Insert: {
+          band_name: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          fixed_rate_override?: number | null
+          grade_from: number
+          grade_to: number
+          id?: string
+          is_active?: boolean | null
+          multiplier?: number | null
+          updated_at?: string | null
+          valid_from?: string
+          valid_to?: string | null
+        }
+        Update: {
+          band_name?: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          fixed_rate_override?: number | null
+          grade_from?: number
+          grade_to?: number
+          id?: string
+          is_active?: boolean | null
+          multiplier?: number | null
+          updated_at?: string | null
+          valid_from?: string
+          valid_to?: string | null
+        }
+        Relationships: []
+      }
+      per_diem_overrides: {
+        Row: {
+          approval_status: string | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string | null
+          created_by: string
+          id: string
+          original_amount: number
+          original_daily_rate: number
+          original_eligible_days: number
+          override_amount: number | null
+          override_daily_rate: number | null
+          override_eligible_days: number | null
+          per_diem_calculation_id: string
+          reason: string
+          rejection_reason: string | null
+          requires_approval: boolean | null
+          supporting_document_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          approval_status?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          created_by: string
+          id?: string
+          original_amount: number
+          original_daily_rate: number
+          original_eligible_days: number
+          override_amount?: number | null
+          override_daily_rate?: number | null
+          override_eligible_days?: number | null
+          per_diem_calculation_id: string
+          reason: string
+          rejection_reason?: string | null
+          requires_approval?: boolean | null
+          supporting_document_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          approval_status?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          created_by?: string
+          id?: string
+          original_amount?: number
+          original_daily_rate?: number
+          original_eligible_days?: number
+          override_amount?: number | null
+          override_daily_rate?: number | null
+          override_eligible_days?: number | null
+          per_diem_calculation_id?: string
+          reason?: string
+          rejection_reason?: string | null
+          requires_approval?: boolean | null
+          supporting_document_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_per_diem_override_calc"
+            columns: ["per_diem_calculation_id"]
+            isOneToOne: false
+            referencedRelation: "per_diem_calculations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      per_diem_policy_config: {
+        Row: {
+          config_key: string
+          config_value: Json
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          config_key: string
+          config_value: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          config_key?: string
+          config_value?: Json
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       plan_scenarios: {
         Row: {
           baseline_total_cost: number | null

@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.manage-travel-visa]
 verify_jwt = false
+
+[functions.calculate-per-diem]
+verify_jwt = false
