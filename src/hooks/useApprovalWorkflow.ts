@@ -55,16 +55,25 @@ export const findHRBPForEntity = async (employeeId: string): Promise<string | nu
     .single();
 
   if (employeeProfile?.entity_id) {
-    const { data: hrbpForEntity } = await supabase
+    // Find all HRBPs
+    const { data: hrbpRoles } = await supabase
       .from('user_roles')
-      .select('user_id, profiles!inner(entity_id)')
-      .eq('role', 'hrbp')
-      .eq('profiles.entity_id', employeeProfile.entity_id)
-      .limit(1)
-      .single();
+      .select('user_id')
+      .eq('role', 'hrbp');
 
-    if (hrbpForEntity?.user_id) {
-      return hrbpForEntity.user_id;
+    if (hrbpRoles && hrbpRoles.length > 0) {
+      // Check each HRBP's entity
+      for (const hrbpRole of hrbpRoles) {
+        const { data: hrbpProfile } = await supabase
+          .from('profiles')
+          .select('entity_id')
+          .eq('id', hrbpRole.user_id)
+          .single();
+        
+        if (hrbpProfile?.entity_id === employeeProfile.entity_id) {
+          return hrbpRole.user_id;
+        }
+      }
     }
   }
 
@@ -74,7 +83,7 @@ export const findHRBPForEntity = async (employeeId: string): Promise<string | nu
     .select('user_id')
     .eq('role', 'hrbp')
     .limit(1)
-    .single();
+    .maybeSingle();
   return anyHrbp?.user_id || null;
 };
 
@@ -85,7 +94,7 @@ export const findLandDUser = async (): Promise<string | null> => {
     .select('user_id')
     .eq('role', 'l_and_d')
     .limit(1)
-    .single();
+    .maybeSingle();
   return data?.user_id || null;
 };
 
@@ -96,7 +105,7 @@ export const findCHROUser = async (): Promise<string | null> => {
     .select('user_id')
     .eq('role', 'chro')
     .limit(1)
-    .single();
+    .maybeSingle();
   return data?.user_id || null;
 };
 
