@@ -86,6 +86,7 @@ const adminNavItems = [
   { title: 'Travel & Visa Reports', url: '/travel-visa-reports', icon: Plane, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance', 'travel'] },
   { title: 'Per Diem Policy', url: '/per-diem-admin', icon: Wallet, roles: ['comp_benefits', 'l_and_d', 'admin'] },
   { title: 'Per Diem Reports', url: '/per-diem-reports', icon: Wallet, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance', 'comp_benefits'] },
+  { title: 'Logistics Console', url: '/logistics-console', icon: Plane, roles: ['l_and_d', 'admin', 'travel'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
 ];
 
