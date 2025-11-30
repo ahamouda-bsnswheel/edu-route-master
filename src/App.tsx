@@ -68,6 +68,8 @@ import ScenarioWorkspace from "./pages/ScenarioWorkspace";
 import MyAbroadTrainings from "./pages/MyAbroadTrainings";
 import TravelVisaAdmin from "./pages/TravelVisaAdmin";
 import TravelVisaReports from "./pages/TravelVisaReports";
+import PerDiemAdmin from "./pages/PerDiemAdmin";
+import PerDiemReports from "./pages/PerDiemReports";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -620,6 +622,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <TravelVisaReports />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/per-diem-admin"
+        element={
+          <ProtectedRoute>
+            <PerDiemAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/per-diem-reports"
+        element={
+          <ProtectedRoute>
+            <PerDiemReports />
           </ProtectedRoute>
         }
       />

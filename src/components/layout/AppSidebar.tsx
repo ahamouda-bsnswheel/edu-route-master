@@ -32,6 +32,7 @@ import {
   ClipboardList,
   GitBranch,
   Plane,
+  Wallet,
 } from 'lucide-react';
 
 const mainNavItems = [
@@ -83,6 +84,8 @@ const adminNavItems = [
   { title: 'Reports', url: '/reports', icon: BarChart3, roles: ['hrbp', 'l_and_d', 'chro', 'admin'] },
   { title: 'Travel & Visa Admin', url: '/travel-visa-admin', icon: Plane, roles: ['l_and_d', 'admin', 'travel'] },
   { title: 'Travel & Visa Reports', url: '/travel-visa-reports', icon: Plane, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance', 'travel'] },
+  { title: 'Per Diem Policy', url: '/per-diem-admin', icon: Wallet, roles: ['comp_benefits', 'l_and_d', 'admin'] },
+  { title: 'Per Diem Reports', url: '/per-diem-reports', icon: Wallet, roles: ['l_and_d', 'hrbp', 'chro', 'admin', 'finance', 'comp_benefits'] },
   { title: 'Settings', url: '/settings', icon: Settings, roles: ['admin'] },
 ];
 

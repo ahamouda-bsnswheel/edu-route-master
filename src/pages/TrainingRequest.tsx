@@ -26,7 +26,9 @@ import {
   Send,
   Loader2,
   CalendarIcon,
+  Wallet,
 } from 'lucide-react';
+import { PerDiemEstimatePanel } from '@/components/per-diem/PerDiemEstimatePanel';
 import { format, addMonths, startOfQuarter, endOfQuarter } from 'date-fns';
 
 type Step = 'course' | 'session' | 'details' | 'review';
@@ -616,7 +618,7 @@ export default function TrainingRequest() {
                       {priority}
                     </Badge>
                   </div>
-                  {abroadReason && (
+                {abroadReason && (
                     <>
                       <Separator />
                       <div>
@@ -626,6 +628,33 @@ export default function TrainingRequest() {
                     </>
                   )}
                 </div>
+
+                {/* Per Diem Estimate for Abroad Training */}
+                {course.training_location === 'abroad' && course.abroad_country && (dateRangeFrom && dateRangeTo || selectedSession) && (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-medium flex items-center gap-2">
+                      <Wallet className="h-4 w-4" />
+                      Estimated Per Diem
+                    </h3>
+                    <PerDiemEstimatePanel
+                      employeeId={user?.id || ''}
+                      destinationCountry={course.abroad_country}
+                      destinationCity={course.abroad_city || undefined}
+                      plannedStartDate={
+                        dateRangeFrom?.toISOString().split('T')[0] ||
+                        (selectedSession && sessions?.find(s => s.id === selectedSession)?.start_date) ||
+                        undefined
+                      }
+                      plannedEndDate={
+                        dateRangeTo?.toISOString().split('T')[0] ||
+                        (selectedSession && sessions?.find(s => s.id === selectedSession)?.end_date) ||
+                        undefined
+                      }
+                      employeeGrade={5}
+                      showDetailedView={false}
+                    />
+                  </div>
+                )}
 
                 <div className="p-4 border border-warning/50 bg-warning/10 rounded-lg">
                   <p className="text-sm">
