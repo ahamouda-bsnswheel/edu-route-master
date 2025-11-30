@@ -25,6 +25,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
+import { createNotification } from '@/hooks/useNotifications';
 import {
   CheckCircle,
   XCircle,
@@ -36,6 +37,14 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 
+// Workflow levels: 1=Manager, 2=HRBP, 3=L&D, 4=CHRO
+const WORKFLOW_LEVELS = {
+  MANAGER: 1,
+  HRBP: 2,
+  L_AND_D: 3,
+  CHRO: 4,
+};
+
 export default function Approvals() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -43,6 +52,33 @@ export default function Approvals() {
   const [selectedApproval, setSelectedApproval] = useState<any>(null);
   const [action, setAction] = useState<'approve' | 'reject' | null>(null);
   const [comments, setComments] = useState('');
+
+  // Helper to check if course requires extended workflow
+  const requiresExtendedWorkflow = (course: { training_location?: string; cost_level?: string }) => {
+    return course?.training_location === 'abroad' || course?.cost_level === 'high';
+  };
+
+  // Helper to find L&D user
+  const findLandDUser = async () => {
+    const { data } = await supabase
+      .from('user_roles')
+      .select('user_id')
+      .eq('role', 'l_and_d')
+      .limit(1)
+      .single();
+    return data?.user_id;
+  };
+
+  // Helper to find CHRO user
+  const findCHROUser = async () => {
+    const { data } = await supabase
+      .from('user_roles')
+      .select('user_id')
+      .eq('role', 'chro')
+      .limit(1)
+      .single();
+    return data?.user_id;
+  };
 
   const { data: pendingApprovals, isLoading } = useQuery({
     queryKey: ['pending-approvals', user?.id],
@@ -53,7 +89,7 @@ export default function Approvals() {
           *,
           request:training_requests(
             *,
-            course:courses(name_en, name_ar, delivery_mode, duration_days, training_location)
+            course:courses(name_en, name_ar, delivery_mode, duration_days, training_location, cost_level)
           )
         `)
         .eq('approver_id', user?.id)
@@ -97,6 +133,12 @@ export default function Approvals() {
       status: 'approved' | 'rejected';
       comments: string;
     }) => {
+      const request = selectedApproval?.request;
+      const course = request?.course;
+      const currentLevel = selectedApproval?.approval_level || 1;
+      const isExtendedWorkflow = requiresExtendedWorkflow(course || {});
+
+      // Update the current approval record
       const { error } = await supabase
         .from('approvals')
         .update({
@@ -108,18 +150,105 @@ export default function Approvals() {
 
       if (error) throw error;
 
-      // Update request status if rejected
-      if (status === 'rejected' && selectedApproval?.request?.id) {
+      if (status === 'rejected') {
+        // Rejected: Update request status and notify requester
         await supabase
           .from('training_requests')
-          .update({ status: 'rejected' })
-          .eq('id', selectedApproval.request.id);
+          .update({ 
+            status: 'rejected',
+            current_approver_id: null,
+          })
+          .eq('id', request.id);
+
+        await createNotification({
+          user_id: request.requester_id,
+          title: 'Training Request Rejected',
+          message: `Your training request for "${course?.name_en}" has been rejected. ${comments ? `Reason: ${comments}` : ''}`,
+          type: 'request_rejected',
+          reference_type: 'training_request',
+          reference_id: request.id,
+        });
+      } else {
+        // Approved: Determine next step in workflow
+        let nextApproverId: string | null = null;
+        let nextLevel: number | null = null;
+        let nextRole: string | null = null;
+        let isFinalApproval = false;
+
+        if (isExtendedWorkflow) {
+          // Extended workflow: HRBP (2) → L&D (3) → CHRO (4)
+          if (currentLevel === WORKFLOW_LEVELS.HRBP) {
+            nextApproverId = await findLandDUser();
+            nextLevel = WORKFLOW_LEVELS.L_AND_D;
+            nextRole = 'l_and_d';
+          } else if (currentLevel === WORKFLOW_LEVELS.L_AND_D) {
+            nextApproverId = await findCHROUser();
+            nextLevel = WORKFLOW_LEVELS.CHRO;
+            nextRole = 'chro';
+          } else if (currentLevel === WORKFLOW_LEVELS.CHRO) {
+            isFinalApproval = true;
+          }
+        } else {
+          // Simple workflow: Already approved after manager
+          isFinalApproval = true;
+        }
+
+        if (isFinalApproval || !nextApproverId) {
+          // Final approval - mark request as approved
+          await supabase
+            .from('training_requests')
+            .update({ 
+              status: 'approved',
+              current_approver_id: null,
+            })
+            .eq('id', request.id);
+
+          await createNotification({
+            user_id: request.requester_id,
+            title: 'Training Request Approved',
+            message: `Your training request for "${course?.name_en}" has been fully approved!`,
+            type: 'request_approved',
+            reference_type: 'training_request',
+            reference_id: request.id,
+          });
+        } else if (nextApproverId && nextLevel && nextRole) {
+          // Route to next approver
+          await supabase
+            .from('training_requests')
+            .update({ 
+              current_approval_level: nextLevel,
+              current_approver_id: nextApproverId,
+              status: 'pending',
+            })
+            .eq('id', request.id);
+
+          // Create pending approval for next approver
+          await supabase.from('approvals').insert({
+            request_id: request.id,
+            approver_id: nextApproverId,
+            approval_level: nextLevel,
+            approver_role: nextRole as 'l_and_d' | 'chro' | 'hrbp' | 'manager' | 'admin' | 'employee' | 'committee' | 'finance',
+            status: 'pending',
+          });
+
+          // Notify next approver
+          await createNotification({
+            user_id: nextApproverId,
+            title: 'Training Approval Required',
+            message: `A training request for "${course?.name_en}" requires your approval.`,
+            type: 'approval_required',
+            reference_type: 'training_request',
+            reference_id: request.id,
+          });
+        }
       }
     },
     onSuccess: () => {
       toast({
         title: action === 'approve' ? 'Request Approved' : 'Request Rejected',
-        description: 'The approval decision has been recorded.',
+        description: action === 'approve' 
+          ? 'The request has been processed and routed appropriately.'
+          : 'The request has been rejected.',
       });
       queryClient.invalidateQueries({ queryKey: ['pending-approvals'] });
       setSelectedApproval(null);

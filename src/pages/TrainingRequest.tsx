@@ -175,6 +175,16 @@ export default function TrainingRequest() {
 
       if (approvalError) throw approvalError;
 
+      // Notify manager about the new approval request
+      await supabase.from('notifications').insert({
+        user_id: managerId,
+        title: 'Training Approval Required',
+        message: `${profile?.first_name_en || 'An employee'} has requested training for "${course?.name_en}".`,
+        type: 'approval_required',
+        reference_type: 'training_request',
+        reference_id: request.id,
+      });
+
       return request;
     },
     onSuccess: () => {
