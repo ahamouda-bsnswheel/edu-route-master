@@ -17,7 +17,7 @@ import {
   MapPin, 
   Calendar, 
   ExternalLink,
-  FileText
+  Wallet
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
@@ -29,11 +29,12 @@ import {
   visaStatusLabels
 } from '@/hooks/useTravelVisa';
 import { TravelReadinessIndicator } from '@/components/travel/TravelReadinessIndicator';
+import { PerDiemEstimatePanel } from '@/components/per-diem/PerDiemEstimatePanel';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 export default function MyAbroadTrainings() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
 
   // Fetch user's abroad training requests
@@ -92,6 +93,9 @@ export default function MyAbroadTrainings() {
 
   const isLoading = loadingTrainings || loadingTravel;
 
+  // Get employee grade from profile (mock - would come from HR system)
+  const employeeGrade = profile?.grade || 5;
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -145,6 +149,7 @@ export default function MyAbroadTrainings() {
                     <TableHead>Dates</TableHead>
                     <TableHead>Travel Status</TableHead>
                     <TableHead>Visa Status</TableHead>
+                    <TableHead>Per Diem</TableHead>
                     <TableHead>Readiness</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
@@ -200,6 +205,16 @@ export default function MyAbroadTrainings() {
                           </Badge>
                         </TableCell>
                         <TableCell>
+                          {training.courses?.abroad_country && training.preferred_start_date && training.preferred_end_date ? (
+                            <div className="flex items-center gap-1">
+                              <Wallet className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-sm">As per policy</span>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
                           <TravelReadinessIndicator readiness={readiness} />
                         </TableCell>
                         <TableCell>
@@ -218,6 +233,36 @@ export default function MyAbroadTrainings() {
               </Table>
             </CardContent>
           </Card>
+        )}
+
+        {/* Per Diem Info for each approved abroad training */}
+        {abroadTrainings && abroadTrainings.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <Wallet className="h-5 w-5" />
+              Per Diem Estimates
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {abroadTrainings.map(training => {
+                if (!training.courses?.abroad_country || !training.preferred_start_date || !training.preferred_end_date) {
+                  return null;
+                }
+                return (
+                  <PerDiemEstimatePanel
+                    key={training.id}
+                    employeeId={user?.id || ''}
+                    trainingRequestId={training.id}
+                    destinationCountry={training.courses.abroad_country}
+                    destinationCity={training.courses.abroad_city || undefined}
+                    plannedStartDate={training.preferred_start_date}
+                    plannedEndDate={training.preferred_end_date}
+                    employeeGrade={typeof employeeGrade === 'number' ? employeeGrade : 5}
+                    showDetailedView={false}
+                  />
+                );
+              })}
+            </div>
+          </div>
         )}
 
         {/* Travel Reference Cards */}
