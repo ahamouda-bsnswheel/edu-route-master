@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
@@ -31,6 +31,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   hasRole: (role: AppRole) => boolean;
+  isAuthenticated: boolean;
   isManager: boolean;
   isHRBP: boolean;
   isLandD: boolean;
@@ -46,6 +47,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const clearAuthState = useCallback(() => {
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+    setRoles([]);
+  }, []);
 
   const fetchUserData = async (userId: string) => {
     // Fetch profile
@@ -71,20 +79,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        if (!mounted) return;
+
         setSession(session);
         setUser(session?.user ?? null);
+
+        // Handle sign out event explicitly
+        if (event === 'SIGNED_OUT') {
+          clearAuthState();
+          setLoading(false);
+          return;
+        }
 
         // Defer Supabase calls with setTimeout
         if (session?.user) {
           setTimeout(() => {
-            fetchUserData(session.user.id);
+            if (mounted) {
+              fetchUserData(session.user.id);
+            }
           }, 0);
         } else {
-          setProfile(null);
-          setRoles([]);
+          clearAuthState();
         }
         setLoading(false);
       }
@@ -92,6 +112,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -100,8 +122,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [clearAuthState]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
@@ -112,9 +137,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
+    clearAuthState();
     await supabase.auth.signOut();
-    setProfile(null);
-    setRoles([]);
   };
 
   const hasRole = (role: AppRole) => roles.includes(role);
@@ -128,6 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signIn,
     signOut,
     hasRole,
+    isAuthenticated: !!user && !!session,
     isManager: hasRole('manager'),
     isHRBP: hasRole('hrbp'),
     isLandD: hasRole('l_and_d'),
