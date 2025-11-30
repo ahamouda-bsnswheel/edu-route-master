@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.manage-itinerary]
 verify_jwt = false
+
+[functions.manage-incident]
+verify_jwt = false
