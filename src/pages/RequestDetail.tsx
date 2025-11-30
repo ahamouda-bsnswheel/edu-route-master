@@ -35,6 +35,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { BudgetImpactPanel } from "@/components/approval/BudgetImpactPanel";
+import { processApprovalDecision, requiresExtendedWorkflow } from "@/hooks/useApprovalWorkflow";
 
 const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   pending: { label: "Pending", variant: "secondary" },
@@ -131,45 +132,33 @@ export default function RequestDetail() {
     enabled: !!id && !!user?.id,
   });
 
-  // Process approval mutation
+  // Process approval mutation - uses workflow propagation
   const processMutation = useMutation({
     mutationFn: async ({ action, comments }: { action: 'approve' | 'reject'; comments: string }) => {
       if (!pendingApproval) throw new Error('No pending approval found');
+      if (!request) throw new Error('Request not found');
 
-      // Update approval record
-      const { error: approvalError } = await supabase
-        .from('approvals')
-        .update({
-          status: action === 'approve' ? 'approved' : 'rejected',
-          comments,
-          decision_date: new Date().toISOString(),
-        })
-        .eq('id', pendingApproval.id);
+      // Determine if this is an extended workflow (abroad/high-cost)
+      const isExtended = requiresExtendedWorkflow(request.course || {});
+      
+      console.log('[RequestDetail] Processing approval:', {
+        approvalId: pendingApproval.id,
+        requestId: id,
+        action,
+        currentLevel: pendingApproval.approval_level,
+        isExtended,
+      });
 
-      if (approvalError) throw approvalError;
-
-      // Update training request status
-      const newStatus = action === 'approve' ? 'approved' : 'rejected';
-      const { error: requestError } = await supabase
-        .from('training_requests')
-        .update({
-          status: newStatus,
-          current_approver_id: null,
-        })
-        .eq('id', id);
-
-      if (requestError) throw requestError;
-
-      // Create notification for requester
-      await supabase.rpc('create_notification', {
-        p_user_id: request?.requester_id,
-        p_title: action === 'approve' ? 'Request Approved' : 'Request Rejected',
-        p_message: action === 'approve' 
-          ? `Your training request for "${request?.course?.name_en}" has been approved.`
-          : `Your training request for "${request?.course?.name_en}" has been rejected. ${comments ? `Reason: ${comments}` : ''}`,
-        p_type: action === 'approve' ? 'success' : 'warning',
-        p_reference_type: 'training_request',
-        p_reference_id: id,
+      // Use the workflow function to properly route to next approver
+      await processApprovalDecision({
+        approvalId: pendingApproval.id,
+        requestId: id!,
+        employeeId: request.requester_id,
+        courseName: request.course?.name_en || 'Training',
+        currentLevel: pendingApproval.approval_level,
+        status: action === 'approve' ? 'approved' : 'rejected',
+        comments,
+        isExtendedWorkflow: isExtended,
       });
     },
     onSuccess: (_, { action }) => {
