@@ -2271,6 +2271,359 @@ export type Database = {
           },
         ]
       }
+      expense_export_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          batch_id: string | null
+          created_at: string | null
+          details: Json | null
+          endpoint_called: string | null
+          error_message: string | null
+          file_path: string | null
+          http_status: number | null
+          id: string
+          new_status: string | null
+          old_status: string | null
+          record_id: string | null
+          response_snippet: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          batch_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          endpoint_called?: string | null
+          error_message?: string | null
+          file_path?: string | null
+          http_status?: number | null
+          id?: string
+          new_status?: string | null
+          old_status?: string | null
+          record_id?: string | null
+          response_snippet?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          batch_id?: string | null
+          created_at?: string | null
+          details?: Json | null
+          endpoint_called?: string | null
+          error_message?: string | null
+          file_path?: string | null
+          http_status?: number | null
+          id?: string
+          new_status?: string | null
+          old_status?: string | null
+          record_id?: string | null
+          response_snippet?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_export_audit_log_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "expense_export_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expense_export_audit_log_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "expense_export_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expense_export_batches: {
+        Row: {
+          batch_number: string
+          config_id: string | null
+          cost_centre_filter: string[] | null
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          deferred_records: number | null
+          entity_filter: string[] | null
+          error_records: number | null
+          export_file_name: string | null
+          export_file_path: string | null
+          export_type: Database["public"]["Enums"]["export_type"]
+          exported_at: string | null
+          exported_by: string | null
+          external_batch_id: string | null
+          id: string
+          original_batch_id: string | null
+          period_end: string
+          period_start: string
+          re_export_count: number | null
+          status: Database["public"]["Enums"]["export_batch_status"]
+          target_system: string | null
+          total_amount: number | null
+          total_records: number | null
+          updated_at: string | null
+          valid_records: number | null
+          validation_errors: Json | null
+        }
+        Insert: {
+          batch_number: string
+          config_id?: string | null
+          cost_centre_filter?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          deferred_records?: number | null
+          entity_filter?: string[] | null
+          error_records?: number | null
+          export_file_name?: string | null
+          export_file_path?: string | null
+          export_type: Database["public"]["Enums"]["export_type"]
+          exported_at?: string | null
+          exported_by?: string | null
+          external_batch_id?: string | null
+          id?: string
+          original_batch_id?: string | null
+          period_end: string
+          period_start: string
+          re_export_count?: number | null
+          status?: Database["public"]["Enums"]["export_batch_status"]
+          target_system?: string | null
+          total_amount?: number | null
+          total_records?: number | null
+          updated_at?: string | null
+          valid_records?: number | null
+          validation_errors?: Json | null
+        }
+        Update: {
+          batch_number?: string
+          config_id?: string | null
+          cost_centre_filter?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          deferred_records?: number | null
+          entity_filter?: string[] | null
+          error_records?: number | null
+          export_file_name?: string | null
+          export_file_path?: string | null
+          export_type?: Database["public"]["Enums"]["export_type"]
+          exported_at?: string | null
+          exported_by?: string | null
+          external_batch_id?: string | null
+          id?: string
+          original_batch_id?: string | null
+          period_end?: string
+          period_start?: string
+          re_export_count?: number | null
+          status?: Database["public"]["Enums"]["export_batch_status"]
+          target_system?: string | null
+          total_amount?: number | null
+          total_records?: number | null
+          updated_at?: string | null
+          valid_records?: number | null
+          validation_errors?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_export_batches_config_id_fkey"
+            columns: ["config_id"]
+            isOneToOne: false
+            referencedRelation: "expense_export_config"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expense_export_batches_original_batch_id_fkey"
+            columns: ["original_batch_id"]
+            isOneToOne: false
+            referencedRelation: "expense_export_batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expense_export_config: {
+        Row: {
+          api_auth_type: string | null
+          api_endpoint: string | null
+          config_name: string
+          created_at: string | null
+          created_by: string | null
+          date_basis: string | null
+          default_cost_centre_filter: string[] | null
+          default_cost_element: string | null
+          default_entity_filter: string[] | null
+          default_gl_account: string | null
+          delivery_method: Database["public"]["Enums"]["delivery_method"]
+          export_format: Database["public"]["Enums"]["export_format"]
+          export_type: Database["public"]["Enums"]["export_type"]
+          field_mappings: Json | null
+          id: string
+          is_active: boolean | null
+          sftp_host: string | null
+          sftp_path: string | null
+          sftp_port: number | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          api_auth_type?: string | null
+          api_endpoint?: string | null
+          config_name: string
+          created_at?: string | null
+          created_by?: string | null
+          date_basis?: string | null
+          default_cost_centre_filter?: string[] | null
+          default_cost_element?: string | null
+          default_entity_filter?: string[] | null
+          default_gl_account?: string | null
+          delivery_method?: Database["public"]["Enums"]["delivery_method"]
+          export_format?: Database["public"]["Enums"]["export_format"]
+          export_type: Database["public"]["Enums"]["export_type"]
+          field_mappings?: Json | null
+          id?: string
+          is_active?: boolean | null
+          sftp_host?: string | null
+          sftp_path?: string | null
+          sftp_port?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          api_auth_type?: string | null
+          api_endpoint?: string | null
+          config_name?: string
+          created_at?: string | null
+          created_by?: string | null
+          date_basis?: string | null
+          default_cost_centre_filter?: string[] | null
+          default_cost_element?: string | null
+          default_entity_filter?: string[] | null
+          default_gl_account?: string | null
+          delivery_method?: Database["public"]["Enums"]["delivery_method"]
+          export_format?: Database["public"]["Enums"]["export_format"]
+          export_type?: Database["public"]["Enums"]["export_type"]
+          field_mappings?: Json | null
+          id?: string
+          is_active?: boolean | null
+          sftp_host?: string | null
+          sftp_path?: string | null
+          sftp_port?: number | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      expense_export_records: {
+        Row: {
+          amount: number
+          batch_id: string
+          cost_centre: string | null
+          course_name: string | null
+          created_at: string | null
+          currency: string | null
+          destination_city: string | null
+          destination_country: string | null
+          employee_id: string
+          employee_name: string | null
+          employee_payroll_id: string | null
+          expense_date: string | null
+          expense_type: string
+          export_key: string
+          external_reference: string | null
+          external_status: string | null
+          first_exported_at: string | null
+          gl_account: string | null
+          has_incident_adjustment: boolean | null
+          id: string
+          incident_ids: string[] | null
+          last_exported_at: string | null
+          posting_period: string | null
+          session_id: string | null
+          source_id: string
+          source_type: string
+          status: Database["public"]["Enums"]["export_record_status"]
+          training_request_id: string | null
+          trip_id: string | null
+          updated_at: string | null
+          validation_errors: Json | null
+        }
+        Insert: {
+          amount: number
+          batch_id: string
+          cost_centre?: string | null
+          course_name?: string | null
+          created_at?: string | null
+          currency?: string | null
+          destination_city?: string | null
+          destination_country?: string | null
+          employee_id: string
+          employee_name?: string | null
+          employee_payroll_id?: string | null
+          expense_date?: string | null
+          expense_type: string
+          export_key: string
+          external_reference?: string | null
+          external_status?: string | null
+          first_exported_at?: string | null
+          gl_account?: string | null
+          has_incident_adjustment?: boolean | null
+          id?: string
+          incident_ids?: string[] | null
+          last_exported_at?: string | null
+          posting_period?: string | null
+          session_id?: string | null
+          source_id: string
+          source_type: string
+          status?: Database["public"]["Enums"]["export_record_status"]
+          training_request_id?: string | null
+          trip_id?: string | null
+          updated_at?: string | null
+          validation_errors?: Json | null
+        }
+        Update: {
+          amount?: number
+          batch_id?: string
+          cost_centre?: string | null
+          course_name?: string | null
+          created_at?: string | null
+          currency?: string | null
+          destination_city?: string | null
+          destination_country?: string | null
+          employee_id?: string
+          employee_name?: string | null
+          employee_payroll_id?: string | null
+          expense_date?: string | null
+          expense_type?: string
+          export_key?: string
+          external_reference?: string | null
+          external_status?: string | null
+          first_exported_at?: string | null
+          gl_account?: string | null
+          has_incident_adjustment?: boolean | null
+          id?: string
+          incident_ids?: string[] | null
+          last_exported_at?: string | null
+          posting_period?: string | null
+          session_id?: string | null
+          source_id?: string
+          source_type?: string
+          status?: Database["public"]["Enums"]["export_record_status"]
+          training_request_id?: string | null
+          trip_id?: string | null
+          updated_at?: string | null
+          validation_errors?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_export_records_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "expense_export_batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       incident_attachments: {
         Row: {
           description: string | null
@@ -6758,7 +7111,24 @@ export type Database = {
       confidence_level: "high" | "medium" | "low"
       cost_level: "low" | "medium" | "high"
       cost_unit_type: "per_participant" | "per_session"
+      delivery_method: "file_download" | "sftp" | "api"
       delivery_mode: "classroom" | "online" | "blended" | "on_the_job"
+      export_batch_status:
+        | "draft"
+        | "validated"
+        | "exported"
+        | "re_exported"
+        | "closed"
+        | "error"
+      export_format: "csv" | "json" | "xml"
+      export_record_status:
+        | "pending"
+        | "included"
+        | "exported"
+        | "failed"
+        | "deferred"
+        | "posted"
+      export_type: "per_diem" | "tuition" | "travel_cost" | "combined"
       incident_severity: "minor" | "moderate" | "major" | "critical"
       incident_status:
         | "open"
@@ -6981,7 +7351,26 @@ export const Constants = {
       confidence_level: ["high", "medium", "low"],
       cost_level: ["low", "medium", "high"],
       cost_unit_type: ["per_participant", "per_session"],
+      delivery_method: ["file_download", "sftp", "api"],
       delivery_mode: ["classroom", "online", "blended", "on_the_job"],
+      export_batch_status: [
+        "draft",
+        "validated",
+        "exported",
+        "re_exported",
+        "closed",
+        "error",
+      ],
+      export_format: ["csv", "json", "xml"],
+      export_record_status: [
+        "pending",
+        "included",
+        "exported",
+        "failed",
+        "deferred",
+        "posted",
+      ],
+      export_type: ["per_diem", "tuition", "travel_cost", "combined"],
       incident_severity: ["minor", "moderate", "major", "critical"],
       incident_status: [
         "open",

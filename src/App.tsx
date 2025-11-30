@@ -72,6 +72,8 @@ import PerDiemAdmin from "./pages/PerDiemAdmin";
 import PerDiemReports from "./pages/PerDiemReports";
 import LogisticsConsole from "./pages/LogisticsConsole";
 import IncidentConsole from "./pages/IncidentConsole";
+import ExpenseExportConsole from "./pages/ExpenseExportConsole";
+import ExpenseExportDetail from "./pages/ExpenseExportDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -656,6 +658,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <IncidentConsole />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/expense-exports"
+        element={
+          <ProtectedRoute>
+            <ExpenseExportConsole />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/expense-export/:batchId"
+        element={
+          <ProtectedRoute>
+            <ExpenseExportDetail />
           </ProtectedRoute>
         }
       />

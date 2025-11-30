@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.manage-incident]
 verify_jwt = false
+
+[functions.manage-expense-export]
+verify_jwt = false
